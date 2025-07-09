@@ -1,4 +1,6 @@
 <script>
+    import { Post } from "../js/Post";
+
     let { children, onMessage = () => {} } = $props();
 
     let IS_READY = $state(false);
@@ -18,9 +20,16 @@
         }
     }
 
+    const keydownListener = (event) => {
+        console.log("keydownListener", event.key);
+        if (event.key === "Escape") {
+            Post("CLOSE_UI", {});
+        }
+    };
+
 </script>
 
-<svelte:window onmessage={listener} />
+<svelte:window onmessage={listener} onkeydown={keydownListener} />
 <div class="visible-wrapper" class:hidden={!visible || !IS_READY}>
     {@render children()}
 </div>
