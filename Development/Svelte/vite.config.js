@@ -13,18 +13,13 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				format: 'es',
-				chunkFileNames: `assets/js/[name]-[hash].js`,
-                entryFileNames: `assets/js/[name]-[hash].js`,
+				inlineDynamicImports: true,
+				entryFileNames: `script.js`,
 				assetFileNames: ({name}) => {
 					if((/\.css$/).test(name ?? '')) {
-                        return `assets/css/[name]-[hash][extname]`;
+                        return `index.css`;
                     }
 					return `assets/media/[name][extname]`;
-				},
-				manualChunks(id) {
-					if (id.includes('node_modules')) {
-						return 'vendor'; // Split node_modules into a separate chunk
-					}
 				},
 			},
 		},
