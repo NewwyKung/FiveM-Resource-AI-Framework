@@ -37,6 +37,8 @@
 <style>
     .visible-wrapper {
         display: block;
+        width: 100%;
+        height: 100%;
     }
 
     .hidden {

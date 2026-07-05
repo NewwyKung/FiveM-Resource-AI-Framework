@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "svelte-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "Development/Svelte", "run", "dev"],
+      "port": 5171
+    }
+  ]
+}

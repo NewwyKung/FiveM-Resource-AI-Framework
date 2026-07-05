@@ -1,5 +1,8 @@
 <script>
+    import { onMount } from 'svelte';
     import Visible from './provider/Visible.svelte';
+    import { isBrowser } from './js/Post';
+    import ComponentShowcase from './lib/ComponentShowcase.svelte';
 
     const onMessage = (action, data) => {
         switch(action) {
@@ -9,11 +12,19 @@
             default:
         }
     }
+
+    onMount(() => {
+        if (isBrowser) {
+            // no Lua backing this page outside FiveM — simulate the open sequence so
+            // `npm run dev` shows the UI instead of staying hidden forever.
+            window.postMessage({ action: 'SET_READY' }, '*');
+            window.postMessage({ action: 'SET_VISIBLE', data: { visible: true } }, '*');
+        }
+    });
 </script>
 
 <Visible {onMessage}>
-    <h1>Visible Component</h1>
-    <p>This component is wrapped in the Visible provider.</p>
+    <ComponentShowcase />
 </Visible>
 
 <style>

@@ -1,0 +1,20 @@
+/* ---- Responsive scale system --------------------------------------------
+   Converts a design px value (measured against a 1440px-tall mockup) into a
+   vh-based unit, so every element scales proportionally with the player's
+   resolution/aspect ratio instead of staying a fixed pixel size.
+
+   --adjustedScale is a manual zoom knob for the whole UI (1 = 100%, 1.2 =
+   120%, etc.) — bump it once here instead of touching every component.
+
+   Usage — replace 40 with the px value from the design:
+     height: calc(40 * var(--px-to-vh) * var(--scale));
+     width:  calc(40 * var(--px-to-vh) * var(--scale));
+---------------------------------------------------------------------------- */
+:root {
+    --scale: 1;
+    --adjustedScale: 1.2;
+    --scale: calc(1 * var(--adjustedScale)) !important;
+
+    --base-screen-height: 1440;
+    --px-to-vh: calc(1vh / var(--base-screen-height) * 100 * var(--scale));
+}
