@@ -1,4 +1,4 @@
-export const scriptName = 'SCRIPT_NAME';
+export const scriptName = window.GetParentResourceName ? window.GetParentResourceName() : 'SCRIPT_NAME';
 
 // FiveM's CEF routes NUI fetches by document context, not by hostname, so the literal
 // host below doesn't need to match the resource name. In a plain browser (npm run dev /
