@@ -15,49 +15,67 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 - Approved `docs/ui-spec/<screen>.md`
 - `docs/design/design-system.md`
 - `ui/src/js/NuiBridge.js`
-- Relevant existing components, tokens, bridge code, and assets
+- `ui/src/js/createFeatureState.svelte.js` when asynchronous state is required
+- relevant components, contracts, state, and assets
 
 ## Workflow
-1. Confirm the specification status and identify measurable acceptance criteria.
-2. Inspect and reuse existing components before adding new ones.
-3. Separate presentation, state, NUI transport, validation, and asset concerns.
+1. Confirm the approved specification and measurable acceptance criteria.
+2. Reuse existing components before adding new ones.
+3. Separate presentation, feature state, NUI transport, validation, and assets.
 4. Implement semantic structure and keyboard/focus behavior first.
-5. Apply approved tokens, spacing, typography, depth, and motion; do not invent silent overrides.
-6. Convert 1440px design measurements with the canonical responsive system from `ui/src/app.css`.
-7. Implement all applicable states and recovery paths from the specification.
-8. Add code-driven browser scenarios with `NuiDebug.js` for representative states; do not build a debug-menu UI unless requested.
-9. Use `NuiBridge.js` for callbacks, normalized messages, disposable listeners, and Escape behavior instead of creating feature-specific bridge helpers.
-10. Verify callback errors, Escape, close, focus return, listener disposal, and resource-stop cleanup.
-11. Build the UI and capture representative screenshots when tooling is available.
+5. Apply approved tokens and the canonical responsive system.
+6. Implement all required loading, ready, empty, submitting, success, and error states.
+7. Use the canonical feature state helper for asynchronous or multi-step flows unless simpler local state is sufficient.
+8. Add browser scenarios with `NuiDebug.js`; do not build a debug-menu UI unless requested.
+9. Use `NuiBridge.js`; do not create feature-specific transport helpers.
+10. Set explicit callback timeout and response validation for awaited operations.
+11. Verify Escape, close, focus return, listener disposal, pending-request cleanup, and resource-stop behavior.
+12. Build and validate the UI.
+
+## State lifecycle
+
+```text
+idle → loading → ready → submitting → success/error → reset
+```
+
+- Keep state inside the owning feature.
+- Use global state only for data shared across independent features.
+- Transport code must not mutate presentation state directly.
+- Reset transient state when closing unless requirements explicitly preserve it.
+- Server state remains authoritative.
+
+## NUI response contract
+
+```js
+{ ok: true, data: {}, error: null, requestId: 'optional-id' }
+```
+
+Handle at least:
+
+```text
+NUI_TIMEOUT
+NUI_NETWORK_ERROR
+NUI_INVALID_RESPONSE
+NUI_CALLBACK_FAILED
+NUI_PENDING_LIMIT
+```
 
 ## Responsive implementation rule
-
-Use:
 
 ```css
 property: calc(<design-pixel-number> * var(--px-to-vh));
 ```
 
-Example:
-
-```css
-width: calc(123 * var(--px-to-vh));
-padding: calc(24 * var(--px-to-vh));
-font-size: calc(20 * var(--px-to-vh));
-```
-
-The number represents pixels from the 1440px-high source design but must be unitless. Never write `123px * var(--px-to-vh)` and never multiply `var(--scale)` again because `--px-to-vh` already includes it.
-
-Use percentage, flex/grid sizing, viewport units, `min()`, `max()`, or `clamp()` only when the approved specification calls for content-driven or viewport-driven behavior.
+The value is a unitless pixel measurement from the 1440px-high design. Never append `px` inside the multiplication or multiply `--scale` again.
 
 ## Constraints
 - Do not edit generated `html/` files directly.
 - Do not replace interactive layout with a full-screen image.
 - Do not bake localized or dynamic text into artwork.
-- Do not redesign approved decisions during implementation; record discrepancies or request a spec update.
-- Avoid new dependencies unless the approved design cannot be implemented reasonably without one.
-- Do not copy UI components, Tailwind configuration, or visual design from external templates unless explicitly approved.
-- Do not create a second NUI transport abstraction when `NuiBridge.js` supports the required operation.
+- Do not redesign approved decisions during implementation.
+- Avoid new dependencies unless necessary.
+- Do not copy external UI/components/Tailwind without explicit approval.
+- Do not add Lua hot reload behavior.
 
 ## Completion
-Report changed files, states covered, browser scenarios added, validation performed, screenshots produced, deviations from the specification, and checks that could not run.
+Report changed files, state/error paths, browser scenarios, validation, screenshots, deviations, and checks that could not run.
