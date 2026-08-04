@@ -5,7 +5,7 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 
 ## Source of truth
 1. Repository files on the current working branch.
-2. Approved requirements under `.ai/memory/requirements/`.
+2. Active approved requirements under `.ai/memory/requirements/active/`.
 3. Confirmed server environment in `.ai/memory/environment.md`.
 4. `docs/decisions/` for approved architecture decisions.
 5. Registered provider profiles under `.ai/integrations/providers/` and selected providers in `integrations.json`.
@@ -24,6 +24,10 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `.ai/examples/`: concise patterns loaded only when relevant.
 - `.ai/integrations/`: provider profiles and integration templates.
 - `.ai/memory/environment.md`: confirmed framework, database, libraries, and server-wide providers.
+- `.ai/memory/requirements/`: active, delivered, and superseded requirement memory.
+- `.ai/work/`: optional task context packet for multi-step or cross-model work.
+- `.ai/CONTEXT_BUDGET.md`: shared context-loading limits.
+- `.ai/index.json`: generated registry path index.
 - `tests/`: test code, fixtures, and executable test plans.
 
 ## Discovery gate
@@ -36,6 +40,8 @@ Before implementation, inspect `.ai/memory/environment.md`. If required informat
 Do not modify production code until requirements and material environment decisions are approved.
 
 ## Context routing
+Always apply `.ai/CONTEXT_BUDGET.md`.
+
 Read only what the task needs:
 - Lua/FiveM: `.ai/rules/fivem.md`, `.ai/rules/lua.md`
 - Config/modules: approved ADRs under `docs/decisions/`
@@ -45,6 +51,8 @@ Read only what the task needs:
 - Security/events: `.ai/rules/security.md`, `.ai/rules/fault-handling.md`
 - UI: `.ai/rules/design.md`, `.ai/rules/ui.md`, relevant UI skill/specification
 - Testing/release: `.ai/rules/testing.md`, applicable checklist
+
+For multi-step or cross-model work, create `.ai/work/current-task.md` from `.ai/work/TEMPLATE.md`. The packet lists the exact files to read and files to avoid. It is temporary navigation state, not durable memory.
 
 ## Integration workflow
 - Register supplied provider docs once through `.ai/skills/add-integration/SKILL.md` in Register mode.
@@ -72,15 +80,18 @@ New screen or major redesign:
 
 ## Standard workflow
 1. Determine whether discovery is required.
-2. Read relevant requirements, environment profile, registries, decisions, specifications, and source.
-3. Resolve missing framework/library/database/integration choices required by the task.
-4. Approve requirements and selected defaults.
-5. Implement the smallest coherent change.
-6. Validate success, failure, disconnect, restart, and relevant security cases.
-7. Run applicable checklists and CI validations.
-8. Update memory, registries, provider profiles, and specifications.
-9. Remove unused adapters, configs, dependencies, manifest entries, copied examples, and dead files.
-10. Summarize changes, evidence, checks not run, and remaining risks.
+2. Read relevant active requirements, environment profile, registries, decisions, specifications, and source.
+3. Create/update a task packet when the task is multi-step or may move between models.
+4. Resolve missing framework/library/database/integration choices required by the task.
+5. Approve requirements and selected defaults.
+6. Implement the smallest coherent change.
+7. Validate success, failure, disconnect, restart, and relevant security cases.
+8. Run applicable checklists and CI validations.
+9. Update memory, registries, provider profiles, specifications, and `.ai/index.json`.
+10. Move delivered or superseded requirements to the matching lifecycle folder.
+11. Remove unused adapters, configs, dependencies, manifest entries, copied examples, and dead files.
+12. Clear the task packet after durable decisions are stored.
+13. Summarize changes, evidence, checks not run, and remaining risks.
 
 ## Completion criteria
-A task is incomplete when required discovery is missing, relevant environment choices remain unresolved, unused generated bridges remain, applicable checks were not run, registries are stale, or runtime/generated references are invalid.
+A task is incomplete when required discovery is missing, relevant environment choices remain unresolved, unused generated bridges remain, applicable checks were not run, registries/index are stale, or runtime/generated references are invalid.
