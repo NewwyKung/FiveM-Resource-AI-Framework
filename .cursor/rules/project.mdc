@@ -1,0 +1,9 @@
+---
+description: Repository-wide FiveM resource template instructions
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md`.
+Use `.ai/rules/INDEX.md` for domain rules and `.ai/skills/INDEX.md` for task workflows.
+Treat `docs/decisions/` as approved architecture.
+Do not edit generated files under `html/`.
