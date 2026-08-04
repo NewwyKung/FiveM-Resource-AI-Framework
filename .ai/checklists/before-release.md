@@ -1,16 +1,19 @@
 # Before Release
 
 - Release output is `release/<resource_name>-<semantic-version>`.
-- Version was inferred correctly or explicitly approved; `resource.json` and both source/packaged manifests agree.
+- Version was inferred correctly or explicitly approved; `resource.json` and source/packaged manifests agree.
 - `release.config.json` includes every required runtime root and excludes repository-only files.
 - `fxmanifest.lua` references existing packaged files in deterministic order.
 - Production `ui_page` points to `html/index.html` when NUI is enabled.
-- UI was built by default, or build reuse was explicitly requested and `html/index.html` was verified.
+- UI was built by default, or reuse was explicitly requested and `html/index.html` was verified.
 - No localhost URL, debug endpoint, source map, UI source, test, example, AI instruction, or development dependency is packaged.
-- Inactive framework/database/integration bridges, providers, configs, dependencies, and tests are absent.
+- Inactive framework/database/integration bridges, configs, dependencies, and provider tests are absent.
 - Public configuration required to run remains usable.
-- Webhooks, tokens, API keys, passwords, client secrets, private keys, and private server settings were sanitized.
-- Secret scan passed; `RELEASE.json` records sanitization evidence.
+- Every known credential location has an explicit `jsonSecretPaths` or `textSanitizers` rule.
+- No broad key-name auto-sanitization is used.
+- Configured sanitizer paths/patterns matched and `RELEASE.json` records exact evidence.
+- Secret-value and credential-like assignment scans passed.
+- `node tests/release/create-release.integration.mjs` passed when release logic/policy changed.
 - Dependencies and minimum versions are documented.
 - Resource start, restart, stop, and player-drop cleanup were tested.
 - Public API compatibility and migrations were reviewed.
