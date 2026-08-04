@@ -1,137 +1,133 @@
-# FiveM Resource Template v2
+# FiveM Resource AI Framework
 
-Reusable FiveM resource foundation for creating new scripts with clear client/server/shared boundaries, scalable configuration, optional Svelte 5 NUI, and model-neutral AI development guidance.
+AI-first FiveM resource framework with modular Lua architecture, optional Svelte 5 NUI, requirements discovery, wireframe-first UI design, reusable provider profiles, automated validation, and production release packaging.
 
-## Purpose
+## What this repository is
 
-This repository is a starting point for a **new FiveM resource**. It is not a replacement for ESX, QBCore, or another gameplay framework. A resource created from this template may remain standalone or add explicit framework/database bridges when required.
+Use this repository as the foundation for a new FiveM resource. It is not a replacement for ESX, QBCore, Qbox, ox_lib, oxmysql, or another gameplay ecosystem. A generated resource may remain standalone or activate only the framework, database, libraries, and custom resources it actually needs.
 
-The template provides:
+Core goals:
 
-- Lua client, server, shared, config, and module boundaries.
-- Deterministic loading through `fxmanifest.lua`.
-- Optional Svelte 5 + Vite NUI development in `ui/`.
-- Generated FiveM NUI output in `html/`.
-- Approved architecture decisions for configuration and modules.
-- AI rules, skills, registries, memory, knowledge, prompts, and checklists.
-- Requirements discovery and approval gates before implementation.
-- A wireframe-first UI design pipeline.
+- clear client/server/shared/config boundaries;
+- deterministic `fxmanifest.lua` loading;
+- server-authoritative feature design;
+- optional Svelte 5 + Vite NUI;
+- design-first and wireframe-first UI workflow;
+- model-neutral AI rules and skills;
+- minimal context loading and reusable memory;
+- no speculative framework/provider bridges;
+- validated, secret-clean production releases.
 
 ## Get Started
 
-### 1. Create a new resource from the template
+### 1. Create a resource
 
-Use this repository as a GitHub template, clone it, or copy it into your FiveM resources directory.
+Use the repository as a GitHub template or clone it:
 
 ```bash
-git clone https://github.com/NewwyKung/v.2-Template-FiveM.git my_resource
+git clone https://github.com/NewwyKung/FiveM-Resource-AI-Framework.git my_resource
 cd my_resource
 ```
 
-Rename the resource folder and update the metadata in:
+Update:
 
 ```text
 fxmanifest.lua
 resource.json
 ```
 
-Remove example config files or domains that the new resource does not need.
+Remove example config domains and runtime folders the new resource does not need.
 
-### 2. Define the feature before coding
+### 2. Start with discovery
 
-For AI-assisted work, start with `AGENTS.md`. New resources and substantial features must pass requirements discovery before implementation.
-
-Example request:
+For a new resource or substantial feature, begin with:
 
 ```text
-Use .ai/skills/discover-requirements/SKILL.md to define a shop resource.
-Help me choose the feature behavior, integrations, configuration, security model,
-and UI flow. Do not implement until I approve the requirements.
+Use .ai/skills/discover-requirements/SKILL.md.
+Help me define the feature and environment before implementation.
 ```
 
-The approved brief should be stored at:
+The AI checks `.ai/memory/environment.md` and asks only about unresolved capabilities required by the task, such as:
+
+- Standalone, ESX, QBCore, Qbox, or custom framework;
+- ox_lib or another shared library;
+- no database, oxmysql, or another driver;
+- inventory and money providers;
+- notify, logger, progress, target/interaction, appearance, or custom resources.
+
+Confirmed server-wide choices are stored once and reused. Secrets are never stored in AI memory.
+
+Active requirements belong at:
 
 ```text
-.ai/memory/requirements/<feature>.md
+.ai/memory/requirements/active/<feature>.md
 .ai/features/<feature>.md
 ```
 
-After approval, use:
-
-```text
-.ai/skills/create-resource/SKILL.md
-```
-
-or:
-
-```text
-.ai/skills/add-feature/SKILL.md
-```
+Implementation begins after approval or explicit authorization to use recommended defaults.
 
 ### 3. Configure the resource
 
-Start with:
+Foundation:
 
 ```text
 config/config.main.lua
 ```
 
-Add small domains as root config files:
+Small domains:
 
 ```text
 config/config.item.lua
 config/config.vehicle.lua
 ```
 
-Add larger domains as folders:
+Large domains:
 
 ```text
 config/shop/24.7_store.lua
 config/shop/weapon_store.lua
 ```
 
-Keep client-only, server-only, shared, and secret values in their approved runtime folders.
+Runtime-specific values belong under:
+
+```text
+config/shared/
+config/client/
+config/server/
+```
+
+Config helpers belong under `config/functions/` and must not contain gameplay business logic.
 
 ### 4. Add modules
 
-Place code by runtime and responsibility:
-
 ```text
-shared/lib/         Shared utility functions
-shared/modules/     Shared contracts, constants, and domain definitions
-client/modules/     Client behavior and FiveM interaction
-server/modules/     Server authority, validation, persistence, and business logic
+shared/lib/         reusable cross-runtime utilities
+shared/modules/     shared contracts/constants/domain definitions
+client/modules/     client behavior and presentation integration
+server/modules/     authority, validation, persistence, business logic
 ```
 
-Keep `client/main.lua` and `server/main.lua` as bootstraps. Do not place feature logic directly in them.
+`client/main.lua` and `server/main.lua` are bootstraps and load last.
 
-### 5. Start NUI development when required
-
-Install the UI dependencies:
+### 5. Develop NUI when required
 
 ```bash
 npm --prefix ui install
-```
-
-Run the Vite development server:
-
-```bash
 npm --prefix ui run dev
-```
-
-The development server uses port `5171`.
-
-Build production NUI files:
-
-```bash
 npm --prefix ui run build
+npm --prefix ui run preview
 ```
 
-The source lives in `ui/`; generated output is written to `html/`. Never edit `html/` directly.
+- Source: `ui/`
+- Generated output: `html/`
+- Development port: `5171`
+- Never edit `html/` directly.
 
-### 6. Use the responsive UI sizing system
+The UI dependencies are pinned to exact direct versions. CI currently resolves a lock before `npm ci`; commit a generated `ui/package-lock.json` after running npm in a trusted local/CI environment for fully persistent transitive locking.
 
-Design screens against a `1440px`-high canvas and convert design measurements with:
+### 6. Responsive sizing
+
+Design against a `1440px`-high canvas:
 
 ```css
 :root {
@@ -141,7 +137,7 @@ Design screens against a `1440px`-high canvas and convert design measurements wi
 }
 ```
 
-Usage:
+Use unitless design-pixel values:
 
 ```css
 .panel {
@@ -151,11 +147,9 @@ Usage:
 }
 ```
 
-The numeric value represents design pixels but remains unitless. Do not append `px` and do not multiply `--scale` a second time.
+Do not append `px` inside the calculation and do not multiply `--scale` again.
 
-### 7. Follow the UI approval pipeline
-
-For a new screen or major redesign:
+### 7. UI approval pipeline
 
 ```text
 Requirements discovery
@@ -169,242 +163,207 @@ Requirements discovery
 → FiveM validation
 ```
 
-Do not start production UI implementation until the wireframe and visual specification are approved, unless the task explicitly combines phases.
+A new screen should not skip wireframe and visual approval unless the user explicitly combines phases and accepts rework risk.
 
-### 8. Validate before release
+### 8. Validate
 
-Before using the resource in production:
+GitHub Actions validates:
 
-- Check every `fxmanifest.lua` path.
-- Confirm server-side authority and payload validation.
-- Test normal, invalid, disconnect, restart, and timeout paths.
-- Build the NUI.
-- Replace the localhost development page with `html/index.html`.
-- Check Escape, NUI focus release, and resource-stop cleanup.
-- Update feature, event, component, database, and requirements records.
-- Run `.ai/checklists/before-release.md`.
+- Node script syntax;
+- repository structure;
+- integration declarations;
+- generated AI registry index;
+- release policy;
+- Svelte UI build;
+- release builder dry run;
+- a real temporary release package.
+
+### 9. Create a production release
+
+```bash
+node scripts/create-release.mjs
+```
+
+Output:
+
+```text
+release/<resource_name>-<version>/
+```
+
+Useful options:
+
+```bash
+node scripts/create-release.mjs --bump minor
+node scripts/create-release.mjs --bump major
+node scripts/create-release.mjs --version 2.0.0
+node scripts/create-release.mjs --name my_resource
+node scripts/create-release.mjs --skip-ui-build
+node scripts/create-release.mjs --dry-run --skip-ui-build
+```
+
+The builder:
+
+- chooses Semantic Versioning automatically;
+- builds UI by default;
+- copies only allowlisted runtime files;
+- patches production `ui_page` and version;
+- excludes AI files, docs, tests, examples, scripts, UI source, and development dependencies;
+- applies explicit secret sanitizers;
+- fails on remaining credential-like values;
+- writes `RELEASE.json` evidence.
+
+See `docs/releasing.md`.
 
 ## Repository structure
 
 ```text
 .
-├── config/                    Editable configuration and config helpers
-│   ├── config.main.lua        Config namespace/foundation; loads first
-│   ├── config.item.lua        Example root domain config
-│   ├── functions/             Shared/client/server config helpers
-│   ├── shared/                Shared-only nested config
-│   ├── client/                Client-only config
-│   ├── server/                Server-only config and secrets
-│   └── shop/                  Example grouped domain config
-├── shared/
-│   ├── lib/                   Reusable utilities safe on both runtimes
-│   └── modules/               Shared domain modules/constants/contracts
-├── client/
-│   ├── modules/               Client behavior
-│   └── main.lua               Client bootstrap; loads last
-├── server/
-│   ├── modules/               Server behavior/business logic/data access
-│   └── main.lua               Server bootstrap; loads last
-├── ui/                        Svelte 5 NUI source
-├── html/                      Generated NUI output; never edit manually
-├── tests/                     Tests and fixtures
-├── docs/
-│   ├── decisions/             Approved architecture decisions
-│   ├── design/                Design system and UI process
-│   └── ui-spec/               Wireframes and screen specifications
-├── .ai/                       Model-neutral AI working system
-├── resource.json              Machine-readable resource summary
-├── AGENTS.md                  Main AI router and working agreement
-└── fxmanifest.lua             FiveM resource and load-order definition
+├── config/                       editable configuration
+├── shared/                       cross-runtime code
+├── client/                       client modules and bootstrap
+├── server/                       server modules and bootstrap
+├── ui/                           Svelte NUI source
+├── html/                         generated NUI output
+├── release/                      generated deployable resources
+├── examples/resources/           runnable examples, not loaded by template
+├── tests/                        tests and executable test plans
+├── scripts/                      validation/release tooling
+├── docs/                         architecture, design, UI specs, release docs
+├── .ai/
+│   ├── rules/                    domain constraints
+│   ├── skills/                   task workflows
+│   ├── memory/                   durable decisions/environment/requirements
+│   ├── work/                     temporary task context packet
+│   ├── integrations/             registered provider profiles
+│   ├── features/                 feature ownership maps
+│   ├── components/               UI component contracts
+│   ├── events/                   event/callback/export contracts
+│   ├── database/                 persistent-data contracts
+│   ├── examples/                 concise on-demand patterns
+│   ├── prompts/                  reusable task entrypoints
+│   ├── checklists/               completion gates
+│   ├── CONTEXT_BUDGET.md         context-loading limits
+│   └── index.json                generated registry path index
+├── integrations.json             selected provider metadata only
+├── release.config.json           runtime allowlist and explicit sanitizers
+├── resource.json                 machine-readable resource metadata
+├── AGENTS.md                     main AI router
+└── fxmanifest.lua                FiveM manifest/load order
 ```
 
-## Config architecture
+## AI context model
 
-The approved config architecture is documented in `docs/decisions/001-config-architecture.md`.
-
-Core rules:
-
-1. `config/config.main.lua` initializes `Config` and loads first.
-2. Small domain configs may use root files such as `config/config.item.lua`.
-3. Large domains may use folders such as `config/shop/24.7_store.lua`.
-4. Runtime-specific values belong under `config/shared`, `config/client`, or `config/server`.
-5. Config helpers belong under `config/functions` and must not contain gameplay business logic.
-6. Root domain files are listed explicitly in `fxmanifest.lua`; nested feature folders may use globs.
-
-## Module architecture
-
-The approved module architecture is documented in `docs/decisions/002-module-architecture.md`.
-
-Core rules:
-
-- `shared/lib`: reusable utilities.
-- `shared/modules`: shared domain definitions and contracts.
-- `client/modules`: client-only behavior.
-- `server/modules`: server-only behavior and authoritative logic.
-- One module should have one clear responsibility.
-- `main.lua` coordinates startup/shutdown and does not become a business-logic container.
-- `fxmanifest.lua` controls load order; do not introduce a custom loader without a proven need.
-
-## Load order
-
-```text
-Shared
-config.main
-→ shared config helpers
-→ explicit root domain configs
-→ nested shared/domain configs
-→ shared libraries
-→ shared modules
-
-Client
-client config helpers
-→ client configs
-→ client modules
-→ client/main.lua
-
-Server
-server config helpers
-→ server configs
-→ server modules
-→ server/main.lua
-```
-
-See `docs/module-loading.md` for details.
-
-## NUI development
-
-The UI source lives under `ui/` and builds into `html/`.
-
-```bash
-npm --prefix ui install
-npm --prefix ui run dev
-npm --prefix ui run build
-npm --prefix ui run preview
-```
-
-Development currently uses Vite port `5171`. Production resources must use the built `html/index.html` path instead of localhost.
-
-Do not edit `html/` directly. Change `ui/` and rebuild.
-
-## Wireframe-first UI workflow
-
-New screens and major redesigns follow:
-
-```text
-Brief
-→ Low-fidelity wireframe
-→ Wireframe review and approval
-→ Visual design
-→ Visual specification approval
-→ Svelte implementation
-→ Browser review
-→ FiveM validation
-→ Refinement
-→ Release
-```
-
-The wireframe resolves structure before visual polish:
-
-- Information hierarchy
-- Layout regions and dimensions
-- Primary user flow
-- Scroll ownership
-- State coverage
-- Keyboard/focus/Escape behavior
-- Representative and worst-case Thai content
-
-Use:
-
-- `.ai/skills/wireframe-ui/SKILL.md`
-- `.ai/skills/design-ui/SKILL.md`
-- `.ai/skills/implement-ui/SKILL.md`
-- `.ai/skills/review-ui/SKILL.md`
-- `.ai/skills/refine-ui/SKILL.md`
-- `docs/ui-spec/TEMPLATE.md`
-
-Do not start final visual styling or production implementation until `Wireframe status` is `Approved`, unless the task explicitly combines phases and accepts the additional rework risk.
-
-## AI development system
-
-Start with `AGENTS.md`. It routes each task to only the context it needs.
+The default packet is intentionally small:
 
 ```text
 AGENTS.md
-→ requirements discovery when needed
-→ relevant domain rules
+→ .ai/CONTEXT_BUDGET.md
 → one primary skill
-→ relevant registry/specification
-→ relevant source files
-→ applicable checklist
+→ 1-4 relevant rules
+→ one active requirement
+→ one feature registry
+→ selected provider profiles only
+→ affected source files
 ```
 
-### AI directories
+Do not load all rules, all providers, all features, delivered history, or generated HTML by default.
 
-- `.ai/rules/`: short constraints for FiveM, Lua, security, UI, design, testing, assets, localization, APIs, and fault handling.
-- `.ai/skills/`: workflows for discovery, resource creation, feature work, UI phases, debugging, security review, and release.
-- `.ai/features/`: feature ownership and file maps.
-- `.ai/components/`: reusable UI component contracts.
-- `.ai/events/`: event/callback/export authority and payload contracts.
-- `.ai/database/`: persistent-data ownership and schema summaries.
-- `.ai/memory/`: approved requirements, stable preferences, and confirmed recurring issues.
-- `.ai/knowledge/`: concise repository-specific technical knowledge.
-- `.ai/prompts/`: short reusable task entrypoints.
-- `.ai/checklists/`: discovery, before-commit, UI-review, and release gates.
-- `.ai/examples/`: approved examples loaded only when relevant.
+For multi-step or cross-model tasks, create:
 
-Adapters such as `CLAUDE.md`, `.github/copilot-instructions.md`, and `.cursor/rules/project.mdc` point back to the same source of truth instead of duplicating rules.
+```text
+.ai/work/current-task.md
+```
 
-## Registries
+from `.ai/work/TEMPLATE.md`. It records the exact files to read, files to avoid, confirmed environment, decisions, acceptance criteria, and validation. Durable decisions must be moved into requirements/registries when the task completes; then the task packet is removed or reset.
 
-Registries reduce repository-wide searching and token usage.
+## Requirements lifecycle
 
-When contracts change, update the relevant registry:
+```text
+.ai/memory/requirements/
+├── active/          Discovery, Proposed, Approved, Implementing
+├── delivered/       completed maintenance/regression context
+├── superseded/      replaced historical decisions
+└── TEMPLATE.md
+```
 
-- Feature: `.ai/features/<feature>.md`
-- Requirements: `.ai/memory/requirements/<feature>.md`
-- UI component: `.ai/components/<Component>.md`
-- Event/callback/export: `.ai/events/<contract>.md`
-- Database table/store: `.ai/database/<store>.md`
+Read active requirements first. Load delivered or superseded files only for maintenance, compatibility, migration, or historical decision analysis.
 
-Templates are included in each directory. Keep records concise and link to source paths.
+## Integrations
 
-## Naming and code style
+Provider workflow:
 
-- Naming conventions: `docs/naming-conventions.md`
-- Code style: `docs/code-style.md`
-- Config decision: `docs/decisions/001-config-architecture.md`
-- Module decision: `docs/decisions/002-module-architecture.md`
+```text
+Register docs once
+→ concise provider profile
+→ select/activate only when required
+→ generate only required operation/runtime adapter
+→ remove unused runtime bridge files
+```
 
-## Creating a new resource
+- Selected providers live only in `integrations.json`.
+- Registered API knowledge lives under `.ai/integrations/providers/`.
+- Sending docs does not authorize runtime integration.
+- Feature code uses stable capability contracts rather than direct provider calls.
+- ESX/QBCore/Qbox/oxmysql/custom adapters are not generated speculatively.
 
-1. Copy or generate a repository from this template.
-2. Rename resource metadata in `fxmanifest.lua` and `resource.json`.
-3. Run requirements discovery and approve the feature brief.
-4. Remove example config domains that are not required.
-5. Define feature boundaries and authority.
-6. Add config files and modules in the approved locations.
-7. Register public contracts and persistent data.
-8. Keep NUI only when the resource needs it.
-9. Add tests and run applicable checklists.
-10. Build NUI and switch to the production `ui_page` before release.
+## AI registry index
 
-For AI-assisted scaffolding, begin with `.ai/skills/discover-requirements/SKILL.md`, then use `.ai/skills/create-resource/SKILL.md` after approval.
+Run after adding/removing registry documents:
 
-## Release gate
+```bash
+node scripts/build-ai-index.mjs
+```
 
-Before release, verify:
+CI verifies:
 
-- Manifest paths and dependencies.
-- Deterministic load order.
-- Server authority and input validation.
-- Resource restart/player-drop cleanup.
-- NUI production build and focus behavior.
-- No localhost URL, secret, raw asset, or debug-only path remains.
-- Public API and migration compatibility.
-- Registries, specifications, requirements, tests, version, and release notes are current.
+```bash
+node scripts/build-ai-index.mjs --check
+```
 
-Use `.ai/checklists/before-release.md` and `.ai/skills/release-resource/SKILL.md`.
+`.ai/index.json` lets an agent locate a feature, event, component, data store, or provider profile without scanning every registry file.
 
-## Current validation limitation
+## Config and module architecture
 
-Repository documentation and structure changes can be reviewed through GitHub, but the UI install/build commands must be executed in a local checkout or CI environment with the required Node dependencies. Any unrun validation must be reported explicitly.
+Approved decisions:
+
+- `docs/decisions/001-config-architecture.md`
+- `docs/decisions/002-module-architecture.md`
+
+Core rules:
+
+- `config.main.lua` initializes Config and loads first;
+- one module has one responsibility;
+- server owns authoritative decisions;
+- `fxmanifest.lua` controls deterministic order;
+- no custom loader without a proven need;
+- inactive adapters/config/dependencies are removed before completion.
+
+## Release security
+
+Release sanitization is explicit, not based on broad key-name guessing.
+
+Use `release.config.json`:
+
+- `jsonSecretPaths`: exact JSON file and object path;
+- `textSanitizers`: exact file, regex, and replacement;
+- `secretValuePatterns`: hard-fail scans for known credential formats;
+- `secretKeyHints`: suspicious-assignment detection only.
+
+If an exact sanitizer is stale or does not match, release creation fails. If a credential-like value remains, release creation fails.
+
+## Important entrypoints
+
+- `AGENTS.md`
+- `.ai/skills/INDEX.md`
+- `.ai/rules/INDEX.md`
+- `.ai/skills/discover-requirements/SKILL.md`
+- `.ai/skills/create-resource/SKILL.md`
+- `.ai/skills/add-feature/SKILL.md`
+- `.ai/skills/add-integration/SKILL.md`
+- `.ai/skills/release-resource/SKILL.md`
+- `.ai/checklists/before-release.md`
+- `docs/releasing.md`
+
+## Validation limitations
+
+FiveM runtime behavior still requires a real test server for native APIs, resource lifecycle, player disconnects, framework objects, external provider behavior, and gameplay interaction. Report any checks that were not executed.
