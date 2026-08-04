@@ -21,14 +21,26 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate script syntax
+        run: |
+          node --check scripts/validate-template.mjs
+          node --check scripts/validate-integrations.mjs
+          node --check scripts/create-release.mjs
+
       - name: Validate template structure
         run: node scripts/validate-template.mjs
 
       - name: Validate integration declarations
         run: node scripts/validate-integrations.mjs
 
+      - name: Validate release policy
+        run: node -e "JSON.parse(require('node:fs').readFileSync('release.config.json', 'utf8'))"
+
       - name: Install UI dependencies
         run: npm install --prefix ui --no-audit --no-fund
 
       - name: Build UI
         run: npm run build --prefix ui
+
+      - name: Dry-run release builder
+        run: node scripts/create-release.mjs --dry-run --skip-ui-build
