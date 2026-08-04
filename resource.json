@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "name": "v.2-Template-FiveM",
+  "type": "fivem-resource-template",
+  "author": "Newwy",
+  "version": "1.0.0",
+  "framework": {
+    "mode": "standalone",
+    "optionalBridges": ["esx", "qbcore"]
+  },
+  "runtime": {
+    "client": true,
+    "server": true,
+    "shared": true,
+    "lua": "5.4"
+  },
+  "ui": {
+    "enabled": true,
+    "source": "ui",
+    "output": "html",
+    "framework": "svelte-5",
+    "devPort": 5171
+  },
+  "database": {
+    "required": false,
+    "provider": null
+  },
+  "registries": {
+    "features": ".ai/features",
+    "components": ".ai/components",
+    "events": ".ai/events",
+    "database": ".ai/database"
+  },
+  "architectureDecisions": [
+    "docs/decisions/001-config-architecture.md",
+    "docs/decisions/002-module-architecture.md"
+  ]
+}
