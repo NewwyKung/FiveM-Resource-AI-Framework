@@ -18,13 +18,13 @@ ensure <resource_name>-<version>
 node scripts/create-release.mjs
 ```
 
-The UI is built by default. Skip the build only when an existing production build under `html/` is intentionally being reused:
+The UI is built by default. Skip the build only when an existing production build under `html/` is intentionally reused:
 
 ```bash
 node scripts/create-release.mjs --skip-ui-build
 ```
 
-Preview the chosen name/version without creating files:
+Preview name/version without creating files:
 
 ```bash
 node scripts/create-release.mjs --dry-run --skip-ui-build
@@ -32,81 +32,96 @@ node scripts/create-release.mjs --dry-run --skip-ui-build
 
 ## Versioning
 
-The release builder uses Semantic Versioning:
+The builder uses Semantic Versioning:
 
 - first release: current version from `resource.json`
-- subsequent release: patch increment by default
-- backward-compatible feature release: `--bump minor`
+- later release: patch increment by default
+- backward-compatible feature: `--bump minor`
 - breaking release: `--bump major`
 - explicit override: `--version 2.3.0`
 
-The output folder, packaged `fxmanifest.lua`, source `fxmanifest.lua`, and `resource.json` are kept on the same version.
+The output folder, packaged `fxmanifest.lua`, source `fxmanifest.lua`, and `resource.json` use the same version.
 
 ## Packaging allowlist
 
-`release.config.json` controls which runtime paths may enter a release. The default package may include:
+`release.config.json` controls runtime paths allowed into a release. The default package may include `fxmanifest.lua`, runtime Lua/config folders, built `html/`, optional runtime assets/data/sql, and `LICENSE`.
 
-- `fxmanifest.lua`
-- `client/`
-- `server/`
-- `shared/`
-- `config/`
-- `html/`
-- optional `locales/`, `stream/`, `data/`, and `sql/`
-- `LICENSE`
-
-It intentionally excludes AI instructions, docs, examples, tests, scripts, UI source, GitHub configuration, development dependencies, source maps, and placeholder files.
-
-When a feature adds a new runtime root, update the allowlist deliberately. Do not copy the repository wholesale.
+It intentionally excludes AI instructions, docs, examples, tests, scripts, UI source, GitHub configuration, development dependencies, source maps, and placeholders. Add new runtime roots deliberately; never copy the repository wholesale.
 
 ## UI behavior
 
-Default release behavior:
-
+Default behavior:
 1. run `npm run build --prefix ui`;
 2. require `html/index.html`;
-3. copy `html/` into the release;
+3. copy `html/`;
 4. patch the packaged manifest to `ui_page 'html/index.html'`;
-5. remove localhost development `ui_page` entries.
+5. remove localhost development entries.
 
-`--skip-ui-build` does not disable UI. It reuses the existing `html/` output and still requires it to exist.
+`--skip-ui-build` reuses existing `html/`; it does not disable UI.
 
-## Config and secrets
+## Explicit config sanitization
 
-The release builder sanitizes configured secret-bearing keys and scans copied files for known webhook/private-key patterns.
+The builder does not erase values merely because a key contains words such as `token`, `password`, or `secret`. Broad key-name cleanup can destroy legitimate gameplay configuration.
 
-Default sensitive key names include:
+Declare exact sanitizers in `release.config.json`:
 
-- webhook
-- token
-- API key/secret
-- client secret
-- password
-- secret
+### JSON path
 
-Real credentials must never be packaged. Public configuration needed by server owners should remain, while sensitive values become `nil`/`null` and must be configured after deployment.
+```json
+{
+  "jsonSecretPaths": [
+    {
+      "file": "config/server.json",
+      "path": "discord.webhook",
+      "replacement": null
+    }
+  ]
+}
+```
 
-The release fails when a known secret pattern remains. Extend `release.config.json` when the project introduces another credential format.
+### Text/Lua pattern
+
+```json
+{
+  "textSanitizers": [
+    {
+      "file": "config/server.lua",
+      "pattern": "Config\\.Webhook\\s*=\\s*['\"][^'\"]+['\"]",
+      "replacement": "Config.Webhook = nil",
+      "flags": "gm"
+    }
+  ]
+}
+```
+
+Configured paths and patterns must exist and match. Otherwise release creation fails, preventing stale cleanup rules from silently doing nothing.
+
+After explicit sanitization, the builder scans for known webhook/private-key values and credential-like assignments. A suspicious value without an approved sanitizer causes a failure and must be reviewed manually.
+
+Never store secrets in AI memory, provider profiles, public examples, or source-controlled release configuration.
 
 ## Output metadata
 
-Each release contains `RELEASE.json` with:
+Each release contains `RELEASE.json` with resource name, version, generation time, UI-build status, and exact fields/patterns sanitized.
 
-- resource name
-- version
-- generation time
-- whether UI build was skipped
-- fields sanitized during packaging
+## Automated integration test
+
+CI builds a real temporary release using:
+
+```bash
+node tests/release/create-release.integration.mjs
+```
+
+It verifies allowlisted output, production manifest patching, explicit secret sanitization, metadata evidence, and exclusion of development/AI folders.
 
 ## Final deployment check
 
-Before distributing or deploying the folder, verify:
-
-- `fxmanifest.lua` references only included files;
+Verify:
+- manifest references only included files;
 - no localhost URL remains;
-- `html/index.html` exists when UI is enabled;
-- required integrations and dependencies are declared;
-- inactive bridges/providers are absent;
-- no real webhook, token, password, or private key is present;
-- resource start/restart and player-drop cleanup were tested;
-- the folder starts from the server without relying on repository-only files.
+- built UI exists when enabled;
+- required integrations/dependencies are declared;
+- inactive bridges are absent;
+- explicit sanitizers and secret scan passed;
+- start/restart/player-drop cleanup was tested;
+- the folder runs without repository-only files.
