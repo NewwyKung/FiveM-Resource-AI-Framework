@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "outputDirectory": "release",
   "include": [
     "fxmanifest.lua",
@@ -22,16 +22,17 @@
     "**/*.map",
     "**/.DS_Store"
   ],
-  "secretKeys": [
+  "jsonSecretPaths": [],
+  "textSanitizers": [],
+  "secretKeyHints": [
     "webhook",
     "webhookUrl",
     "discordWebhook",
-    "token",
     "apiKey",
     "apiSecret",
     "clientSecret",
     "password",
-    "secret"
+    "privateKey"
   ],
   "secretValuePatterns": [
     "https://discord(?:app)?\\.com/api/webhooks/",
