@@ -1,8 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 
 const root = process.cwd();
 const errors = [];
+
+function normalize(relativePath) {
+  return relativePath.replaceAll('\\', '/');
+}
 
 function exists(relativePath) {
   return fs.existsSync(path.join(root, relativePath));
@@ -10,6 +15,19 @@ function exists(relativePath) {
 
 function requirePath(relativePath) {
   if (!exists(relativePath)) errors.push(`Missing required path: ${relativePath}`);
+}
+
+function read(relativePath) {
+  return fs.readFileSync(path.join(root, relativePath), 'utf8');
+}
+
+function readTrackedFiles() {
+  const result = spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8' });
+  if (result.status !== 0) {
+    errors.push(`Unable to inspect tracked files: ${(result.stderr || result.stdout).trim()}`);
+    return [];
+  }
+  return result.stdout.split(/\r?\n/).filter(Boolean).map(normalize);
 }
 
 for (const required of [
@@ -37,8 +55,13 @@ for (const required of [
   'scripts/create-release.mjs',
   'scripts/setup-dev-resource.ps1',
   'release.config.json',
-  'ui/src/app.css',
-  'html/.gitkeep',
+  'resource/fxmanifest.lua',
+  'resource/config/config.main.lua',
+  'resource/client/main.lua',
+  'resource/server/main.lua',
+  'resource/ui/src/app.css',
+  'resource/ui/package-lock.json',
+  'resource/html/.gitkeep',
   'release/.gitkeep',
 ]) requirePath(required);
 
@@ -46,66 +69,139 @@ const forbiddenPaths = [
   'Development',
   'web',
   'fivem-development.skill',
-  'config/client',
-  'config/server',
-  'config/shared',
-  'config/config.integrations.lua',
-  'shared/modules/integrations.lua',
-  'ui/src/lib/ComponentShowcase.svelte',
-  'ui/src/lib/tokens.css',
+  'client',
+  'server',
+  'shared',
+  'config',
+  'ui',
+  'html',
+  'fxmanifest.lua',
+  'resource/config/client',
+  'resource/config/server',
+  'resource/config/shared',
+  'resource/config/functions',
+  'resource/config/config.integrations.lua',
+  'resource/shared/modules/integrations.lua',
+  'resource/ui/src/provider/Visible.svelte',
+  `resource/ui/src/lib/${['Component', 'Showcase'].join('')}.svelte`,
+  'resource/ui/src/lib/tokens.css',
+  '.github/workflows/validate.yml',
 ];
 
 for (const file of forbiddenPaths) {
-  if (exists(file)) errors.push(`Legacy, redundant, or inactive path must not exist: ${file}`);
+  if (exists(file)) errors.push(`Legacy, duplicate, generated, or inactive path must not exist: ${file}`);
 }
 
-if (exists('html')) {
-  const committedOutput = fs.readdirSync(path.join(root, 'html')).filter((name) => name !== '.gitkeep');
-  if (committedOutput.length > 0) {
-    errors.push(`Generated html output must not be committed: ${committedOutput.join(', ')}`);
+const trackedFiles = readTrackedFiles();
+const generatedHtml = trackedFiles.filter((file) => file.startsWith('resource/html/') && file !== 'resource/html/.gitkeep');
+if (generatedHtml.length > 0) errors.push(`Generated resource/html output is tracked: ${generatedHtml.join(', ')}`);
+
+const generatedReleases = trackedFiles.filter((file) => file.startsWith('release/') && file !== 'release/.gitkeep');
+if (generatedReleases.length > 0) errors.push(`Generated release output is tracked: ${generatedReleases.join(', ')}`);
+
+const misplacedSvelte = trackedFiles.filter((file) => file.endsWith('.svelte') && !file.startsWith('resource/ui/'));
+if (misplacedSvelte.length > 0) errors.push(`Svelte source exists outside resource/ui: ${misplacedSvelte.join(', ')}`);
+
+if (exists('resource/ui/src/app.css')) {
+  const css = read('resource/ui/src/app.css');
+  const tokens = [
+    '--scale: 1',
+    '--base-screen-height: 1440',
+    '--px-to-vh: calc(1vh / var(--base-screen-height) * 100 * var(--scale))',
+  ];
+  for (const token of tokens) {
+    if (!css.includes(token)) errors.push(`resource/ui/src/app.css is missing ${token}`);
+  }
+  if (/var\(--px-to-vh\)\s*\*\s*var\(--scale\)|var\(--scale\)\s*\*\s*var\(--px-to-vh\)/.test(css)) {
+    errors.push('resource/ui/src/app.css multiplies --scale after --px-to-vh already applied it.');
   }
 }
 
-if (exists('ui/src/app.css')) {
-  const css = fs.readFileSync(path.join(root, 'ui/src/app.css'), 'utf8');
-  for (const token of ['--scale:', '--base-screen-height: 1440', '--px-to-vh:']) {
-    if (!css.includes(token)) errors.push(`ui/src/app.css is missing ${token}`);
+if (exists('resource/fxmanifest.lua')) {
+  const manifest = read('resource/fxmanifest.lua');
+  if (!/^\s*ui_page\s+['"]html\/index\.html['"]\s*$/m.test(manifest)) {
+    errors.push('resource/fxmanifest.lua must use production ui_page html/index.html.');
+  }
+  if (/https?:\/\/localhost/i.test(manifest)) errors.push('resource/fxmanifest.lua must not contain a localhost ui_page.');
+  if (manifest.includes('config/functions/')) errors.push('resource/fxmanifest.lua still references config/functions/.');
+
+  const entries = [...manifest.matchAll(/^\s*['"]([^'"]+)['"],?\s*$/gm)].map((match) => normalize(match[1]));
+  for (const entry of entries) {
+    if (entry.startsWith('resource/') || entry.startsWith('/') || entry.includes('../')) {
+      errors.push(`Manifest path must stay relative to resource/: ${entry}`);
+      continue;
+    }
+    if (entry.startsWith('html/')) continue;
+    const wildcardIndex = entry.search(/[?*[]/);
+    const base = (wildcardIndex === -1 ? entry : entry.slice(0, wildcardIndex)).replace(/\/$/, '');
+    if (base && !exists(path.posix.join('resource', base))) errors.push(`Manifest path does not exist: ${entry}`);
+  }
+}
+
+if (exists('resource/ui/vite.config.js')) {
+  const vite = read('resource/ui/vite.config.js');
+  if (!/outDir:\s*['"]\.\.\/html['"]/.test(vite)) errors.push('resource/ui/vite.config.js must build to ../html.');
+  if (!/emptyOutDir:\s*true/.test(vite)) errors.push('resource/ui/vite.config.js must clear stale generated output.');
+  if (!/base:\s*['"]\.\/['"]/.test(vite)) errors.push('resource/ui/vite.config.js must use relative asset paths.');
+}
+
+if (exists('.claude/launch.json')) {
+  const launch = read('.claude/launch.json');
+  if (!launch.includes('resource/ui')) errors.push('.claude/launch.json must run the UI from resource/ui.');
+}
+
+if (exists('scripts/setup-dev-resource.ps1')) {
+  const junction = read('scripts/setup-dev-resource.ps1');
+  for (const token of ["Join-Path $repoRoot 'resource'", "-Target $resourceRoot", "resourceRoot 'fxmanifest.lua'", 'ReparsePoint']) {
+    if (!junction.includes(token)) errors.push(`scripts/setup-dev-resource.ps1 is missing safety/target logic: ${token}`);
   }
 }
 
 if (exists('release.config.json')) {
-  const policy = JSON.parse(fs.readFileSync(path.join(root, 'release.config.json'), 'utf8'));
-  if (policy.secretKeys) errors.push('release.config.json must not use broad secretKeys auto-sanitization.');
-  if (!Array.isArray(policy.jsonSecretPaths) || !Array.isArray(policy.textSanitizers)) {
-    errors.push('release.config.json must define explicit jsonSecretPaths and textSanitizers arrays.');
+  try {
+    const policy = JSON.parse(read('release.config.json'));
+    if (policy.sourceDirectory !== 'resource') errors.push('release.config.json sourceDirectory must be resource.');
+    if (policy.secretKeys) errors.push('release.config.json must not use broad secretKeys auto-sanitization.');
+    if (!Array.isArray(policy.jsonSecretPaths) || !Array.isArray(policy.textSanitizers)) {
+      errors.push('release.config.json must define explicit jsonSecretPaths and textSanitizers arrays.');
+    }
+    for (const requiredInclude of ['fxmanifest.lua', 'client', 'server', 'shared', 'config']) {
+      if (!policy.include?.includes(requiredInclude)) errors.push(`release.config.json is missing include: ${requiredInclude}`);
+    }
+    if (policy.include?.some((entry) => entry === 'resource' || entry === 'ui' || entry.startsWith('resource/'))) {
+      errors.push('release.config.json must include resource contents, not resource/ or UI source.');
+    }
+  } catch (error) {
+    errors.push(`release.config.json is invalid JSON: ${error.message}`);
   }
 }
 
 const staleTerms = [
-  'Development/Svelte',
-  'localhost:3301',
-  'OVERLORD UI COMPONENTS',
-  'v.2-Template-FiveM',
+  ['Development', 'Svelte'].join('/'),
+  ['Development', 'Svelte'].join('\\'),
+  ['OVERLORD UI', 'COMPONENTS'].join(' '),
+  ['Component', 'Showcase'].join(''),
+  ['localhost', '3301'].join(':'),
+  ['v.2', 'Template-FiveM'].join('-'),
 ];
-const scanRoots = ['AGENTS.md', '.ai', 'docs', 'scripts', 'ui', 'fxmanifest.lua'];
+const historicalFiles = new Set([
+  'TODO.md',
+  'CHANGELOG.md',
+  'docs/resource-restructure-audit.md',
+  '.ai/memory/requirements/active/resource-restructure.md',
+]);
 const allowedExtensions = new Set(['.md', '.json', '.js', '.mjs', '.ts', '.svelte', '.css', '.lua', '.ps1', '.html']);
 
-function scan(relativePath) {
-  const absolutePath = path.join(root, relativePath);
-  if (!fs.existsSync(absolutePath)) return;
-  const stat = fs.statSync(absolutePath);
-  if (stat.isDirectory()) {
-    for (const name of fs.readdirSync(absolutePath)) scan(path.join(relativePath, name));
-    return;
-  }
-  if (!allowedExtensions.has(path.extname(relativePath))) return;
-  const content = fs.readFileSync(absolutePath, 'utf8');
+for (const relativePath of trackedFiles) {
+  if (historicalFiles.has(relativePath) || relativePath === 'scripts/validate-template.mjs') continue;
+  if (relativePath.startsWith('.ai/memory/requirements/delivered/')) continue;
+  if (!exists(relativePath)) continue;
+  if (!allowedExtensions.has(path.extname(relativePath))) continue;
+  const content = read(relativePath);
   for (const term of staleTerms) {
     if (content.includes(term)) errors.push(`Stale reference '${term}' found in ${relativePath}`);
   }
 }
-
-for (const scanRoot of scanRoots) scan(scanRoot);
 
 if (errors.length) {
   for (const error of errors) console.error(`[template] ${error}`);

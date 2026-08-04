@@ -51,7 +51,11 @@ if (Test-Path -LiteralPath $junctionPath) {
         throw "Refusing to remove a real directory: $junctionPath"
     }
 
-    Remove-Item -LiteralPath $junctionPath -Force
+    if ($item.PSIsContainer) {
+        [IO.Directory]::Delete($junctionPath)
+    } else {
+        [IO.File]::Delete($junctionPath)
+    }
 }
 
 New-Item -ItemType Junction -Path $junctionPath -Target $resourceRoot | Out-Null
