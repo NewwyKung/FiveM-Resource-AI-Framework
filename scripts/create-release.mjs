@@ -16,7 +16,10 @@ const readJson = (file) => JSON.parse(fs.readFileSync(path.join(root, file), 'ut
 const metadata = readJson('resource.json');
 const policy = readJson('release.config.json');
 const resourceName = String(args.get('--name') || metadata.name || 'resource').trim().replace(/[^A-Za-z0-9_-]+/g, '-');
+const resourceRoot = path.join(root, policy.sourceDirectory || 'resource');
 const outputRoot = path.join(root, policy.outputDirectory || 'release');
+const uiSource = path.join(root, metadata.ui?.source || 'resource/ui');
+const uiOutput = path.join(root, metadata.ui?.output || 'resource/html');
 const skipUiBuild = args.has('--skip-ui-build');
 const dryRun = args.has('--dry-run');
 
@@ -26,7 +29,6 @@ function parseVersion(value) {
   return match.slice(1).map(Number);
 }
 const formatVersion = (parts) => parts.join('.');
-const compareVersions = (a, b) => a.find((value, index) => value !== b[index]) - b[a.findIndex((value, index) => value !== b[index])] || 0;
 function bumpVersion([major, minor, patch], type) {
   if (type === 'major') return [major + 1, 0, 0];
   if (type === 'minor') return [major, minor + 1, 0];
@@ -139,17 +141,18 @@ function scanSecrets() {
   if (findings.length) throw new Error(`Secret scan failed:\n${findings.join('\n')}`);
 }
 
-if (!skipUiBuild && metadata.ui?.enabled !== false) run('npm', ['run', 'build', '--prefix', 'ui']);
-if (metadata.ui?.enabled !== false && !fs.existsSync(path.join(root, 'html/index.html'))) throw new Error('html/index.html is missing. Build the UI or provide an existing production build.');
+if (!fs.existsSync(path.join(resourceRoot, 'fxmanifest.lua'))) throw new Error(`Resource source is missing fxmanifest.lua: ${path.relative(root, resourceRoot)}`);
 if (fs.existsSync(destination)) throw new Error(`Release already exists: ${path.relative(root, destination)}`);
 if (dryRun) {
-  console.log(JSON.stringify({ releaseName, version, destination: path.relative(root, destination), skipUiBuild }, null, 2));
+  console.log(JSON.stringify({ releaseName, version, sourceDirectory: path.relative(root, resourceRoot), destination: path.relative(root, destination), skipUiBuild }, null, 2));
   process.exit(0);
 }
+if (!skipUiBuild && metadata.ui?.enabled !== false) run('npm', ['run', 'build', '--prefix', path.relative(root, uiSource)]);
+if (metadata.ui?.enabled !== false && !fs.existsSync(path.join(uiOutput, 'index.html'))) throw new Error(`${path.relative(root, uiOutput)}/index.html is missing. Build the UI or provide an existing production build.`);
 
 fs.mkdirSync(destination, { recursive: true });
 for (const include of policy.include || []) {
-  const source = path.join(root, include);
+  const source = path.join(resourceRoot, include);
   if (fs.existsSync(source)) copyEntry(source, path.join(destination, include), include);
 }
 const manifestPath = path.join(destination, 'fxmanifest.lua');
@@ -162,6 +165,6 @@ fs.writeFileSync(path.join(destination, 'RELEASE.json'), `${JSON.stringify({ res
 metadata.name = resourceName;
 metadata.version = version;
 fs.writeFileSync(path.join(root, 'resource.json'), `${JSON.stringify(metadata, null, 2)}\n`);
-const sourceManifestPath = path.join(root, 'fxmanifest.lua');
+const sourceManifestPath = path.join(resourceRoot, 'fxmanifest.lua');
 fs.writeFileSync(sourceManifestPath, fs.readFileSync(sourceManifestPath, 'utf8').replace(/^version\s+['"][^'"]+['"]$/m, `version '${version}'`));
 console.log(`Release created: ${path.relative(root, destination)}`);

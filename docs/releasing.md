@@ -18,7 +18,7 @@ ensure <resource_name>-<version>
 node scripts/create-release.mjs
 ```
 
-The UI is built by default. Skip the build only when an existing production build under `html/` is intentionally reused:
+The UI is built by default. Skip the build only when an existing production build under `resource/html/` is intentionally reused:
 
 ```bash
 node scripts/create-release.mjs --skip-ui-build
@@ -40,24 +40,24 @@ The builder uses Semantic Versioning:
 - breaking release: `--bump major`
 - explicit override: `--version 2.3.0`
 
-The output folder, packaged `fxmanifest.lua`, source `fxmanifest.lua`, and `resource.json` use the same version.
+The output folder, packaged `fxmanifest.lua`, source `resource/fxmanifest.lua`, and `resource.json` use the same version.
 
 ## Packaging allowlist
 
-`release.config.json` controls runtime paths allowed into a release. The default package may include `fxmanifest.lua`, runtime Lua/config folders, built `html/`, optional runtime assets/data/sql, and `LICENSE`.
+`release.config.json` controls which paths under `resource/` are allowed into a release. The builder copies those contents directly to the release root, so it may include `fxmanifest.lua`, runtime Lua/config folders, built `html/`, and optional runtime assets/data/sql without nesting them under `resource/`.
 
 It intentionally excludes AI instructions, docs, examples, tests, scripts, UI source, GitHub configuration, development dependencies, source maps, and placeholders. Add new runtime roots deliberately; never copy the repository wholesale.
 
 ## UI behavior
 
 Default behavior:
-1. run `npm run build --prefix ui`;
-2. require `html/index.html`;
-3. copy `html/`;
+1. run `npm run build --prefix resource/ui`;
+2. require `resource/html/index.html`;
+3. copy `resource/html/` to release `html/`;
 4. patch the packaged manifest to `ui_page 'html/index.html'`;
 5. remove localhost development entries.
 
-`--skip-ui-build` reuses existing `html/`; it does not disable UI.
+`--skip-ui-build` reuses existing `resource/html/`; it does not disable UI.
 
 ## Explicit config sanitization
 
@@ -106,7 +106,7 @@ Each release contains `RELEASE.json` with resource name, version, generation tim
 
 ## Automated integration test
 
-CI builds a real temporary release using:
+The local integration test builds a real temporary release using:
 
 ```bash
 node tests/release/create-release.integration.mjs
