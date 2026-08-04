@@ -1,24 +1,10 @@
 # Integration Index
 
-Use this index to distinguish providers that are only documented from providers selected by the current resource.
-
-## Selected providers
-
-Read `integrations.json` for the source of truth.
-
-| Capability | Runtime contract | Selected provider |
-|---|---|---|
-| Framework | provider-defined | `standalone` |
-| Database | server | `none` |
-| Inventory | client/server | `none` |
-| Notify | client/server | `none` |
-| Logger | client/server | `none` |
-| Progress | client | `none` |
-| Target | client | `none` |
+Provider selection lives only in `/integrations.json`. Do not duplicate selected provider values in this file.
 
 ## Registered providers
 
-Provider profiles under `.ai/integrations/providers/` may be registered for future use without being selected. Add one concise row per provider only after its profile exists.
+Provider profiles under `.ai/integrations/providers/` may be registered for future use without being selected. Add one concise row only after its profile exists.
 
 | Capability | Provider | Resource | Status | Profile |
 |---|---|---|---|---|
