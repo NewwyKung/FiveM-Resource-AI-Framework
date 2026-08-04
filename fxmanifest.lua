@@ -17,6 +17,7 @@ shared_scripts {
     'config/functions/config.functions.shared.lua',
 
     -- Root-level domain configs are listed explicitly for deterministic order.
+    'config/config.integrations.lua',
     'config/config.item.lua',
 
     -- Nested shared configs can be grouped by feature/domain.
