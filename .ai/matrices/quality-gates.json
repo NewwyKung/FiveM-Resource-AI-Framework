@@ -1,0 +1,42 @@
+{
+  "networkOperation": {
+    "rules": ["source validation", "payload bounds", "stable errors"],
+    "tests": ["normal", "invalid payload", "rate or duplicate behavior"]
+  },
+  "economicMutation": {
+    "rules": ["server authority", "authoritative re-read", "audit"],
+    "tests": ["spoofed amount", "insufficient state", "duplicate request", "disconnect"]
+  },
+  "persistentMutation": {
+    "rules": ["repository boundary", "transaction", "rollback behavior"],
+    "tests": ["provider unavailable", "transaction failure", "restart"]
+  },
+  "retainedPlayerState": {
+    "rules": ["bounded lifetime", "playerDropped cleanup", "resource stop cleanup"],
+    "tests": ["disconnect", "resource restart"]
+  },
+  "entityOperation": {
+    "rules": ["existence check", "network ownership", "deletion/migration handling"],
+    "tests": ["missing entity", "invalid network id"]
+  },
+  "nui": {
+    "rules": ["message schema", "callback resolution", "focus ownership", "listener disposal"],
+    "tests": ["browser mock", "malformed message", "escape", "resource stop", "production build"]
+  },
+  "externalProvider": {
+    "rules": ["selected profile only", "availability check", "stable internal errors"],
+    "tests": ["resource missing", "unsupported option", "invalid response"]
+  },
+  "localization": {
+    "rules": ["fallback", "key parity", "placeholder parity"],
+    "tests": ["missing key", "long Thai text", "fallback locale"]
+  },
+  "assets": {
+    "rules": ["runtime allowlist", "size budget", "referenced output only"],
+    "tests": ["missing asset", "oversized asset", "source asset excluded"]
+  },
+  "publicApi": {
+    "rules": ["documented schema", "stable return shape", "compatibility status"],
+    "tests": ["invalid input", "stable errors", "backward compatibility"]
+  }
+}
