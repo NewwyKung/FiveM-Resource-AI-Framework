@@ -9,6 +9,7 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 3. Approved `docs/ui-spec/` files and `docs/design/design-system.md` for UI decisions.
 4. `.ai/rules/` for domain constraints.
 5. `.ai/skills/` for task workflows.
+6. Registries under `.ai/features/`, `.ai/components/`, `.ai/events/`, and `.ai/database/` for navigation and contracts.
 
 ## Repository map
 - `config/`: editable configuration and config helpers.
@@ -17,9 +18,12 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `server/`: server-only modules and bootstrap.
 - `ui/`: Svelte NUI source.
 - `html/`: generated NUI output; do not edit directly.
-- `docs/design/`: persistent design-system, pipeline, sources, and review guidance.
-- `docs/ui-spec/`: screen-level UI specifications.
-- `docs/`: architecture decisions and project references.
+- `docs/design/`: design system, pipeline, sources, and review guidance.
+- `docs/ui-spec/`: screen-level wireframes and visual specifications.
+- `.ai/memory/`: concise durable project context.
+- `.ai/knowledge/`: repository-specific technical knowledge.
+- `.ai/prompts/`: short task entrypoints.
+- `.ai/checklists/`: completion gates.
 - `tests/`: test code and fixtures.
 
 ## Context routing
@@ -34,13 +38,14 @@ Read only what the task needs:
 - Assets: `.ai/rules/assets.md`
 - Testing/release: `.ai/rules/testing.md`
 
-Then read one matching skill from `.ai/skills/INDEX.md`.
+Read the relevant feature/contract registry when one exists, then read one matching skill from `.ai/skills/INDEX.md`.
 
 ## UI workflow routing
-- New screen or major redesign: `design-ui` → approved screen spec → `implement-ui` → `review-ui` → `refine-ui`.
-- Existing approved design: start at `implement-ui`.
+- New screen or major redesign: `wireframe-ui` → wireframe approval → `design-ui` → visual approval → `implement-ui` → `review-ui` → `refine-ui`.
+- Existing approved wireframe needing visual direction: start at `design-ui`.
+- Existing approved visual specification: start at `implement-ui`.
 - Existing implementation audit: start at `review-ui`.
-- Small NUI transport/integration changes: use `create-nui` without loading the full design pipeline unless visuals change.
+- Small NUI transport/integration changes: use `create-nui` unless visuals change.
 
 ## Core invariants
 - Work on the requested branch; never assume the default branch.
@@ -53,16 +58,18 @@ Then read one matching skill from `.ai/skills/INDEX.md`.
 - Reuse existing modules/components before creating new ones.
 - Do not add dependencies without a concrete need.
 - Preserve backward compatibility for public APIs unless a breaking change is explicitly approved.
+- Keep feature, component, event, database, and resource metadata current when contracts change.
 - Do not silently invent design tokens or override an approved screen specification.
 - Do not replace interactive UI with a full-screen image or bake dynamic/localized text into raster assets.
 
 ## Standard workflow
-1. Inspect relevant files, decisions, specifications, and existing patterns.
-2. Identify runtime boundaries, design constraints, and risks.
+1. Inspect relevant files, registries, decisions, specifications, and existing patterns.
+2. Identify runtime boundaries, authority, design constraints, and risks.
 3. State only material assumptions.
 4. Implement the smallest coherent change.
-5. Validate the affected paths and representative states.
-6. Summarize changed files, validation, evidence, and remaining risks.
+5. Validate affected paths and representative states.
+6. Run the applicable checklist.
+7. Summarize changed files, validation, evidence, and remaining risks.
 
 ## Completion criteria
-A task is incomplete when applicable checks were not run, representative states were not considered, or generated/runtime references are stale. Be explicit about checks that could not be executed.
+A task is incomplete when applicable checks were not run, registries/specifications are stale, representative states were not considered, or generated/runtime references are stale. Be explicit about checks that could not be executed.
