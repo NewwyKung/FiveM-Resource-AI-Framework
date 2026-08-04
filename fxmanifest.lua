@@ -6,7 +6,7 @@ description ''
 lua54 'yes'
 
 -- ui_page 'html/index.html'
-ui_page 'http://localhost:3301/'
+ui_page 'http://localhost:5171/'
 
 client_scripts {
     'client/main.lua',
