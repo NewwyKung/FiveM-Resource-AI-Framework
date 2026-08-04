@@ -44,6 +44,13 @@ jobs:
       - name: Resolve pinned UI dependency lock
         run: npm install --prefix ui --package-lock-only --ignore-scripts --no-audit --no-fund
 
+      - name: Upload generated UI lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-package-lock
+          path: ui/package-lock.json
+          if-no-files-found: error
+
       - name: Install UI dependencies
         run: npm ci --prefix ui --no-audit --no-fund
 
