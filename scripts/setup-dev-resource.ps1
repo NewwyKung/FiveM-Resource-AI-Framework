@@ -7,43 +7,62 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+$resourceRoot = Join-Path $repoRoot 'resource'
+
+if (-not (Test-Path -LiteralPath (Join-Path $resourceRoot 'fxmanifest.lua') -PathType Leaf)) {
+    throw "Invalid resource root: fxmanifest.lua was not found in $resourceRoot"
+}
 
 if ([string]::IsNullOrWhiteSpace($ResourcesPath)) {
-    $ResourcesPath = Read-Host 'FXServer resources folder อยู่ที่ไหน? เช่น D:\FXServer\server-data\resources\[local]'
+    $ResourcesPath = Read-Host 'FXServer resources/category folder (for example D:\FXServer\server-data\resources\[local])'
 }
 
 if (-not (Test-Path -LiteralPath $ResourcesPath -PathType Container)) {
-    throw "ไม่พบ resources folder: $ResourcesPath"
+    throw "Resources folder was not found: $ResourcesPath"
 }
+
+$resourcesRoot = (Resolve-Path -LiteralPath $ResourcesPath).Path
 
 if ([string]::IsNullOrWhiteSpace($ResourceName)) {
     $defaultName = Split-Path $repoRoot -Leaf
-    $ResourceName = Read-Host "ชื่อ resource สำหรับ junction (Enter เพื่อใช้ '$defaultName')"
-    if ([string]::IsNullOrWhiteSpace($ResourceName)) { $ResourceName = $defaultName }
+    $ResourceName = Read-Host "Resource junction name (Enter to use '$defaultName')"
+    if ([string]::IsNullOrWhiteSpace($ResourceName)) {
+        $ResourceName = $defaultName
+    }
 }
 
-$junctionPath = Join-Path $ResourcesPath $ResourceName
+$invalidNameCharacters = [IO.Path]::GetInvalidFileNameChars()
+$hasInvalidCharacter = $ResourceName.IndexOfAny($invalidNameCharacters) -ge 0
+if ($hasInvalidCharacter -or $ResourceName -in '.', '..' -or [IO.Path]::GetFileName($ResourceName) -ne $ResourceName) {
+    throw 'ResourceName must be a single valid directory name.'
+}
+
+$junctionPath = Join-Path $resourcesRoot $ResourceName
 
 if (Test-Path -LiteralPath $junctionPath) {
     $item = Get-Item -LiteralPath $junctionPath -Force
     $isReparsePoint = ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0
 
     if (-not $Force) {
-        throw "ปลายทางมีอยู่แล้ว: $junctionPath`nใช้ -Force เฉพาะเมื่อยืนยันว่าต้องการแทน junction เดิม"
+        throw "Destination already exists: $junctionPath. Use -Force only to replace an existing junction or reparse point."
     }
 
     if (-not $isReparsePoint) {
-        throw "ไม่ลบ directory จริงเพื่อความปลอดภัย: $junctionPath"
+        throw "Refusing to remove a real directory: $junctionPath"
     }
 
-    Remove-Item -LiteralPath $junctionPath -Force
+    if ($item.PSIsContainer) {
+        [IO.Directory]::Delete($junctionPath)
+    } else {
+        [IO.File]::Delete($junctionPath)
+    }
 }
 
-New-Item -ItemType Junction -Path $junctionPath -Target $repoRoot | Out-Null
+New-Item -ItemType Junction -Path $junctionPath -Target $resourceRoot | Out-Null
 
 Write-Host ''
-Write-Host 'สร้าง junction สำเร็จ' -ForegroundColor Green
+Write-Host 'Development junction created.' -ForegroundColor Green
 Write-Host "Resource: $junctionPath"
-Write-Host "Source:   $repoRoot"
+Write-Host "Source:   $resourceRoot"
 Write-Host ''
-Write-Host "เพิ่มบรรทัดนี้ใน server.cfg: ensure $ResourceName"
+Write-Host "Add this line to server.cfg: ensure $ResourceName"

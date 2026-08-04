@@ -14,7 +14,7 @@ Use this pack only when the approved resource persists data in a database.
 ## Structure
 
 ```text
-server/database/migration.lua
+resource/server/database/migration.lua
 sql/migrations/001_initial.sql
 sql/migrations/002_add_index.sql
 ```

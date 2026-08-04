@@ -16,8 +16,8 @@
   },
   "ui": {
     "enabled": true,
-    "source": "ui",
-    "output": "html",
+    "source": "resource/ui",
+    "output": "resource/html",
     "framework": "svelte-5",
     "devPort": 5171
   },
@@ -41,6 +41,7 @@
   },
   "architectureDecisions": [
     "docs/decisions/001-config-architecture.md",
-    "docs/decisions/002-module-architecture.md"
+    "docs/decisions/002-module-architecture.md",
+    "docs/decisions/003-integration-architecture.md"
   ]
 }

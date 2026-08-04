@@ -6,10 +6,10 @@ Activate this capability only when approved requirements need more than one loca
 
 - `locales/en.lua`
 - `locales/th.lua`
-- `shared/modules/i18n.lua`
+- `resource/shared/modules/i18n.lua`
 - the NUI locale store/translator when the UI displays translated text
 
-Add only copied runtime files to `fxmanifest.lua`.
+Add only copied runtime files to `resource/fxmanifest.lua`.
 
 ## Contract
 

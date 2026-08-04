@@ -8,5 +8,5 @@
 - Client input is validated by the server where required.
 - Cleanup paths are handled.
 - Applicable tests/checks were run.
-- Generated `html/` was not edited manually.
+- Generated `resource/html/` was not edited manually.
 - Unrun checks and remaining risks are reported.

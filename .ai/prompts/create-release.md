@@ -18,4 +18,4 @@ Default behavior:
 - run the secret scan and validation;
 - report the final output path and evidence.
 
-Only skip the UI build when the user explicitly requests it. In that case, verify the existing `html/` build before packaging.
+Only skip the UI build when the user explicitly requests it. In that case, verify the existing `resource/html/` build before packaging.

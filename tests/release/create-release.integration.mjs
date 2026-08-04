@@ -12,13 +12,15 @@ function fail(message) {
 }
 function copyFilter(entry) {
   const relative = path.relative(source, entry).replaceAll('\\', '/');
-  return !relative.startsWith('.git') && !relative.startsWith('release/') && !relative.startsWith('ui/node_modules');
+  return !relative.startsWith('.git') && !relative.startsWith('release/') && !relative.startsWith('resource/ui/node_modules');
 }
 
 try {
   fs.cpSync(source, temp, { recursive: true, filter: copyFilter });
-  fs.mkdirSync(path.join(temp, 'config'), { recursive: true });
-  fs.writeFileSync(path.join(temp, 'config/release-test.json'), JSON.stringify({ service: { webhook: 'https://discord.com/api/webhooks/test/secret' } }, null, 2));
+  fs.mkdirSync(path.join(temp, 'resource/config'), { recursive: true });
+  fs.mkdirSync(path.join(temp, 'resource/html'), { recursive: true });
+  fs.writeFileSync(path.join(temp, 'resource/config/release-test.json'), JSON.stringify({ service: { webhook: 'https://discord.com/api/webhooks/test/secret' } }, null, 2));
+  fs.writeFileSync(path.join(temp, 'resource/html/index.html'), '<!doctype html><title>release test</title>');
 
   const policyPath = path.join(temp, 'release.config.json');
   const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
@@ -32,7 +34,7 @@ try {
   const required = ['fxmanifest.lua', 'RELEASE.json', 'config/release-test.json'];
   for (const file of required) if (!fs.existsSync(path.join(release, file))) fail(`missing ${file}`);
 
-  for (const forbidden of ['.ai', '.github', 'docs', 'examples', 'tests', 'scripts', 'ui']) {
+  for (const forbidden of ['.ai', '.github', 'docs', 'examples', 'tests', 'scripts', 'resource', 'ui']) {
     if (fs.existsSync(path.join(release, forbidden))) fail(`forbidden path included: ${forbidden}`);
   }
 
@@ -46,6 +48,12 @@ try {
 
   const metadata = JSON.parse(fs.readFileSync(path.join(release, 'RELEASE.json'), 'utf8'));
   if (!metadata.sanitizedFields.includes('config/release-test.json:service.webhook')) fail('sanitization evidence is missing');
+  if (!metadata.uiBuildSkipped) fail('release metadata did not record UI build reuse');
+
+  const sourceManifest = fs.readFileSync(path.join(temp, 'resource/fxmanifest.lua'), 'utf8');
+  const sourceMetadata = JSON.parse(fs.readFileSync(path.join(temp, 'resource.json'), 'utf8'));
+  if (!sourceManifest.includes("version '0.0.1'")) fail('source manifest version was not synchronized');
+  if (sourceMetadata.version !== '0.0.1') fail('resource metadata version was not synchronized');
 
   if (!process.exitCode) console.log('[release-test] release package validation passed.');
 } catch (error) {

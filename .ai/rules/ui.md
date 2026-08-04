@@ -1,6 +1,6 @@
 # NUI / Svelte Rules
 
-- Source lives in `ui/`; `html/` is generated output.
+- Source lives in `resource/ui/`; `resource/html/` is generated output.
 - Support browser development and FiveM CEF without duplicating feature logic.
 - Isolate NUI transport in bridge utilities; presentation components must not call raw endpoints directly.
 - Resolve the real resource name with `GetParentResourceName()` in FiveM.
@@ -15,7 +15,7 @@
 
 ## Canonical responsive sizing
 
-Use the global responsive conversion defined in `ui/src/app.css`:
+Use the global responsive conversion defined in `resource/ui/src/app.css`:
 
 ```css
 :root {

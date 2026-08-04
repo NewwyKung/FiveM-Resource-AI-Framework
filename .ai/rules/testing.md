@@ -10,7 +10,7 @@ Apply the smallest useful layer:
 
 Before release:
 - verify manifest paths and dependencies
-- build NUI from `ui/`
+- build NUI from `resource/ui/`
 - confirm production `ui_page`
 - check cleanup on resource stop/player drop
 - check no secrets are shipped client-side

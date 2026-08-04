@@ -1,7 +1,7 @@
 # FiveM Rules
 
-- Keep `client/`, `server/`, `shared/`, `config/`, and `ui/` responsibilities separate.
-- Use `fxmanifest.lua` as the visible load-order authority.
+- Keep `resource/client/`, `resource/server/`, `resource/shared/`, `resource/config/`, and `resource/ui/` responsibilities separate.
+- Use `resource/fxmanifest.lua` as the visible load-order authority.
 - Load foundations before modules and bootstrap `main.lua` last.
 - Use shared scripts only for code/config safe to send to clients.
 - Namespace network events, callbacks, state keys, and exports by resource.

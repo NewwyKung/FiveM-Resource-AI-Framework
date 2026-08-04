@@ -10,10 +10,10 @@ discovery → wireframe approval → visual approval → implementation → revi
 
 ## Minimum boundaries
 
-- `client/modules/nui.lua`: focus, messages, callbacks, cleanup.
-- `ui/src/`: presentation and browser mocks.
+- `resource/client/modules/nui.lua`: focus, messages, callbacks, cleanup.
+- `resource/ui/src/`: presentation and browser mocks.
 - server modules: authoritative actions and validation.
-- `html/`: generated output only.
+- `resource/html/`: generated output only.
 
 ## Responsive sizing
 

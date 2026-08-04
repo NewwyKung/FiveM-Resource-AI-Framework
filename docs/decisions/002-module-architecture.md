@@ -3,14 +3,14 @@
 Status: Approved
 
 ## Decision
-- `shared/lib/` contains reusable utilities safe for both runtimes.
-- `shared/modules/` contains shared domain definitions and behavior.
-- `client/modules/` contains client-only behavior.
-- `server/modules/` contains server-only behavior.
+- `resource/shared/lib/` contains reusable utilities safe for both runtimes.
+- `resource/shared/modules/` contains shared domain definitions and behavior.
+- `resource/client/modules/` contains client-only behavior.
+- `resource/server/modules/` contains server-only behavior.
 - One module should own one clear responsibility.
-- `client/main.lua` and `server/main.lua` are bootstrap entrypoints loaded last.
+- `resource/client/main.lua` and `resource/server/main.lua` are bootstrap entrypoints loaded last.
 - Business logic does not belong in `main.lua`.
-- `fxmanifest.lua` is the load-order authority; no custom loader is introduced by default.
+- `resource/fxmanifest.lua` is the load-order authority; no custom loader is introduced by default.
 - Wildcard alphabetical order must not be treated as a dependency mechanism.
 - Real dependencies are listed explicitly before dependent modules.
 - Cross-runtime communication uses documented events, callbacks, exports, or state bags.

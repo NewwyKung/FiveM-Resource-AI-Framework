@@ -1,5 +1,9 @@
 # Architecture Overview
 
+## Repository boundaries
+
+`resource/` is the single FiveM development resource and FXServer junction target. Repository-level AI guidance, documentation, examples, scripts, tests, types, and generated release folders remain outside it. Release packaging copies allowlisted contents of `resource/` directly to a deployable release root.
+
 ## Development flow
 
 ```text

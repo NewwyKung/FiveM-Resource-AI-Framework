@@ -43,8 +43,8 @@ node scripts/create-release.mjs --dry-run --skip-ui-build
 1. Read `release.config.json`; update allowlist only for approved runtime roots.
 2. Remove inactive bridges, drivers, provider configs, dependencies, tests, and manifest entries.
 3. Run template/integration/index validation and relevant tests.
-4. Build UI unless explicitly skipped; when skipped require valid existing `html/index.html`.
-5. Create `release/<resource_name>-<version>` and copy allowlisted runtime files only.
+4. Build `resource/ui` unless explicitly skipped; when skipped require valid existing `resource/html/index.html`.
+5. Create `release/<resource_name>-<version>` and copy allowlisted contents of `resource/` directly to the release root.
 6. Patch packaged manifest to production UI and release version.
 7. Apply only explicit `jsonSecretPaths` and `textSanitizers`.
 8. Fail when configured paths/patterns do not match; never assume cleanup succeeded.

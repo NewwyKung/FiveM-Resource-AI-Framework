@@ -14,7 +14,7 @@ Branch:
 ## Do not read
 - unrelated provider profiles
 - unrelated features and requirements
-- generated `html/` except build/release validation
+- generated `resource/html/` except build/release validation
 -
 
 ## Confirmed environment

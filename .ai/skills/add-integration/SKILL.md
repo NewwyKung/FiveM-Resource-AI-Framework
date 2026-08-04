@@ -17,7 +17,7 @@ Do only this:
 4. Preserve source terminology and mark unsupported or unclear details as unresolved.
 5. Save `.ai/integrations/providers/<provider>.md` from the provider template.
 6. Add the provider to `.ai/integrations/INDEX.md` as `registered`, not selected.
-7. Do not update `integrations.json`, runtime config, `fxmanifest.lua`, source modules, or tests.
+7. Do not update `integrations.json`, runtime config, `resource/fxmanifest.lua`, source modules, or tests.
 
 ### Activate mode
 Use only when the user explicitly says the current resource/feature must use a registered provider.
@@ -25,7 +25,7 @@ Use only when the user explicitly says the current resource/feature must use a r
 Then:
 1. Read only `integrations.json`, the selected provider profile, affected feature requirements, and relevant source.
 2. Confirm capability, operation(s), runtime(s), and fallback behavior.
-3. Update provider selection in `integrations.json` and `config/config.integrations.lua`.
+3. Update provider selection in `integrations.json` and `resource/config/config.integrations.lua`.
 4. Create the smallest adapter needed by the approved feature; do not implement unused provider operations.
 5. Split client/server adapters only when runtime contracts differ.
 6. Validate required fields, runtime-only options, conditional dependencies, resource state, and stable failure behavior.

@@ -25,6 +25,7 @@ export default defineConfig({
 		},
 		chunkSizeWarningLimit: 9999,
 		outDir: '../html',
+		emptyOutDir: true,
 		minify: true,
 	},
 	resolve: {

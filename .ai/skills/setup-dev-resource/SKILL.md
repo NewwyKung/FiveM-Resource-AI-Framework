@@ -4,7 +4,7 @@ Use this workflow when the user wants to run this repository in an FXServer deve
 
 ## Principle
 
-The repository root is the resource source of truth. Do not copy `client/`, `server/`, `shared/`, `config/`, `ui/`, or `html/` into another development folder. Create one directory junction from the FXServer resources directory to the repository root.
+`resource/` is the development resource source of truth. Do not copy its runtime folders into another development directory. Create one directory junction from the FXServer resources directory to `<repo>/resource`.
 
 ## Required questions
 
@@ -35,7 +35,7 @@ Use `-Force` only to replace an existing junction. The script must refuse to del
 
 ## Result
 
-The junction target contains the whole resource structure directly:
+The junction targets `<repo>/resource` and exposes this structure directly:
 
 - `client/`
 - `server/`
@@ -44,5 +44,7 @@ The junction target contains the whole resource structure directly:
 - `ui/`
 - `html/`
 - `fxmanifest.lua`
+
+The script verifies `resource/fxmanifest.lua` before changing the destination and refuses to replace a real directory.
 
 Finish by telling the user to add or verify `ensure <resource-name>` in `server.cfg`.

@@ -14,7 +14,7 @@ Feature
 ## Required work
 
 1. Declare the provider in `integrations.json`.
-2. Mirror runtime selection in `config/config.integrations.lua`.
+2. Mirror runtime selection in `resource/config/config.integrations.lua`.
 3. Create an option matrix in `.ai/integrations/providers/<provider>.md`.
 4. Split client/server adapters when option availability differs.
 5. Reject invalid runtime fields.
@@ -29,7 +29,7 @@ Feature
 
 See the implemented logger example:
 - `.ai/integrations/providers/nc_discordlogs.md`
-- `client/modules/integrations/logger.nc_discordlogs.lua`
-- `server/modules/integrations/logger.nc_discordlogs.lua`
+- `resource/client/modules/integrations/logger.nc_discordlogs.lua`
+- `resource/server/modules/integrations/logger.nc_discordlogs.lua`
 
 Do not read or copy this example for integrations whose APIs are identical on every runtime.

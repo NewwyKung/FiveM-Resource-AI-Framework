@@ -13,12 +13,13 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 7. `.ai/rules/`, `.ai/skills/`, and registries for domain guidance and navigation.
 
 ## Repository map
-- `config/`: editable configuration and config helpers.
-- `shared/`: code safe for both client and server.
-- `client/`: client-only modules and bootstrap.
-- `server/`: server-only modules and bootstrap.
-- `ui/`: Svelte NUI source.
-- `html/`: ignored generated NUI output; build it, never edit or commit it.
+- `resource/`: the complete FiveM development resource and junction target.
+- `resource/config/`: editable configuration grouped by domain.
+- `resource/shared/`: code safe for both client and server.
+- `resource/client/`: client-only modules and bootstrap.
+- `resource/server/`: server-only modules and bootstrap.
+- `resource/ui/`: Svelte NUI source.
+- `resource/html/`: ignored generated NUI output; build it, never edit or commit it.
 - `integrations.json`: selected provider metadata; it does not activate runtime code by itself.
 - `examples/resources/`: runnable examples not loaded by the template resource.
 - `examples/capabilities/`: optional i18n, migration, and runtime-test packs loaded only when selected.
@@ -74,7 +75,7 @@ New screen or major redesign:
 ## Core invariants
 - Work on the requested branch; never assume it.
 - Make the smallest complete change and avoid unrelated edits.
-- Do not edit or commit generated files under `html/`.
+- Do not edit or commit generated files under `resource/html/`.
 - Keep client, server, shared, config, UI, and provider responsibilities separate.
 - Treat client input as untrusted; authoritative decisions belong on the server.
 - `main.lua` files are bootstraps, not business-logic containers.
