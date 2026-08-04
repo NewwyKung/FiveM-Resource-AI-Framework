@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+  "runtime.version": "Lua 5.4",
+  "runtime.path": ["?.lua", "?/init.lua"],
+  "workspace.library": ["types"],
+  "workspace.checkThirdParty": false,
+  "diagnostics.globals": [
+    "Citizen",
+    "Config",
+    "GlobalState",
+    "LocalPlayer",
+    "Player",
+    "Entity",
+    "exports",
+    "lib",
+    "MySQL",
+    "source",
+    "vector2",
+    "vector3",
+    "vector4",
+    "promise"
+  ],
+  "diagnostics.disable": ["lowercase-global"],
+  "diagnostics.severity": {
+    "undefined-global": "Warning",
+    "need-check-nil": "Warning",
+    "param-type-mismatch": "Warning",
+    "return-type-mismatch": "Warning"
+  },
+  "hint.enable": true,
+  "hint.paramName": "All",
+  "hint.paramType": true,
+  "hint.setType": true,
+  "format.enable": true
+}
