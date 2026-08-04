@@ -1,7 +1,9 @@
 {
   "schemaVersion": 1,
   "generatedFrom": "registry filenames",
-  "features": {},
+  "features": {
+    "resource-structure": ".ai/features/resource-structure.md"
+  },
   "components": {},
   "events": {},
   "database": {},
