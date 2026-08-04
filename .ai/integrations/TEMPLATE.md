@@ -1,0 +1,42 @@
+# <Provider Name>
+
+- Capability: `<framework|database|inventory|notify|logger|progress|target|other>`
+- Resource: `<resource-name>`
+- Selected in: `integrations.json`
+- Runtime adapters:
+  - Client: `<path|none>`
+  - Server: `<path|none>`
+- Verification: `<verified|unverified|partial>`
+
+## Operation
+
+`<Capability>.<Operation>(options)`
+
+## Option matrix
+
+| Option | Type | Required | Default | Runtime | Conditions / dependencies |
+|---|---|---:|---|---|---|
+| `<name>` | `<type>` | yes/no/conditional | `<value>` | shared/client/server | `<rules>` |
+
+## Return contract
+
+- Success: `<shape>`
+- Failure: `<error codes>`
+
+## Provider mapping
+
+Document only the source export/event/callback and the transformation performed by the adapter. Feature code must not call the provider directly.
+
+## Limitations
+
+- `<unsupported behavior>`
+
+## Failure behavior
+
+- Missing resource: `<behavior>`
+- Invalid option: `<behavior>`
+- Missing conditional dependency: `<behavior>`
+
+## Examples
+
+Keep examples minimal and separate by runtime.
