@@ -2,8 +2,6 @@
 
 Reusable FiveM resource foundation for creating new scripts with clear client/server/shared boundaries, scalable configuration, optional Svelte 5 NUI, and model-neutral AI development guidance.
 
-> Working architecture is currently developed on the `GPT-Edit` branch.
-
 ## Purpose
 
 This repository is a starting point for a **new FiveM resource**. It is not a replacement for ESX, QBCore, or another gameplay framework. A resource created from this template may remain standalone or add explicit framework/database bridges when required.
@@ -16,7 +14,175 @@ The template provides:
 - Generated FiveM NUI output in `html/`.
 - Approved architecture decisions for configuration and modules.
 - AI rules, skills, registries, memory, knowledge, prompts, and checklists.
+- Requirements discovery and approval gates before implementation.
 - A wireframe-first UI design pipeline.
+
+## Get Started
+
+### 1. Create a new resource from the template
+
+Use this repository as a GitHub template, clone it, or copy it into your FiveM resources directory.
+
+```bash
+git clone https://github.com/NewwyKung/v.2-Template-FiveM.git my_resource
+cd my_resource
+```
+
+Rename the resource folder and update the metadata in:
+
+```text
+fxmanifest.lua
+resource.json
+```
+
+Remove example config files or domains that the new resource does not need.
+
+### 2. Define the feature before coding
+
+For AI-assisted work, start with `AGENTS.md`. New resources and substantial features must pass requirements discovery before implementation.
+
+Example request:
+
+```text
+Use .ai/skills/discover-requirements/SKILL.md to define a shop resource.
+Help me choose the feature behavior, integrations, configuration, security model,
+and UI flow. Do not implement until I approve the requirements.
+```
+
+The approved brief should be stored at:
+
+```text
+.ai/memory/requirements/<feature>.md
+.ai/features/<feature>.md
+```
+
+After approval, use:
+
+```text
+.ai/skills/create-resource/SKILL.md
+```
+
+or:
+
+```text
+.ai/skills/add-feature/SKILL.md
+```
+
+### 3. Configure the resource
+
+Start with:
+
+```text
+config/config.main.lua
+```
+
+Add small domains as root config files:
+
+```text
+config/config.item.lua
+config/config.vehicle.lua
+```
+
+Add larger domains as folders:
+
+```text
+config/shop/24.7_store.lua
+config/shop/weapon_store.lua
+```
+
+Keep client-only, server-only, shared, and secret values in their approved runtime folders.
+
+### 4. Add modules
+
+Place code by runtime and responsibility:
+
+```text
+shared/lib/         Shared utility functions
+shared/modules/     Shared contracts, constants, and domain definitions
+client/modules/     Client behavior and FiveM interaction
+server/modules/     Server authority, validation, persistence, and business logic
+```
+
+Keep `client/main.lua` and `server/main.lua` as bootstraps. Do not place feature logic directly in them.
+
+### 5. Start NUI development when required
+
+Install the UI dependencies:
+
+```bash
+npm --prefix ui install
+```
+
+Run the Vite development server:
+
+```bash
+npm --prefix ui run dev
+```
+
+The development server uses port `5171`.
+
+Build production NUI files:
+
+```bash
+npm --prefix ui run build
+```
+
+The source lives in `ui/`; generated output is written to `html/`. Never edit `html/` directly.
+
+### 6. Use the responsive UI sizing system
+
+Design screens against a `1440px`-high canvas and convert design measurements with:
+
+```css
+:root {
+    --scale: 1;
+    --base-screen-height: 1440;
+    --px-to-vh: calc(1vh / var(--base-screen-height) * 100 * var(--scale));
+}
+```
+
+Usage:
+
+```css
+.panel {
+    width: calc(720 * var(--px-to-vh));
+    padding: calc(32 * var(--px-to-vh));
+    gap: calc(16 * var(--px-to-vh));
+}
+```
+
+The numeric value represents design pixels but remains unitless. Do not append `px` and do not multiply `--scale` a second time.
+
+### 7. Follow the UI approval pipeline
+
+For a new screen or major redesign:
+
+```text
+Requirements discovery
+→ Low-fidelity wireframe
+→ Wireframe approval
+→ Visual design
+→ Visual approval
+→ Svelte implementation
+→ UI review
+→ Refinement
+→ FiveM validation
+```
+
+Do not start production UI implementation until the wireframe and visual specification are approved, unless the task explicitly combines phases.
+
+### 8. Validate before release
+
+Before using the resource in production:
+
+- Check every `fxmanifest.lua` path.
+- Confirm server-side authority and payload validation.
+- Test normal, invalid, disconnect, restart, and timeout paths.
+- Build the NUI.
+- Replace the localhost development page with `html/index.html`.
+- Check Escape, NUI focus release, and resource-stop cleanup.
+- Update feature, event, component, database, and requirements records.
+- Run `.ai/checklists/before-release.md`.
 
 ## Repository structure
 
@@ -164,6 +330,7 @@ Start with `AGENTS.md`. It routes each task to only the context it needs.
 
 ```text
 AGENTS.md
+→ requirements discovery when needed
 → relevant domain rules
 → one primary skill
 → relevant registry/specification
@@ -174,15 +341,15 @@ AGENTS.md
 ### AI directories
 
 - `.ai/rules/`: short constraints for FiveM, Lua, security, UI, design, testing, assets, localization, APIs, and fault handling.
-- `.ai/skills/`: workflows for resource creation, feature work, UI phases, debugging, security review, and release.
+- `.ai/skills/`: workflows for discovery, resource creation, feature work, UI phases, debugging, security review, and release.
 - `.ai/features/`: feature ownership and file maps.
 - `.ai/components/`: reusable UI component contracts.
 - `.ai/events/`: event/callback/export authority and payload contracts.
 - `.ai/database/`: persistent-data ownership and schema summaries.
-- `.ai/memory/`: stable project preferences and confirmed recurring issues.
+- `.ai/memory/`: approved requirements, stable preferences, and confirmed recurring issues.
 - `.ai/knowledge/`: concise repository-specific technical knowledge.
 - `.ai/prompts/`: short reusable task entrypoints.
-- `.ai/checklists/`: before-commit, UI-review, and release gates.
+- `.ai/checklists/`: discovery, before-commit, UI-review, and release gates.
 - `.ai/examples/`: approved examples loaded only when relevant.
 
 Adapters such as `CLAUDE.md`, `.github/copilot-instructions.md`, and `.cursor/rules/project.mdc` point back to the same source of truth instead of duplicating rules.
@@ -194,6 +361,7 @@ Registries reduce repository-wide searching and token usage.
 When contracts change, update the relevant registry:
 
 - Feature: `.ai/features/<feature>.md`
+- Requirements: `.ai/memory/requirements/<feature>.md`
 - UI component: `.ai/components/<Component>.md`
 - Event/callback/export: `.ai/events/<contract>.md`
 - Database table/store: `.ai/database/<store>.md`
@@ -211,15 +379,16 @@ Templates are included in each directory. Keep records concise and link to sourc
 
 1. Copy or generate a repository from this template.
 2. Rename resource metadata in `fxmanifest.lua` and `resource.json`.
-3. Remove example config domains that are not required.
-4. Define feature boundaries and authority.
-5. Add config files and modules in the approved locations.
-6. Register public contracts and persistent data.
-7. Keep NUI only when the resource needs it.
-8. Add tests and run applicable checklists.
-9. Build NUI and switch to the production `ui_page` before release.
+3. Run requirements discovery and approve the feature brief.
+4. Remove example config domains that are not required.
+5. Define feature boundaries and authority.
+6. Add config files and modules in the approved locations.
+7. Register public contracts and persistent data.
+8. Keep NUI only when the resource needs it.
+9. Add tests and run applicable checklists.
+10. Build NUI and switch to the production `ui_page` before release.
 
-For AI-assisted scaffolding, use `.ai/skills/create-resource/SKILL.md`.
+For AI-assisted scaffolding, begin with `.ai/skills/discover-requirements/SKILL.md`, then use `.ai/skills/create-resource/SKILL.md` after approval.
 
 ## Release gate
 
@@ -232,7 +401,7 @@ Before release, verify:
 - NUI production build and focus behavior.
 - No localhost URL, secret, raw asset, or debug-only path remains.
 - Public API and migration compatibility.
-- Registries, specifications, tests, version, and release notes are current.
+- Registries, specifications, requirements, tests, version, and release notes are current.
 
 Use `.ai/checklists/before-release.md` and `.ai/skills/release-resource/SKILL.md`.
 
