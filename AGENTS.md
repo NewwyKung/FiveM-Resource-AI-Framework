@@ -6,12 +6,11 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 ## Source of truth
 1. Repository files on the current working branch.
 2. Approved requirements under `.ai/memory/requirements/`.
-3. `docs/decisions/` for approved architecture decisions.
-4. `integrations.json` for selected external capability providers.
-5. Approved `docs/ui-spec/` files and `docs/design/design-system.md` for UI decisions.
-6. `.ai/rules/` for domain constraints.
-7. `.ai/skills/` for task workflows.
-8. Registries under `.ai/features/`, `.ai/components/`, `.ai/events/`, `.ai/database/`, and `.ai/integrations/` for navigation and contracts.
+3. Confirmed server environment in `.ai/memory/environment.md`.
+4. `docs/decisions/` for approved architecture decisions.
+5. Registered provider profiles under `.ai/integrations/providers/` and selected providers in `integrations.json`.
+6. Approved `docs/ui-spec/` files and `docs/design/design-system.md` for UI decisions.
+7. `.ai/rules/`, `.ai/skills/`, and registries for domain guidance and navigation.
 
 ## Repository map
 - `config/`: editable configuration and config helpers.
@@ -20,85 +19,68 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `server/`: server-only modules and bootstrap.
 - `ui/`: Svelte NUI source.
 - `html/`: generated NUI output; do not edit directly.
-- `integrations.json`: machine-readable selected providers and adapter paths.
-- `docs/design/`: design system, pipeline, sources, and review guidance.
-- `docs/ui-spec/`: screen-level wireframes and visual specifications.
-- `.ai/integrations/`: concise capability/provider contracts and runtime option matrices.
-- `.ai/memory/requirements/`: approved resource and feature briefs.
-- `.ai/memory/`: concise durable project context.
-- `.ai/knowledge/`: repository-specific technical knowledge.
-- `.ai/prompts/`: short task entrypoints.
-- `.ai/checklists/`: discovery and completion gates.
-- `tests/`: test code and fixtures.
+- `integrations.json`: selected provider metadata; it does not activate runtime code by itself.
+- `examples/resources/`: runnable examples not loaded by the template resource.
+- `.ai/examples/`: concise patterns loaded only when relevant.
+- `.ai/integrations/`: provider profiles and integration templates.
+- `.ai/memory/environment.md`: confirmed framework, database, libraries, and server-wide providers.
+- `tests/`: test code, fixtures, and executable test plans.
 
 ## Discovery gate
 For a new resource, feature, redesign, provider integration, or materially ambiguous change, use `.ai/skills/discover-requirements/SKILL.md` before implementation.
 
-A request such as “make a shop system” is not implementation-ready. Clarify and help design the outcome, scope, flows, permissions, authority, data, configuration, integrations, UI, failures, security, tests, and acceptance criteria. Offer concrete options and a recommended default instead of asking the user to invent the architecture alone.
+A vague request such as “make a shop system” is not implementation-ready. Clarify and help design outcome, scope, flows, permissions, authority, data, configuration, UI, failures, tests, and required environment capabilities.
 
-Do not modify production code until:
-- the requirements brief is stored under `.ai/memory/requirements/`;
-- the feature registry is created or updated;
-- material decisions are resolved;
-- the user approves the brief or explicitly authorizes the recommended defaults.
+Before implementation, inspect `.ai/memory/environment.md`. If required information is unresolved, ask which framework, shared libraries, database/oxmysql usage, inventory, money, notify, logger, progress, target, and custom resources are needed. Ask only about capabilities relevant to the current task. Save confirmed server-wide choices so they are not requested repeatedly.
 
-Discovery may be abbreviated only for a truly local, low-risk edit whose intent and impact are already explicit.
+Do not modify production code until requirements and material environment decisions are approved.
 
 ## Context routing
 Read only what the task needs:
-- Any Lua/FiveM change: `.ai/rules/fivem.md`, `.ai/rules/lua.md`
-- Config/module structure: `docs/decisions/001-config-architecture.md`, `docs/decisions/002-module-architecture.md`
-- External framework/lib/resource integration: `integrations.json`, `.ai/rules/integrations.md`, selected provider contract only
-- Security/network events: `.ai/rules/security.md`, `.ai/rules/fault-handling.md`
-- Visual UI design/review: `.ai/rules/design.md`
-- Svelte/NUI implementation: `.ai/rules/ui.md`
-- Public exports/events/callbacks: `.ai/rules/api.md`
-- Localization: `.ai/rules/localization.md`
-- Assets: `.ai/rules/assets.md`
-- Testing/release: `.ai/rules/testing.md`
+- Lua/FiveM: `.ai/rules/fivem.md`, `.ai/rules/lua.md`
+- Config/modules: approved ADRs under `docs/decisions/`
+- Environment/integrations: `.ai/memory/environment.md`, `integrations.json`, `.ai/rules/integrations.md`, selected provider profile only
+- Database boundary: `.ai/examples/database-port/README.md` only when persistence is required
+- Framework/resource adapter: `.ai/examples/adapter-pattern/README.md` only when a provider is activated
+- Security/events: `.ai/rules/security.md`, `.ai/rules/fault-handling.md`
+- UI: `.ai/rules/design.md`, `.ai/rules/ui.md`, relevant UI skill/specification
+- Testing/release: `.ai/rules/testing.md`, applicable checklist
 
-Read the approved requirements and relevant feature/contract registry, then read one matching implementation skill from `.ai/skills/INDEX.md`.
+## Integration workflow
+- Register supplied provider docs once through `.ai/skills/add-integration/SKILL.md` in Register mode.
+- Registration creates a concise provider profile; it does not write runtime code.
+- Activate a provider only when an approved feature requires it.
+- Implement only the operations and runtimes required by approved features.
+- Provider calls stay inside selected adapters; feature code uses a stable capability contract.
+- Do not generate ESX, QBCore, Qbox, oxmysql, notify, logger, progress, inventory, or target bridges speculatively.
 
-## Integration workflow routing
-- Read `integrations.json` before any provider work.
-- Add or change providers through `.ai/skills/add-integration/SKILL.md`.
-- Feature code calls capability contracts under `Integrations`; it must not call provider exports/events directly.
-- Split adapters by runtime when client/server availability or option rules differ.
-- Load only the selected provider document and affected runtime adapter.
-- Provider contracts must document option type, required/default value, runtime, conditions, dependencies, and failure behavior.
+## UI workflow
+New screen or major redesign:
 
-## UI workflow routing
-- New screen or major redesign: discovery → `wireframe-ui` → wireframe approval → `design-ui` → visual approval → `implement-ui` → `review-ui` → `refine-ui`.
-- Existing approved wireframe needing visual direction: start at `design-ui`.
-- Existing approved visual specification: start at `implement-ui`.
-- Existing implementation audit: start at `review-ui`.
-- Small NUI transport/integration changes: use `create-nui` unless visuals change.
+`discovery → wireframe-ui → approval → design-ui → approval → implement-ui → review-ui → refine-ui`
 
 ## Core invariants
-- Work on the requested branch; never assume the default branch.
+- Work on the requested branch; never assume it.
 - Make the smallest complete change and avoid unrelated edits.
 - Do not edit generated files under `html/`.
-- Keep client, server, shared, config, and UI responsibilities separate.
-- Treat all client input as untrusted; authoritative decisions belong on the server.
+- Keep client, server, shared, config, UI, and provider responsibilities separate.
+- Treat client input as untrusted; authoritative decisions belong on the server.
 - `main.lua` files are bootstraps, not business-logic containers.
-- Do not introduce a custom loader when `fxmanifest.lua` can express the load order.
-- Reuse existing modules/components before creating new ones.
-- Do not add dependencies without a concrete need.
-- Preserve backward compatibility for public APIs unless a breaking change is explicitly approved.
-- Keep requirements, feature, component, event, database, integration, and resource metadata current when contracts change.
-- Do not silently invent product behavior, provider behavior, design tokens, or architecture.
-- Do not replace interactive UI with a full-screen image or bake dynamic/localized text into raster assets.
+- Do not add dependencies or adapters without an approved need.
+- Do not silently invent product, provider, or architecture behavior.
+- Keep requirements and registries current when contracts change.
 
 ## Standard workflow
 1. Determine whether discovery is required.
-2. Inspect relevant files, memory, registries, decisions, specifications, selected integrations, and existing patterns.
-3. Resolve and approve material requirements before code changes.
-4. Identify runtime boundaries, authority, design constraints, provider option rules, and risks.
-5. Implement the smallest coherent approved change.
-6. Validate affected paths and representative states.
-7. Run the applicable checklist.
-8. Update requirements and registries when approved behavior changes.
-9. Summarize changed files, validation, evidence, and remaining risks.
+2. Read relevant requirements, environment profile, registries, decisions, specifications, and source.
+3. Resolve missing framework/library/database/integration choices required by the task.
+4. Approve requirements and selected defaults.
+5. Implement the smallest coherent change.
+6. Validate success, failure, disconnect, restart, and relevant security cases.
+7. Run applicable checklists and CI validations.
+8. Update memory, registries, provider profiles, and specifications.
+9. Remove unused adapters, configs, dependencies, manifest entries, copied examples, and dead files.
+10. Summarize changes, evidence, checks not run, and remaining risks.
 
 ## Completion criteria
-A task is incomplete when required discovery or approval is missing, applicable checks were not run, memory/registries/specifications are stale, provider runtime rules are undocumented, representative states were not considered, or generated/runtime references are stale. Be explicit about checks that could not be executed.
+A task is incomplete when required discovery is missing, relevant environment choices remain unresolved, unused generated bridges remain, applicable checks were not run, registries are stale, or runtime/generated references are invalid.
