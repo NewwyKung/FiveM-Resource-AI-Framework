@@ -15,8 +15,11 @@ Load only rules relevant to the current task.
 | Tests and release validation | `testing.md` |
 | Images, audio, models, streaming | `assets.md` |
 | Lua and NUI translations | `localization.md` |
+| Cross-cutting implementation/review gate | `engineering-quality.md` |
 
 Do not load all rule files by default.
+
+For implementation or review, load `engineering-quality.md` plus only the domain rules selected by the task characteristics in `.ai/matrices/quality-gates.json`.
 
 For UI work:
 - Visual design or review: load `design.md`.
