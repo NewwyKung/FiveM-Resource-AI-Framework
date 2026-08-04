@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,15 +49,15 @@ jobs:
             npm install --prefix ui --package-lock-only --ignore-scripts --no-audit --no-fund
           fi
 
-      - name: Commit generated UI lockfile
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Commit generated UI lockfile to PR branch
+        if: github.event_name == 'pull_request'
         run: |
           if ! git diff --quiet -- ui/package-lock.json; then
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add ui/package-lock.json
             git commit -m "chore(ui): add dependency lockfile"
-            git push
+            git push origin HEAD:${GITHUB_HEAD_REF}
           fi
 
       - name: Install UI dependencies
