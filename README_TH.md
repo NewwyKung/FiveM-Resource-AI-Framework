@@ -2,21 +2,22 @@
 
 > 🇹🇭 ภาษาไทย | 🇺🇸 [English](README.md)
 
-Template สำหรับสร้าง FiveM Resource ที่ออกแบบให้ Developer และ AI ทำงานร่วมกันได้ง่าย มีมาตรฐาน และใช้ Context เท่าที่จำเป็น
+Template สำหรับสร้าง FiveM Resource ที่ช่วยให้ Developer และ AI ทำงานร่วมกันอย่างมีมาตรฐาน โดยโหลดเฉพาะ Context ที่จำเป็น
 
 โปรเจกต์นี้ไม่ใช่ Framework แทน ESX, QBCore หรือ Qbox แต่เป็นฐานสำหรับสร้าง Resource แบบ Standalone หรือเชื่อมเฉพาะ Framework, Database, Library และ Integration ที่ใช้งานจริง
 
 ## จุดเด่น
 
-- Requirements discovery ก่อนเริ่มงานใหญ่
-- แยก Client, Server, Shared และ Config ชัดเจน
+- Requirements discovery และ Environment memory
+- Client / Server / Shared / Config boundaries
 - Server-authoritative design
-- AI rules, skills, recipes, memory และ context budget
-- Integration docs ลงทะเบียนครั้งเดียวและเปิดใช้เมื่อจำเป็น
-- Svelte 5 NUI พร้อม browser debug helpers
+- AI rules, skills, recipes และ context budget
+- LuaLS type-safety practice และ FiveM type definitions
+- Svelte 5 feature-state lifecycle
+- NUI timeout, cancellation, structured errors และ listener cleanup
+- Optional i18n, database migration และ FXServer runtime tests
 - Wireframe-first UI workflow
-- CI validation และระบบสร้าง Release พร้อมใช้งาน
-- ลบ Bridge, Dependency และไฟล์ Runtime ที่ไม่ได้ใช้
+- CI validation และ production release builder
 
 ## เริ่มต้นใช้งาน
 
@@ -27,42 +28,59 @@ npm ci --prefix ui
 npm run build --prefix ui
 ```
 
-จากนั้นแก้ metadata ใน:
-
-```text
-fxmanifest.lua
-resource.json
-```
-
-## เริ่มงานกับ AI
-
-สำหรับ Resource หรือ Feature ใหม่ ให้เริ่มด้วยคำสั่งลักษณะนี้:
+แก้ metadata ใน `fxmanifest.lua` และ `resource.json` จากนั้นเริ่มงานกับ AI:
 
 ```text
 Use .ai/skills/discover-requirements/SKILL.md.
 Help me define the feature and environment before implementation.
 ```
 
-AI จะตรวจข้อมูลเดิมและถามเฉพาะสิ่งที่จำเป็น เช่น Framework, ox_lib, Database, Inventory, Notify, Logger, Progress, Target และ Custom integrations
+AI จะถามเฉพาะสิ่งที่ Feature ต้องใช้ เช่น Framework, Database, Inventory, Integration, ภาษา, Migration และ Runtime tests
 
-ข้อมูลที่ยืนยันแล้วจะถูกบันทึกไว้ เพื่อไม่ต้องถามซ้ำใน Feature ต่อไป
+## Type Safety
 
-## Workflow
+Repository มี `.luarc.json`, `types/fivem.lua` และแนวทาง annotation สำหรับ Public API, Events, Config, Repositories, Adapters และ nullable values
+
+Static type ไม่แทน Runtime validation โดยเฉพาะข้อมูลจาก Client, NUI, Database และ External Resource
+
+อ่านเพิ่ม: [docs/type-safety.md](docs/type-safety.md)
+
+## UI State และ NUI Resilience
+
+State lifecycle มาตรฐาน:
 
 ```text
-Discovery
-→ Approved requirements
-→ Architecture and contracts
-→ Wireframe (เมื่อมี UI)
-→ Visual design
-→ Implementation
-→ Tests and review
-→ Release
+idle → loading → ready → submitting → success/error → reset
 ```
 
-## UI และ Responsive
+ไฟล์หลัก:
 
-ออกแบบบนฐานความสูง `1440px` และใช้:
+```text
+ui/src/js/createFeatureState.svelte.js
+ui/src/js/NuiBridge.js
+```
+
+NUI bridge รองรับ timeout, AbortController, pending-request limit, response contract, structured errors, disposable listeners และ cleanup
+
+## Optional capabilities
+
+ระบบต่อไปนี้ไม่ถูกโหลดเข้า Runtime หลักโดยอัตโนมัติ:
+
+```text
+examples/capabilities/i18n/
+examples/capabilities/database-migrations/
+examples/capabilities/runtime-tests/
+```
+
+AI จะใช้เมื่อ Requirements เลือกเท่านั้น
+
+- **i18n:** ใช้เมื่อรองรับหลายภาษา
+- **Database migrations:** ใช้เมื่อ Resource ใช้ Database และเป็นเจ้าของ Schema
+- **Runtime tests:** ใช้เมื่อต้องตรวจ FiveM natives, lifecycle, state bags, CEF หรือ providers บน FXServer จริง
+
+Lua hot reload ไม่อยู่ใน Scope ให้ใช้ Vite HMR สำหรับ NUI และออกแบบ Lua ให้ restart-safe
+
+## Responsive UI
 
 ```css
 :root {
@@ -73,80 +91,44 @@ Discovery
 
 .panel {
     width: calc(720 * var(--px-to-vh));
-    padding: calc(32 * var(--px-to-vh));
 }
 ```
 
-ตัวเลขแทนค่า pixel จาก Design แต่ไม่ใส่ `px` ภายใน `calc()` และไม่คูณ `--scale` ซ้ำ
+ตัวเลขแทน pixel จาก Design แต่ไม่ใส่ `px` ภายใน `calc()`
 
-## Integrations
-
-```text
-ส่ง Docs/Schema ให้ AI ครั้งเดียว
-→ Register provider profile
-→ เลือกใช้กับ Feature ที่ต้องการ
-→ สร้างเฉพาะ Adapter/Operation ที่ใช้จริง
-→ ลบ Runtime bridge ที่ไม่ได้ใช้
-```
-
-การส่ง Docs ไม่ถือเป็นคำสั่งให้เชื่อม Runtime ทันที และ Secrets จะไม่ถูกบันทึกใน AI memory
-
-## สร้าง Release
+## Release
 
 ```bash
 node scripts/create-release.mjs
 ```
 
-ผลลัพธ์:
+ผลลัพธ์อยู่ที่:
 
 ```text
 release/<resource_name>-<version>/
 ```
 
-ระบบจะ:
-
-- จัดการ Semantic Versioning
-- Build UI เป็นค่าเริ่มต้น
-- คัดลอกเฉพาะ Runtime allowlist
-- เปลี่ยน Manifest เป็น Production
-- ล้าง Secret ตาม explicit sanitizer
-- ตรวจว่าไม่มี credential, dev file หรือ inactive bridge หลุดเข้า Release
-
-## สถานะความสามารถเพิ่มเติม
-
-- **Lua Type Safety:** ยังไม่มี Lua Language Server configuration และ static type validation แบบเต็มระบบ
-- **Hot Reload:** มี Vite HMR สำหรับ Browser development แต่ยังไม่มี in-game NUI hot reload ที่เป็นระบบมาตรฐาน
-- **i18n:** มี Rules และแนวทางแล้ว แต่ยังไม่มี Runtime i18n engine หรือ locale implementation เริ่มต้น
-
-ดูแผนพัฒนาต่อได้ที่ [ROADMAP.md](ROADMAP.md)
-
-## เอกสารสำคัญ
+## เอกสาร
 
 - [CONTRIBUTING.md](CONTRIBUTING.md)
 - [ARCHITECTURE.md](ARCHITECTURE.md)
 - [FAQ.md](FAQ.md)
 - [SECURITY.md](SECURITY.md)
 - [SUPPORT.md](SUPPORT.md)
-- [CHANGELOG.md](CHANGELOG.md)
 - [ROADMAP.md](ROADMAP.md)
-- [Release guide](docs/releasing.md)
 
 ## Credits
 
-ขอบคุณ **Byte Labs Studio** และโปรเจกต์ **BL Svelte Template** สำหรับแนวคิดด้าน Developer Experience เช่น browser debugging, NUI event helpers, disposable listeners และ local development workflow
+ขอบคุณ **Byte Labs Studio** และ **BL Svelte Template** สำหรับแนวคิดด้าน Developer Experience เช่น browser debugging, NUI event helpers, disposable listeners และ local development workflow
 
-โปรเจกต์นี้ไม่ได้นำ UI design, UI components หรือ visual assets ของ Byte Labs มาใช้ รายละเอียดอยู่ที่ `docs/reference/bl-svelte-template-review.md`
+โปรเจกต์นี้ไม่ได้นำ UI design, UI components หรือ visual assets ของ Byte Labs มาใช้
 
 ## เบื้องหลังการพัฒนา
 
-โปรเจกต์นี้เริ่มจาก Hobby Project ที่ตั้งใจสร้างไว้ใช้เอง เพื่อให้การพัฒนา FiveM Resource ด้วย AI ง่ายขึ้นและมีคุณภาพสม่ำเสมอขึ้น ภายหลังจึงตัดสินใจเปิดเป็น Open Source เผื่อมีประโยชน์กับ Developer คนอื่น
+โปรเจกต์นี้เริ่มจาก Hobby Project ที่ตั้งใจสร้างไว้ใช้เอง ก่อนตัดสินใจเปิดเป็น Open Source เผื่อมีประโยชน์กับ Developer คนอื่น
 
-ผมใช้ **Kimi K2.6** ช่วยรวบรวมและเขียนข้อมูล Best Practices และความรู้เกี่ยวกับ FiveM จากนั้นใช้ **ChatGPT** ช่วยตรวจสอบ สรุป และแปลงข้อมูลเหล่านั้นเป็น AI Skills, Agent instructions, Rules, Recipes, Memory, Validators และ Workflow ภายใน Repository
+ผมใช้ **Kimi K2.6** รวบรวม Best Practices และความรู้ FiveM แล้วใช้ **ChatGPT** สรุปและแปลงเป็น AI Skills, Agent instructions, Rules, Recipes, Memory, Validators และ Workflow ภายใน Repository ปัจจุบันยังใช้ **Claude** เป็นผู้ช่วยหลัก และอาจย้ายไปใช้ **Kimi K3** ในอนาคตจากประสบการณ์ทดสอบส่วนตัว
 
-ปัจจุบันผมยังใช้ **Claude** เป็นผู้ช่วยหลักในการพัฒนา แต่จากการทดสอบส่วนตัว ผมคิดว่าอนาคตอาจย้ายไปใช้ **Kimi K3** เพราะมีความเข้าใจเกี่ยวกับ FiveM Resource รวมถึงส่วนต่าง ๆ ของ FiveM และ GTA V ได้ดีมากเมื่อเทียบกับโมเดลอื่นที่ผมเคยทดลอง
+Kimi ไม่ได้จ่ายนะ 😄
 
-ทั้งหมดนี้เป็นเพียงความคิดเห็นและประสบการณ์ส่วนตัว — Kimi ไม่ได้จ่ายนะ 😄
-
-ถ้าโปรเจกต์นี้มีประโยชน์กับคุณ ขอบคุณมากสำหรับการใช้งาน การแจ้งปัญหา การเสนอไอเดีย หรือการช่วยพัฒนาต่อ
-
-> เป้าหมายของโปรเจกต์นี้ไม่ใช่การแทนที่ Developer ด้วย AI แต่คือการช่วยให้ Developer สร้าง FiveM Resource ได้เร็วขึ้น มีคุณภาพสม่ำเสมอขึ้น และทำงานได้ดีไม่ว่าจะเลือกใช้ AI โมเดลใด
+> เป้าหมายของโปรเจกต์นี้ไม่ใช่การแทนที่ Developer ด้วย AI แต่คือการช่วยให้ Developer สร้าง FiveM Resource ได้เร็วขึ้นและมีคุณภาพสม่ำเสมอขึ้น ไม่ว่าจะเลือกใช้ AI โมเดลใด
