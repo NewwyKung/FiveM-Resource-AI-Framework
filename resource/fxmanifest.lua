@@ -14,7 +14,6 @@ ui_page 'http://localhost:5171/'
 shared_scripts {
     -- Config contains shared editable values only.
     'config/config.main.lua',
-    'config/functions/config.functions.shared.lua',
     'config/config.item.lua',
     'config/shop/**/*.lua',
 
@@ -24,13 +23,13 @@ shared_scripts {
 }
 
 client_scripts {
-    'config/functions/config.functions.client.lua',
+    'client/lib/**/*.lua',
     'client/modules/**/*.lua',
     'client/main.lua',
 }
 
 server_scripts {
-    'config/functions/config.functions.server.lua',
+    'server/lib/**/*.lua',
     'server/modules/**/*.lua',
     'server/main.lua',
 }
