@@ -7,6 +7,7 @@ const errors = [];
 function exists(relativePath) {
   return fs.existsSync(path.join(root, relativePath));
 }
+
 function requirePath(relativePath) {
   if (!exists(relativePath)) errors.push(`Missing required path: ${relativePath}`);
 }
@@ -35,10 +36,29 @@ for (const required of [
   'scripts/create-release.mjs',
   'release.config.json',
   'ui/src/app.css',
+  'html/.gitkeep',
+  'release/.gitkeep',
 ]) requirePath(required);
 
-for (const file of ['config/config.integrations.lua', 'shared/modules/integrations.lua']) {
-  if (exists(file)) errors.push(`Inactive runtime integration file must not ship by default: ${file}`);
+const forbiddenPaths = [
+  'Development',
+  'web',
+  'fivem-development.skill',
+  'config/config.integrations.lua',
+  'shared/modules/integrations.lua',
+  'ui/src/lib/ComponentShowcase.svelte',
+  'ui/src/lib/tokens.css',
+];
+
+for (const file of forbiddenPaths) {
+  if (exists(file)) errors.push(`Legacy or inactive path must not exist: ${file}`);
+}
+
+if (exists('html')) {
+  const committedOutput = fs.readdirSync(path.join(root, 'html')).filter((name) => name !== '.gitkeep');
+  if (committedOutput.length > 0) {
+    errors.push(`Generated html output must not be committed: ${committedOutput.join(', ')}`);
+  }
 }
 
 if (exists('ui/src/app.css')) {
@@ -60,4 +80,5 @@ if (errors.length) {
   for (const error of errors) console.error(`[template] ${error}`);
   process.exit(1);
 }
+
 console.log('[template] validation passed.');
