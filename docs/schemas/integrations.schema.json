@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "./integrations.schema.json",
+  "title": "FiveM Resource Integrations",
+  "type": "object",
+  "required": ["version", "capabilities"],
+  "properties": {
+    "version": { "type": "integer", "minimum": 1 },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["provider", "runtimes", "verified"],
+        "properties": {
+          "provider": { "type": "string", "minLength": 1 },
+          "resource": { "type": ["string", "null"] },
+          "runtimes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "enum": ["shared", "client", "server"] }
+          },
+          "verified": { "type": "boolean" },
+          "contract": { "type": "string" },
+          "adapters": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          },
+          "optionDependencies": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
