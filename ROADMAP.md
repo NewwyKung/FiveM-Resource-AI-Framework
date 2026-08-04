@@ -9,34 +9,45 @@ This roadmap is directional, not a delivery promise. The project is maintained a
 - Provider documentation registration and on-demand activation
 - Svelte 5 NUI workflow and browser debug helpers
 - CI validation and deployable release packaging
+- Lua Language Server configuration and FiveM type definitions
+- Lua annotation practice for public contracts and untrusted boundaries
+- Resilient NUI callbacks with timeout, cancellation, bounded pending requests, and structured errors
+- Lightweight Svelte 5 feature-state lifecycle
+- Optional i18n capability pack
+- Optional forward-only database migration guidance
+- Optional FXServer runtime-test harness
 
 ## Next priorities
 
-### Lua type safety
+### Type diagnostics
 
-- Add Lua Language Server configuration.
-- Define FiveM globals and runtime libraries.
-- Establish EmmyLua/LuaLS annotation conventions.
-- Add static diagnostics to CI without forcing excessive annotations on simple code.
+- Expand FiveM native definitions only when real resource work requires them.
+- Add provider-specific type definitions only for activated providers.
+- Add stable LuaLS CLI diagnostics to CI when a reproducible runner is selected.
 
-### Development hot reload
+### Runtime tests
 
-- Keep Vite HMR for browser development.
-- Research an optional in-game NUI development mode that points to the Vite server safely.
-- Document resource restart boundaries; Lua runtime code will still require restart unless a safe reload mechanism is explicitly designed.
+- Add a complete `fxmanifest.lua` and example test registration for the opt-in harness.
+- Document headless/development FXServer setup.
+- Add CI runtime execution only when server artifacts and licensing can be configured reliably.
 
 ### Localization
 
-- Add an optional, provider-neutral i18n contract.
-- Support Lua and Svelte locale keys from one documented schema.
-- Add fallback locale, placeholder validation, and missing-key CI checks.
-- Do not load the i18n runtime into single-language resources unless selected.
+- Add NUI translation store and locale-key validator.
+- Add placeholder consistency and missing-key validation.
+- Keep the runtime optional for single-language resources.
+
+### Database migrations
+
+- Add a provider-neutral migration runner contract.
+- Add a memory driver test fixture.
+- Add an oxmysql implementation only after oxmysql is activated and tested.
 
 ### Developer experience
 
-- Improve issue and pull request templates.
-- Add more executable validators only when they prevent demonstrated mistakes.
-- Add working examples without turning examples into runtime dependencies.
+- Add targeted validators only when they prevent demonstrated mistakes.
+- Expand working examples without turning them into default runtime dependencies.
+- Improve in-game NUI development guidance while retaining normal resource restart for Lua.
 
 ## Later possibilities
 
@@ -44,5 +55,7 @@ This roadmap is directional, not a delivery promise. The project is maintained a
 - Verified database and custom-resource providers.
 - Optional asset optimization tooling.
 - Expanded release artifact generation.
+
+Lua hot reload is intentionally out of scope. The project favors restart-safe lifecycle behavior over dynamic Lua module reloading.
 
 The project intentionally avoids speculative bridges, large dependency bundles, and features that have no verified use case.
