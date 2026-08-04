@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "name": "v.2-Template-FiveM",
+  "name": "FiveM-Resource-AI-Framework",
   "type": "fivem-resource-template",
   "author": "Newwy",
   "version": "1.0.0",
   "framework": {
     "mode": "standalone",
-    "optionalBridges": ["esx", "qbcore"]
+    "optionalBridges": ["esx", "qbcore", "qbox"]
   },
   "runtime": {
     "client": true,
@@ -26,10 +26,18 @@
     "provider": null
   },
   "registries": {
+    "index": ".ai/index.json",
     "features": ".ai/features",
     "components": ".ai/components",
     "events": ".ai/events",
-    "database": ".ai/database"
+    "database": ".ai/database",
+    "integrations": ".ai/integrations/providers"
+  },
+  "memory": {
+    "environment": ".ai/memory/environment.md",
+    "activeRequirements": ".ai/memory/requirements/active",
+    "deliveredRequirements": ".ai/memory/requirements/delivered",
+    "supersededRequirements": ".ai/memory/requirements/superseded"
   },
   "architectureDecisions": [
     "docs/decisions/001-config-architecture.md",
