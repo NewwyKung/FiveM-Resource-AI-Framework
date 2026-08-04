@@ -377,4 +377,159 @@ Do not add these without an explicit new requirement:
 - [ ] Optional capability routing is generated or explicitly deferred.
 - [ ] Manual FXServer verification is completed or clearly reported as pending.
 
+## 7. 📋 Checklist สั่ง AI / Developer ทำต่อ
+
+ส่วนนี้สามารถ copy-paste ให้ AI หรือทีมพัฒนาใช้ต่อได้ทันที ให้ทำตามลำดับความสำคัญ และต้องตรวจไฟล์ปัจจุบันก่อนสร้างหรือเขียนทับเสมอ
+
+---
+
+### 🚨 Priority 1: ทำให้ `resource/` เป็น Resource ตัวอย่างที่รันได้จริง
+
+> หมายเหตุ: หลัง PR #3 ไฟล์ bootstrap หลักมีอยู่แล้ว ห้ามสร้างทับโดยไม่อ่านไฟล์เดิม ให้ตรวจและเติมเฉพาะส่วนที่ยังขาด
+
+- [ ] ตรวจและทำ `resource/fxmanifest.lua` ให้สมบูรณ์ — มี `lua54`, `shared_scripts`, `client_scripts`, `server_scripts`, และ `ui_page 'html/index.html'` ที่ชี้ path ถูกต้อง
+- [ ] ตรวจ `resource/config/config.main.lua` — ต้องเป็น bootstrap config ที่โหลดก่อน config domain อื่น
+- [ ] ตรวจ `resource/client/main.lua` — ต้องเป็น bootstrap ขนาดเล็กและพิสูจน์ว่า client runtime เริ่มทำงานได้ โดยไม่ใส่ business logic จำนวนมาก
+- [ ] ตรวจ `resource/server/main.lua` — ต้องเป็น bootstrap ขนาดเล็กและพิสูจน์ว่า server runtime เริ่มทำงานได้
+- [ ] ตรวจ `resource/shared/lib/` และ `resource/shared/modules/` — ใช้ `.gitkeep` หรือ template module ขนาดเล็ก ไม่ใส่ README ที่จะติดเข้า production release โดยไม่จำเป็น
+- [ ] ตรวจ `resource/client/modules/` และ `resource/server/modules/` — เพิ่มตัวอย่าง module ง่ายๆ อย่างละ 1 ตัวเฉพาะเมื่อช่วยให้ผู้ใช้เข้าใจโครงสร้างจริง และต้องไม่สร้าง gameplay framework หรือ provider dependency
+- [ ] ยืนยันว่า copy เฉพาะ `resource/` ไปยัง FXServer แล้วสามารถ start ได้ โดยไม่ต้องพึ่งไฟล์จาก repository root ยกเว้นขั้นตอน build ก่อน deploy
+
+**เหตุผล:** ผู้ใช้ใหม่ต้องเห็น Resource ที่รันได้จริง ไม่ใช่เพียงโครงสร้าง placeholder แต่ต้องรักษา bootstrap ให้เล็กและ provider-neutral
+
+---
+
+### 🚨 Priority 2: `examples/` ต้องมีตัวอย่างจริง
+
+- [ ] สร้าง `examples/hello-world/` — resource ง่ายๆ ที่สาธิต client request → server validation/response → client result โดยไม่ใช้ NUI และไม่ผูก framework
+- [ ] สร้าง `examples/shop-system/` — ตัวอย่างเต็มที่มี config, client module, server module, database adapter contract, optional migration, integration boundaries และ NUI
+- [ ] ตัวอย่าง shop ต้องไม่ hardcode oxmysql หรือ framework เป็นค่าเริ่มต้น ให้ใช้ provider-neutral port/adapter และมีคำอธิบายวิธี activate provider
+- [ ] สร้าง `examples/README.md` — ระบุว่าแต่ละตัวอย่างสอนอะไร, ต้อง copy ไฟล์ใด, ต้องเลือก capability อะไร และวิธีรัน
+- [ ] ตรวจว่า AI โหลดเฉพาะตัวอย่างที่เกี่ยวข้อง ไม่ scan ตัวอย่างทั้งหมดทุกงาน
+
+**เหตุผล:** คนใหม่ต้องเห็นว่า Resource ที่สมบูรณ์หน้าตาอย่างไร โดยไม่ต้องเดาจาก rules และ skills อย่างเดียว
+
+---
+
+### 🚨 Priority 3: `tests/` ต้องมีสิ่งที่รันได้
+
+- [ ] ประเมินว่าจะใช้ `examples/capabilities/runtime-tests/test_runner/` เป็น canonical runner หรือย้ายแนวคิดไปเป็น `tests/runtime/`; ห้ามสร้าง test runner ซ้ำสองระบบ
+- [ ] เพิ่ม lightweight FXServer runtime test harness ที่เรียกจาก Server Console หรือ in-game command ที่จำกัดสิทธิ์อย่างชัดเจน
+- [ ] เพิ่ม test สำหรับ config loading
+- [ ] เพิ่ม test สำหรับ event/callback success, invalid payload, timeout และ duplicate request
+- [ ] เพิ่ม test สำหรับ resource start/stop/restart และ cleanup เมื่อเหมาะสม
+- [ ] สร้างหรืออัปเดต `tests/README.md` ให้บอกวิธีรันบน FXServer จริงและแยก pure tests, integration tests, runtime tests และ manual checks
+- [ ] Runtime test runner ต้องไม่ถูกใส่ใน production manifest โดยอัตโนมัติ
+
+**เหตุผล:** Test ต้องมี executable path ไม่ใช่มีเพียง checklist ในเอกสาร
+
+---
+
+### ⚠️ Priority 4: `scripts/` ต้องมี validation ที่เรียกง่าย
+
+- [ ] ตรวจของเดิมก่อนสร้างใหม่: `scripts/validate-template.mjs` มี validation หลายส่วนอยู่แล้ว ให้แยกไฟล์ใหม่เฉพาะเมื่อช่วยลดความซับซ้อนหรือ reuse ได้จริง
+- [ ] เพิ่มหรือแยก `scripts/validate-manifest.mjs` — ตรวจ path ใน `resource/fxmanifest.lua`, wildcard base path, UI page, runtime boundaries และไฟล์ที่อ้างแต่ไม่มีอยู่จริง
+- [ ] เพิ่ม `scripts/validate-secrets.mjs` — scan credential patterns แบบ fail-closed แต่ต้องรองรับ allowlist/false-positive handling และไม่ใช้ broad key-name sanitization แทนการตรวจค่าจริง
+- [ ] เพิ่ม `scripts/validate-lua.mjs` — ตรวจ syntax ของ `.lua` ผ่านเครื่องมือที่ pin version เช่น `luac`/LuaLS และรายงาน error โดยไม่แก้ไฟล์
+- [ ] เพิ่ม root `package.json` เฉพาะสำหรับ repository tooling พร้อม `npm run validate` ที่รวม validation ทั้งหมด
+- [ ] `npm run validate` ต้องไม่ build release, delete file, commit file หรือแก้ source อัตโนมัติ
+- [ ] อัปเดต local validation docs และ README ให้ใช้คำสั่งเดียวได้
+
+**เหตุผล:** Developer และ AI ควรตรวจคุณภาพก่อน commit/release ได้ด้วยคำสั่งเดียว
+
+---
+
+### ⚠️ Priority 5: GitHub Workflow Templates แบบ Opt-in
+
+- [ ] ห้ามเปิด `.github/workflows/` บน `main` โดยอัตโนมัติในตอนนี้
+- [ ] สร้าง `examples/github-workflows/ci.yml` — template สำหรับรัน `npm run validate`, Svelte check/build และ secret scan
+- [ ] สร้าง `examples/github-workflows/release.yml` — template สำหรับ tag-triggered release build โดยไม่ commit generated release กลับเข้า source branch
+- [ ] สร้าง `examples/github-workflows/README.md` — อธิบาย prerequisites, permissions, secrets และวิธี copy ไป `.github/workflows/`
+- [ ] สร้าง `docs/ci-cd.md` — ระบุว่า workflow ถูก disabled by default และวิธี enable อย่างปลอดภัย
+- [ ] ใช้ action versions ที่ pin อย่างเหมาะสม และหลีกเลี่ยง write permission หากไม่จำเป็น
+
+**เหตุผล:** ผู้ใช้ที่ต้องการ CI/CD ควรเปิดใช้ได้เร็ว แต่ hobby template ไม่ควรรัน Actions หรือสร้างไฟล์โดยอัตโนมัติเป็นค่าเริ่มต้น
+
+---
+
+### 💡 Priority 6: Optional capabilities
+
+- [ ] ใช้ `examples/capabilities/i18n/` เป็นฐาน แล้วเพิ่ม integration path สำหรับ `resource/shared/lib/locale.lua` และ `locales/en.lua` เฉพาะเมื่อ Resource เลือกหลายภาษา
+- [ ] ใช้ `examples/capabilities/database-migrations/` เป็นฐาน แล้วสร้าง `database/migrations/` หรือ `sql/migrations/` เฉพาะเมื่อ Resource เป็นเจ้าของ schema
+- [ ] รักษา migration เป็น forward-only, immutable after release, checksum-aware และ provider-neutral
+- [ ] ตรวจและทำ NUI bridge ให้ robust ต่อไป — timeout, abort, structured errors, bounded pending requests, response validation และ cleanup
+- [ ] Retry ต้องเปิดเฉพาะ operation ที่ idempotent หรือมี request ID ป้องกันผลซ้ำ ห้าม retry economic mutation แบบสุ่ม
+- [ ] Optional capability ต้องถูกเลือกจาก requirements ก่อน copy เข้า production resource
+
+---
+
+### 🔥 Priority 7: Production Quality
+
+- [ ] ออกแบบ logging abstraction เป็น capability contract ไม่ผูก logger provider และไม่สร้าง runtime implementation หาก Resource ไม่ต้องใช้
+- [ ] เพิ่ม callback/request-response abstraction ที่มี timeout, request ID, cleanup และ stable error contract
+- [ ] เพิ่ม event contract registry และ validation สำหรับ duplicate/conflicting event names โดยไม่สร้าง runtime event bus ที่ไม่จำเป็น
+- [ ] เพิ่ม development-only profiler hooks ที่ถูกตัดออกจาก release หรือปิดเป็นค่าเริ่มต้น
+- [ ] เพิ่ม resource lifecycle pattern สำหรับ `onResourceStart`, `onResourceStop`, player drop, listener/thread/entity cleanup
+- [ ] เพิ่ม hot-restart-safe cleanup examples แต่ไม่ทำ Lua hot reload
+- [ ] เพิ่ม coding standards และ diff-based review checklist แบบสั้น
+- [ ] กำหนด release gate ว่า local validation ที่เกี่ยวข้องต้องผ่าน 100% ก่อนสร้าง release
+
+## 8. 🧹 Files to remove from experimental commit range
+
+เจ้าของ Repository ต้องการนำไฟล์ที่เพิ่มตั้งแต่ commit:
+
+```text
+4ea5c4cfc5fc3d8caaf12501baae25215eea50a5
+```
+
+ถึง commit:
+
+```text
+b9fa3b7b8a51324efc520570e1c3db0536a473bd
+```
+
+ออกจาก Repository
+
+ตรวจจาก commit แรกและ compare range แล้ว ช่วงนี้เพิ่มไฟล์ทั้งหมด 10 ไฟล์ดังต่อไปนี้:
+
+- [ ] `CONTRIBUTING.md`
+- [ ] `SECURITY.md`
+- [ ] `SUPPORT.md`
+- [ ] `CHANGELOG.md`
+- [ ] `ROADMAP.md`
+- [ ] `ARCHITECTURE.md`
+- [ ] `FAQ.md`
+- [ ] `.github/ISSUE_TEMPLATE/bug_report.md`
+- [ ] `.github/ISSUE_TEMPLATE/feature_request.md`
+- [ ] `.github/PULL_REQUEST_TEMPLATE.md`
+
+### Removal procedure
+
+1. ตรวจว่าไฟล์ยังอยู่บน `main` และบันทึก reference ที่ชี้มายังไฟล์เหล่านี้
+2. ลบไฟล์ทั้ง 10 รายการด้วย Git-aware deletion
+3. หาก `.github/ISSUE_TEMPLATE/` หรือ `.github/` ว่างหลังลบ ให้ลบ directory ว่างจาก working tree
+4. แก้ README, docs หรือ AI instructions ที่ยังลิงก์ไปยังไฟล์ที่ลบ
+5. ห้ามลบ `AGENTS.md`, `README.md`, `README_TH.md`, `TODO.md`, `docs/`, `.ai/`, workflow templates ใน `examples/` หรือ runtime files เพียงเพราะอยู่ใกล้เคียงกัน
+6. รัน:
+
+```bash
+git grep -n "CONTRIBUTING.md\|SECURITY.md\|SUPPORT.md\|CHANGELOG.md\|ROADMAP.md\|ARCHITECTURE.md\|FAQ.md"
+git status --short
+node scripts/validate-template.mjs
+node scripts/build-ai-index.mjs --check
+```
+
+7. รายงานไฟล์ที่ลบ, references ที่แก้ และ validation ที่รันจริง
+
+## 9. Final definition of done
+
+- [ ] Checklist Priority 1-7 ได้รับการ triage ว่า implement, defer หรือ reject พร้อมเหตุผล
+- [ ] ไม่มีการสร้างระบบซ้ำกับ capability packs หรือ validators เดิม
+- [ ] ไฟล์ 10 รายการจาก experimental commit range ถูกลบตามคำสั่งเจ้าของ Repository
+- [ ] ไม่มี broken links หรือ stale references หลังการลบ
+- [ ] `resource/` สามารถ build, package และนำไปตรวจบน FXServer ได้
+- [ ] Local validation command มีทางใช้งานชัดเจน
+- [ ] Optional systems ไม่ถูกโหลดหรือ copy โดยอัตโนมัติ
+- [ ] Manual FXServer verification เสร็จ หรือระบุอย่างชัดเจนว่ายังค้าง
+
 When complete, move durable decisions into the appropriate rule, ADR, feature registry, or delivered requirement file. Keep `TODO.md` limited to unresolved work.
