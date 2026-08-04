@@ -25,7 +25,9 @@ jobs:
         run: |
           node --check scripts/validate-template.mjs
           node --check scripts/validate-integrations.mjs
+          node --check scripts/build-ai-index.mjs
           node --check scripts/create-release.mjs
+          node --check tests/release/create-release.integration.mjs
 
       - name: Validate template structure
         run: node scripts/validate-template.mjs
@@ -33,14 +35,23 @@ jobs:
       - name: Validate integration declarations
         run: node scripts/validate-integrations.mjs
 
+      - name: Validate AI registry index
+        run: node scripts/build-ai-index.mjs --check
+
       - name: Validate release policy
         run: node -e "JSON.parse(require('node:fs').readFileSync('release.config.json', 'utf8'))"
 
+      - name: Resolve pinned UI dependency lock
+        run: npm install --prefix ui --package-lock-only --ignore-scripts --no-audit --no-fund
+
       - name: Install UI dependencies
-        run: npm install --prefix ui --no-audit --no-fund
+        run: npm ci --prefix ui --no-audit --no-fund
 
       - name: Build UI
         run: npm run build --prefix ui
 
       - name: Dry-run release builder
         run: node scripts/create-release.mjs --dry-run --skip-ui-build
+
+      - name: Build and inspect release package
+        run: node tests/release/create-release.integration.mjs
