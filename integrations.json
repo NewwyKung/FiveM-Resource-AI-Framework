@@ -27,18 +27,10 @@
       "verified": false
     },
     "logger": {
-      "provider": "nc_discordlogs",
-      "resource": "nc_discordlogs",
+      "provider": "none",
+      "resource": null,
       "runtimes": ["client", "server"],
-      "verified": false,
-      "contract": ".ai/integrations/providers/nc_discordlogs.md",
-      "adapters": {
-        "client": "client/modules/integrations/logger.nc_discordlogs.lua",
-        "server": "server/modules/integrations/logger.nc_discordlogs.lua"
-      },
-      "optionDependencies": {
-        "screenshot": ["screenshot-basic"]
-      }
+      "verified": false
     },
     "progress": {
       "provider": "none",
