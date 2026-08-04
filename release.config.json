@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "outputDirectory": "release",
+  "include": [
+    "fxmanifest.lua",
+    "client",
+    "server",
+    "shared",
+    "config",
+    "html",
+    "locales",
+    "stream",
+    "data",
+    "sql",
+    "LICENSE",
+    "README.md"
+  ],
+  "exclude": [
+    "**/.gitkeep",
+    "**/*.example.lua",
+    "**/*.example.json",
+    "**/*.example.js",
+    "**/*.map",
+    "**/.DS_Store"
+  ],
+  "secretKeys": [
+    "webhook",
+    "webhookUrl",
+    "discordWebhook",
+    "token",
+    "apiKey",
+    "apiSecret",
+    "clientSecret",
+    "password",
+    "secret"
+  ],
+  "secretValuePatterns": [
+    "https://discord(?:app)?\\.com/api/webhooks/",
+    "https://hooks\\.slack\\.com/",
+    "-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----"
+  ]
+}
