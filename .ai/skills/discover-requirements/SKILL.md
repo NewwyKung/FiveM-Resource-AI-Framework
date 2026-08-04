@@ -44,6 +44,17 @@ Before creating a new resource or material feature, check `.ai/memory/environmen
 
 Store confirmed server-wide selections in `.ai/memory/environment.md`. Store normalized provider APIs under `.ai/integrations/providers/`. Never store secrets. If a capability is not required, leave it unresolved and do not generate a bridge.
 
+## Optional capability selection
+Ask only when the feature characteristics make the choice relevant:
+
+- **Runtime tests:** ask whether the user wants the opt-in FXServer harness when natives, lifecycle, state bags, providers, CEF, player drop, or resource restart behavior must be verified. Otherwise produce a manual runtime checklist.
+- **Localization:** ask whether the resource is single-language or multilingual. Activate `examples/capabilities/i18n/` only for multilingual or explicitly translation-ready resources.
+- **Database migrations:** when persistence is required, confirm whether schema changes are included. Activate `examples/capabilities/database-migrations/` only when the resource owns database schema.
+- **NUI state:** when UI has asynchronous or multi-screen behavior, use the canonical feature state lifecycle and NUI resilience helpers.
+- **Lua type contracts:** apply the repository type-safety practice to public contracts and untrusted boundaries without asking unless the user explicitly opts out.
+
+Lua hot reload is not offered. Use restart-safe resource lifecycle behavior and normal resource restart instead.
+
 ## Question groups
 
 ### 1. Outcome and scope
@@ -65,7 +76,7 @@ Read confirmed environment and selected provider profiles first. Resolve only mi
 - UI necessity, gameplay context, viewport, screens/states/input/assets/Thai text. Start with `wireframe-ui`.
 
 ### 7. Quality and delivery
-- Performance, localization, security, observability, abuse cases, acceptance evidence.
+- Performance, localization, security, observability, abuse cases, runtime-test choice, migration requirements, and acceptance evidence.
 
 ## Required artifacts before implementation
 - `.ai/memory/requirements/active/<resource-or-feature>.md`
