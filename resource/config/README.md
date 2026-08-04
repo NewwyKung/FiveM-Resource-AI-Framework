@@ -1,22 +1,15 @@
 # Configuration structure
 
-`config/config.main.lua` is the shared configuration entrypoint and must load first.
+`resource/config/config.main.lua` is the shared configuration entrypoint and must load first.
 
 ## Layout
 
 ```text
 config/
-├─ config.main.lua
-├─ config.item.lua
-├─ functions/
-│  ├─ config.functions.shared.lua
-│  ├─ config.functions.client.lua
-│  └─ config.functions.server.lua
-├─ shared/
-├─ client/
-├─ server/
-└─ <domain>/
-   └─ <config-file>.lua
+|-- config.main.lua
+|-- config.item.lua
+`-- <domain>/
+    `-- <config-file>.lua
 ```
 
 ## Conventions
@@ -25,7 +18,6 @@ config/
 - A small shared domain may use a root file such as `config.item.lua`.
 - Root domain files are listed explicitly in `fxmanifest.lua` to keep load order deterministic.
 - A large domain should use a folder such as `config/shop/24.7_store.lua`; nested shared domain folders are loaded by manifest glob.
-- Put client-only values in `config/client/`.
-- Put server-only values and secrets in `config/server/`.
-- Put reusable configuration helpers in `config/functions/` according to their runtime.
+- Put executable helpers in `resource/shared/lib/`, `resource/client/lib/`, or `resource/server/lib/` according to runtime.
+- Do not create `config/shared/`, `config/client/`, `config/server/`, or `config/functions/`.
 - Never place server secrets in shared or client configuration.

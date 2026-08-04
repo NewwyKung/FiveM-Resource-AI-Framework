@@ -14,8 +14,8 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 - `.ai/recipes/README.md` — NUI screen recipe only
 - Approved `docs/ui-spec/<screen>.md`
 - `docs/design/design-system.md`
-- `ui/src/js/NuiBridge.js`
-- `ui/src/js/createFeatureState.svelte.js` when asynchronous state is required
+- `resource/ui/src/js/NuiBridge.js`
+- `resource/ui/src/js/createFeatureState.svelte.js` when asynchronous state is required
 - relevant components, contracts, state, and assets
 
 ## Workflow
@@ -69,7 +69,7 @@ property: calc(<design-pixel-number> * var(--px-to-vh));
 The value is a unitless pixel measurement from the 1440px-high design. Never append `px` inside the multiplication or multiply `--scale` again.
 
 ## Constraints
-- Do not edit generated `html/` files directly.
+- Do not edit generated `resource/html/` files directly.
 - Do not replace interactive layout with a full-screen image.
 - Do not bake localized or dynamic text into artwork.
 - Do not redesign approved decisions during implementation.

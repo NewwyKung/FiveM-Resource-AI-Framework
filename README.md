@@ -13,7 +13,7 @@ This repository is designed to help both developers and coding agents produce co
 - Wireframe-first UI workflow with Svelte 5 and Vite.
 - Provider documentation can be registered once and reused later.
 - Small, task-specific AI context instead of reading every rule and document.
-- Automated CI checks and deployable release folders.
+- Local validation scripts and deployable release folders.
 
 ## Quick Start
 
@@ -29,7 +29,7 @@ cd my_resource
 Update the resource metadata in:
 
 ```text
-fxmanifest.lua
+resource/fxmanifest.lua
 resource.json
 ```
 
@@ -74,17 +74,17 @@ For Lua-only work, follow the approved requirements and relevant task skill.
 For NUI development:
 
 ```bash
-npm ci --prefix ui
-npm run dev --prefix ui
-npm run build --prefix ui
+npm ci --prefix resource/ui
+npm run dev --prefix resource/ui
+npm run build --prefix resource/ui
 ```
 
-- UI source: `ui/`
-- Generated output: `html/`
+- UI source: `resource/ui/`
+- Generated output: `resource/html/`
 - Development port: `5171`
-- Never edit generated `html/` files directly.
+- Never edit generated `resource/html/` files directly.
 
-Run the repository validations through GitHub Actions or the relevant scripts before release.
+Run the local validation scripts before release. GitHub validation Actions are intentionally not enabled by default.
 
 ## Working with AI
 
@@ -195,7 +195,7 @@ The responsive sizing system uses a `1440px`-high source canvas:
 
 The design-pixel number is unitless. Do not append `px` inside `calc()` and do not multiply `--scale` again.
 
-NUI code should use the shared bridge utilities under `ui/src/js/` instead of creating a new transport abstraction for every feature.
+NUI code should use the shared bridge utilities under `resource/ui/src/js/` instead of creating a new transport abstraction for every feature.
 
 ## Integrations
 
@@ -219,28 +219,28 @@ Register documentation once
 Configuration starts from:
 
 ```text
-config/config.main.lua
+resource/config/config.main.lua
 ```
 
 Additional domains can use:
 
 ```text
-config/config.item.lua
-config/shop/24.7_store.lua
-config/functions/config.functions.client.lua
-config/functions/config.functions.server.lua
+resource/config/config.item.lua
+resource/config/shop/24.7_store.lua
+resource/client/lib/config.lua
+resource/server/lib/config.lua
 ```
 
 Runtime code is separated into:
 
 ```text
-shared/lib/         reusable cross-runtime utilities
-shared/modules/     contracts, constants, and shared definitions
-client/modules/     client behavior and presentation integration
-server/modules/     authority, validation, persistence, and business logic
+resource/shared/lib/       reusable cross-runtime utilities
+resource/shared/modules/   contracts, constants, and shared definitions
+resource/client/modules/   client behavior and presentation integration
+resource/server/modules/   authority, validation, persistence, and business logic
 ```
 
-`client/main.lua` and `server/main.lua` are bootstraps and should remain small.
+`resource/client/main.lua` and `resource/server/main.lua` are bootstraps and should remain small.
 
 ## Production Releases
 
@@ -276,12 +276,13 @@ See [`docs/releasing.md`](docs/releasing.md) for the complete release policy.
 ## Repository Map
 
 ```text
-config/                 editable resource configuration
-shared/                 shared Lua code
-client/                 client Lua modules
-server/                 server Lua modules
-ui/                     Svelte 5 NUI source
-html/                   generated NUI build
+resource/               FiveM development resource and junction target
+resource/config/        editable resource configuration
+resource/shared/        shared Lua code
+resource/client/        client Lua modules
+resource/server/        server Lua modules
+resource/ui/            Svelte 5 NUI source
+resource/html/          generated NUI build
 release/                generated deployable resources
 examples/               concise and runnable examples
 scripts/                validation and release tooling
@@ -292,7 +293,7 @@ AGENTS.md                main AI router
 integrations.json        selected provider metadata
 release.config.json      release allowlist and sanitizer policy
 resource.json            machine-readable resource metadata
-fxmanifest.lua           FiveM manifest and load order
+resource/fxmanifest.lua  FiveM manifest and load order
 ```
 
 ## Important Documentation

@@ -28,7 +28,7 @@ npm ci --prefix ui
 npm run build --prefix ui
 ```
 
-แก้ metadata ใน `fxmanifest.lua` และ `resource.json` จากนั้นเริ่มงานกับ AI:
+แก้ metadata ใน `resource/fxmanifest.lua` และ `resource.json` จากนั้นเริ่มงานกับ AI:
 
 ```text
 Use .ai/skills/discover-requirements/SKILL.md.
@@ -56,8 +56,8 @@ idle → loading → ready → submitting → success/error → reset
 ไฟล์หลัก:
 
 ```text
-ui/src/js/createFeatureState.svelte.js
-ui/src/js/NuiBridge.js
+resource/ui/src/js/createFeatureState.svelte.js
+resource/ui/src/js/NuiBridge.js
 ```
 
 NUI bridge รองรับ timeout, AbortController, pending-request limit, response contract, structured errors, disposable listeners และ cleanup

@@ -21,7 +21,7 @@ Load:
 - Provider profiles: maximum 1 per capability used by the task.
 - UI specifications: only the affected screen(s).
 - Historical requirements: do not load unless resolving a regression, migration, or prior decision.
-- Generated `html/`: do not read for source implementation; inspect only for release/build validation.
+- Generated `resource/html/`: do not read for source implementation; inspect only for release/build validation.
 
 ## Avoid
 

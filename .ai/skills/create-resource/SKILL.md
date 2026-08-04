@@ -30,7 +30,7 @@ If either is missing or material questions remain, stop and use `discover-requir
 5. Create focused modules; keep `main.lua` as bootstrap.
 6. Implement documented event/API/data contracts before wiring consumers.
 7. Add optional NUI/database/framework code only when approved.
-8. Update `fxmanifest.lua` deterministically.
+8. Update `resource/fxmanifest.lua` deterministically.
 9. Add tests for approved normal, invalid, failure, disconnect, restart, and cleanup paths.
 10. Update feature, contract, database, component, and resource registries.
 11. Record implementation deviations; do not silently change approved behavior.

@@ -4,7 +4,7 @@
 - Prefer local variables/functions; avoid accidental globals.
 - Keep one module focused on one responsibility.
 - `main.lua` initializes modules; it should not hold feature logic.
-- Utilities reusable by both runtimes belong in `shared/lib/`.
+- Utilities reusable by both runtimes belong in `resource/shared/lib/`.
 - Do not depend on alphabetical wildcard order. Explicitly order real dependencies.
 - Cache stable native results where safe; never cache volatile entity state blindly.
 - Bound caches, queues, pending callbacks, and history tables.

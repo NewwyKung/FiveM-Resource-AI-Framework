@@ -8,8 +8,8 @@ This file is the persistent visual source of truth for UI work. Keep it compact 
 - Primary viewport: 1920x1080
 - Secondary viewport: 1280x720
 - Primary language: Thai
-- UI source: `ui/`
-- Generated output: `html/`
+- UI source: `resource/ui/`
+- Generated output: `resource/html/`
 
 ## Required decisions
 Every project using this template should define:

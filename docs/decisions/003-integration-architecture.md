@@ -13,7 +13,7 @@ Feature
 → external resource
 ```
 
-Provider selection is declared in `integrations.json` for AI/tooling and mirrored in `config/config.integrations.lua` for FiveM runtime code.
+Provider selection is declared in `integrations.json` for AI/tooling and mirrored in `resource/config/config.integrations.lua` only when runtime integration is activated.
 
 ## Runtime-specific options
 

@@ -1,6 +1,6 @@
 # UI Component Registry
 
-The template currently ships without prebuilt UI components. `ui/src/lib/` is intentionally empty so each resource begins from its approved requirements, wireframe, visual design, and component needs instead of inheriting demo styling.
+The template currently ships without prebuilt UI components. `resource/ui/src/lib/` is intentionally empty so each resource begins from its approved requirements, wireframe, visual design, and component needs instead of inheriting demo styling.
 
 Before creating a component:
 1. Check the approved screen specification.

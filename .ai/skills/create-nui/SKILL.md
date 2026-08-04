@@ -19,7 +19,7 @@ description: Build or modify Svelte NUI with a safe FiveM bridge.
 5. Connect bridge and client callbacks with timeout/error handling.
 6. Implement close/focus/reset behavior.
 7. Optimize assets and test long Thai content.
-8. Build to `html/` and verify production paths.
+8. Build from `resource/ui/` to `resource/html/` and verify production paths.
 
 ## Validation
 - browser mode

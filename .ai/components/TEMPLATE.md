@@ -1,6 +1,6 @@
 # <Component Name>
 
-- Source: `ui/src/...`
+- Source: `resource/ui/src/...`
 - Purpose:
 - Props:
 - Events:
