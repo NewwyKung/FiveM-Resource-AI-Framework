@@ -10,8 +10,11 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 - `.ai/rules/design.md`
 - `.ai/rules/ui.md`
 - `.ai/rules/testing.md`
+- `.ai/rules/engineering-quality.md`
+- `.ai/recipes/README.md` — NUI screen recipe only
 - Approved `docs/ui-spec/<screen>.md`
 - `docs/design/design-system.md`
+- `ui/src/js/NuiBridge.js`
 - Relevant existing components, tokens, bridge code, and assets
 
 ## Workflow
@@ -22,9 +25,9 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 5. Apply approved tokens, spacing, typography, depth, and motion; do not invent silent overrides.
 6. Convert 1440px design measurements with the canonical responsive system from `ui/src/app.css`.
 7. Implement all applicable states and recovery paths from the specification.
-8. Add browser-mode mock data for representative states.
-9. Connect NUI messages/callbacks with timeout and error handling where responses are awaited.
-10. Verify Escape, close, focus return, and cleanup behavior.
+8. Add code-driven browser scenarios with `NuiDebug.js` for representative states; do not build a debug-menu UI unless requested.
+9. Use `NuiBridge.js` for callbacks, normalized messages, disposable listeners, and Escape behavior instead of creating feature-specific bridge helpers.
+10. Verify callback errors, Escape, close, focus return, listener disposal, and resource-stop cleanup.
 11. Build the UI and capture representative screenshots when tooling is available.
 
 ## Responsive implementation rule
@@ -53,6 +56,8 @@ Use percentage, flex/grid sizing, viewport units, `min()`, `max()`, or `clamp()`
 - Do not bake localized or dynamic text into artwork.
 - Do not redesign approved decisions during implementation; record discrepancies or request a spec update.
 - Avoid new dependencies unless the approved design cannot be implemented reasonably without one.
+- Do not copy UI components, Tailwind configuration, or visual design from external templates unless explicitly approved.
+- Do not create a second NUI transport abstraction when `NuiBridge.js` supports the required operation.
 
 ## Completion
-Report changed files, states covered, validation performed, screenshots produced, deviations from the specification, and checks that could not run.
+Report changed files, states covered, browser scenarios added, validation performed, screenshots produced, deviations from the specification, and checks that could not run.
