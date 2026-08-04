@@ -60,8 +60,8 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Generated NUI output. Build locally or through the release pipeline.
-html/*
-!html/.gitkeep
+resource/html/*
+!resource/html/.gitkeep
 
 # Generated release packages
 release/*

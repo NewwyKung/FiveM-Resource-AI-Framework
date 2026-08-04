@@ -6,10 +6,8 @@ version '1.0.0'
 description 'Reusable FiveM resource template'
 lua54 'yes'
 
--- Production:
--- ui_page 'html/index.html'
--- Development:
-ui_page 'http://localhost:5171/'
+-- Run Vite separately for browser development; FXServer uses the production build.
+ui_page 'html/index.html'
 
 shared_scripts {
     -- Config contains shared editable values only.
@@ -35,5 +33,6 @@ server_scripts {
 }
 
 files {
-    'html/**',
+    'html/index.html',
+    'html/**/*',
 }

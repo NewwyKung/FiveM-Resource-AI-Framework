@@ -4,7 +4,7 @@
     {
       "name": "svelte-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["--prefix", "ui", "run", "dev"],
+      "runtimeArgs": ["--prefix", "resource/ui", "run", "dev"],
       "port": 5171
     }
   ]
