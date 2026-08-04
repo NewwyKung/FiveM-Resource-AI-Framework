@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Validate template structure
+        run: node scripts/validate-template.mjs
+
       - name: Validate integration declarations
         run: node scripts/validate-integrations.mjs
 
