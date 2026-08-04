@@ -5,11 +5,12 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 
 ## Source of truth
 1. Repository files on the current working branch.
-2. `docs/decisions/` for approved architecture decisions.
-3. Approved `docs/ui-spec/` files and `docs/design/design-system.md` for UI decisions.
-4. `.ai/rules/` for domain constraints.
-5. `.ai/skills/` for task workflows.
-6. Registries under `.ai/features/`, `.ai/components/`, `.ai/events/`, and `.ai/database/` for navigation and contracts.
+2. Approved requirements under `.ai/memory/requirements/`.
+3. `docs/decisions/` for approved architecture decisions.
+4. Approved `docs/ui-spec/` files and `docs/design/design-system.md` for UI decisions.
+5. `.ai/rules/` for domain constraints.
+6. `.ai/skills/` for task workflows.
+7. Registries under `.ai/features/`, `.ai/components/`, `.ai/events/`, and `.ai/database/` for navigation and contracts.
 
 ## Repository map
 - `config/`: editable configuration and config helpers.
@@ -20,11 +21,25 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `html/`: generated NUI output; do not edit directly.
 - `docs/design/`: design system, pipeline, sources, and review guidance.
 - `docs/ui-spec/`: screen-level wireframes and visual specifications.
+- `.ai/memory/requirements/`: approved resource and feature briefs.
 - `.ai/memory/`: concise durable project context.
 - `.ai/knowledge/`: repository-specific technical knowledge.
 - `.ai/prompts/`: short task entrypoints.
-- `.ai/checklists/`: completion gates.
+- `.ai/checklists/`: discovery and completion gates.
 - `tests/`: test code and fixtures.
+
+## Discovery gate
+For a new resource, feature, redesign, or materially ambiguous change, use `.ai/skills/discover-requirements/SKILL.md` before implementation.
+
+A request such as “make a shop system” is not implementation-ready. Clarify and help design the outcome, scope, flows, permissions, authority, data, configuration, integrations, UI, failures, security, tests, and acceptance criteria. Offer concrete options and a recommended default instead of asking the user to invent the architecture alone.
+
+Do not modify production code until:
+- the requirements brief is stored under `.ai/memory/requirements/`;
+- the feature registry is created or updated;
+- material decisions are resolved;
+- the user approves the brief or explicitly authorizes the recommended defaults.
+
+Discovery may be abbreviated only for a truly local, low-risk edit whose intent and impact are already explicit.
 
 ## Context routing
 Read only what the task needs:
@@ -38,10 +53,10 @@ Read only what the task needs:
 - Assets: `.ai/rules/assets.md`
 - Testing/release: `.ai/rules/testing.md`
 
-Read the relevant feature/contract registry when one exists, then read one matching skill from `.ai/skills/INDEX.md`.
+Read the approved requirements and relevant feature/contract registry, then read one matching implementation skill from `.ai/skills/INDEX.md`.
 
 ## UI workflow routing
-- New screen or major redesign: `wireframe-ui` → wireframe approval → `design-ui` → visual approval → `implement-ui` → `review-ui` → `refine-ui`.
+- New screen or major redesign: discovery → `wireframe-ui` → wireframe approval → `design-ui` → visual approval → `implement-ui` → `review-ui` → `refine-ui`.
 - Existing approved wireframe needing visual direction: start at `design-ui`.
 - Existing approved visual specification: start at `implement-ui`.
 - Existing implementation audit: start at `review-ui`.
@@ -58,18 +73,20 @@ Read the relevant feature/contract registry when one exists, then read one match
 - Reuse existing modules/components before creating new ones.
 - Do not add dependencies without a concrete need.
 - Preserve backward compatibility for public APIs unless a breaking change is explicitly approved.
-- Keep feature, component, event, database, and resource metadata current when contracts change.
-- Do not silently invent design tokens or override an approved screen specification.
+- Keep requirements, feature, component, event, database, and resource metadata current when contracts change.
+- Do not silently invent product behavior, design tokens, or architecture.
 - Do not replace interactive UI with a full-screen image or bake dynamic/localized text into raster assets.
 
 ## Standard workflow
-1. Inspect relevant files, registries, decisions, specifications, and existing patterns.
-2. Identify runtime boundaries, authority, design constraints, and risks.
-3. State only material assumptions.
-4. Implement the smallest coherent change.
-5. Validate affected paths and representative states.
-6. Run the applicable checklist.
-7. Summarize changed files, validation, evidence, and remaining risks.
+1. Determine whether discovery is required.
+2. Inspect relevant files, memory, registries, decisions, specifications, and existing patterns.
+3. Resolve and approve material requirements before code changes.
+4. Identify runtime boundaries, authority, design constraints, and risks.
+5. Implement the smallest coherent approved change.
+6. Validate affected paths and representative states.
+7. Run the applicable checklist.
+8. Update requirements and registries when approved behavior changes.
+9. Summarize changed files, validation, evidence, and remaining risks.
 
 ## Completion criteria
-A task is incomplete when applicable checks were not run, registries/specifications are stale, representative states were not considered, or generated/runtime references are stale. Be explicit about checks that could not be executed.
+A task is incomplete when required discovery or approval is missing, applicable checks were not run, memory/registries/specifications are stale, representative states were not considered, or generated/runtime references are stale. Be explicit about checks that could not be executed.
