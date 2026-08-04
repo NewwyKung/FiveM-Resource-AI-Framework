@@ -25,6 +25,7 @@ for (const required of [
   '.ai/memory/requirements/superseded',
   '.ai/rules/integrations.md',
   '.ai/skills/discover-requirements/SKILL.md',
+  '.ai/skills/setup-dev-resource/SKILL.md',
   '.ai/examples/adapter-pattern/README.md',
   '.ai/examples/database-port/README.md',
   '.ai/examples/server-authoritative-event/README.md',
@@ -34,6 +35,7 @@ for (const required of [
   'tests/release/create-release.integration.mjs',
   'scripts/build-ai-index.mjs',
   'scripts/create-release.mjs',
+  'scripts/setup-dev-resource.ps1',
   'release.config.json',
   'ui/src/app.css',
   'html/.gitkeep',
@@ -44,6 +46,9 @@ const forbiddenPaths = [
   'Development',
   'web',
   'fivem-development.skill',
+  'config/client',
+  'config/server',
+  'config/shared',
   'config/config.integrations.lua',
   'shared/modules/integrations.lua',
   'ui/src/lib/ComponentShowcase.svelte',
@@ -51,7 +56,7 @@ const forbiddenPaths = [
 ];
 
 for (const file of forbiddenPaths) {
-  if (exists(file)) errors.push(`Legacy or inactive path must not exist: ${file}`);
+  if (exists(file)) errors.push(`Legacy, redundant, or inactive path must not exist: ${file}`);
 }
 
 if (exists('html')) {
@@ -75,6 +80,32 @@ if (exists('release.config.json')) {
     errors.push('release.config.json must define explicit jsonSecretPaths and textSanitizers arrays.');
   }
 }
+
+const staleTerms = [
+  'Development/Svelte',
+  'localhost:3301',
+  'OVERLORD UI COMPONENTS',
+  'v.2-Template-FiveM',
+];
+const scanRoots = ['AGENTS.md', '.ai', 'docs', 'scripts', 'ui', 'fxmanifest.lua'];
+const allowedExtensions = new Set(['.md', '.json', '.js', '.mjs', '.ts', '.svelte', '.css', '.lua', '.ps1', '.html']);
+
+function scan(relativePath) {
+  const absolutePath = path.join(root, relativePath);
+  if (!fs.existsSync(absolutePath)) return;
+  const stat = fs.statSync(absolutePath);
+  if (stat.isDirectory()) {
+    for (const name of fs.readdirSync(absolutePath)) scan(path.join(relativePath, name));
+    return;
+  }
+  if (!allowedExtensions.has(path.extname(relativePath))) return;
+  const content = fs.readFileSync(absolutePath, 'utf8');
+  for (const term of staleTerms) {
+    if (content.includes(term)) errors.push(`Stale reference '${term}' found in ${relativePath}`);
+  }
+}
+
+for (const scanRoot of scanRoots) scan(scanRoot);
 
 if (errors.length) {
   for (const error of errors) console.error(`[template] ${error}`);
