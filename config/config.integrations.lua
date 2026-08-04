@@ -18,8 +18,8 @@ Config.Integrations = {
         resource = nil,
     },
     logger = {
-        provider = 'nc_discordlogs',
-        resource = 'nc_discordlogs',
+        provider = 'none',
+        resource = nil,
     },
     progress = {
         provider = 'none',
