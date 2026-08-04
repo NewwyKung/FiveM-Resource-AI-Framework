@@ -1,0 +1,56 @@
+{
+  "$schema": "./docs/schemas/integrations.schema.json",
+  "version": 1,
+  "capabilities": {
+    "framework": {
+      "provider": "standalone",
+      "resource": null,
+      "runtimes": ["client", "server"],
+      "verified": true
+    },
+    "database": {
+      "provider": "none",
+      "resource": null,
+      "runtimes": ["server"],
+      "verified": false
+    },
+    "inventory": {
+      "provider": "none",
+      "resource": null,
+      "runtimes": ["client", "server"],
+      "verified": false
+    },
+    "notify": {
+      "provider": "none",
+      "resource": null,
+      "runtimes": ["client", "server"],
+      "verified": false
+    },
+    "logger": {
+      "provider": "nc_discordlogs",
+      "resource": "nc_discordlogs",
+      "runtimes": ["client", "server"],
+      "verified": false,
+      "contract": ".ai/integrations/providers/nc_discordlogs.md",
+      "adapters": {
+        "client": "client/modules/integrations/logger.nc_discordlogs.lua",
+        "server": "server/modules/integrations/logger.nc_discordlogs.lua"
+      },
+      "optionDependencies": {
+        "screenshot": ["screenshot-basic"]
+      }
+    },
+    "progress": {
+      "provider": "none",
+      "resource": null,
+      "runtimes": ["client"],
+      "verified": false
+    },
+    "target": {
+      "provider": "none",
+      "resource": null,
+      "runtimes": ["client"],
+      "verified": false
+    }
+  }
+}
