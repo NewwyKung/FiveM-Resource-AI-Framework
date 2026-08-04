@@ -5,29 +5,27 @@ Store concise, durable project facts and approved requirements that are not reli
 ## Files
 - `project-style.md`: stable product, code, and visual preferences.
 - `known-problems.md`: confirmed recurring problems and workarounds.
-- `requirements/<resource-or-feature>.md`: discovery output and approved implementation briefs.
-- `requirements/TEMPLATE.md`: required structure for resource and feature requirements.
+- `environment.md`: confirmed server-wide framework, database, libraries, and integrations.
+- `requirements/active/<feature>.md`: Discovery, Proposed, Approved, or Implementing briefs.
+- `requirements/delivered/<feature>.md`: completed requirements used for maintenance/regression context.
+- `requirements/superseded/<feature>.md`: replaced decisions used only for history/migration analysis.
+- `requirements/TEMPLATE.md`: required structure for a new active requirement.
 
-## Requirements lifecycle
+## Lifecycle
 
 ```text
-Discovery
-→ Proposed brief
-→ User approval or authorization of recommended defaults
-→ Approved
-→ Implementing
-→ Delivered
-→ Superseded when replaced
+Discovery → Proposed → Approved → Implementing → Delivered
+                                           ↘ Superseded
 ```
 
-Approved requirements are a source of truth. When implementation needs to differ, record the deviation and obtain approval rather than silently changing product behavior.
+Move one requirements file between lifecycle folders; do not duplicate it. Read `active/` first. Load delivered or superseded history only when the current task needs it.
 
 ## Rules
 - Do not store raw chat transcripts; capture decisions, rationale, constraints, and approval.
 - Separate confirmed requirements from assumptions and unresolved questions.
-- Record rejected alternatives when they matter to future work.
-- Prefer links to feature registries, UI specs, source files, and ADRs over duplicated implementation detail.
-- Update the requirements file when approved behavior changes.
-- Remove or mark stale entries when superseded.
+- Record rejected alternatives only when they matter to future work.
+- Prefer links to registries, UI specs, source files, provider profiles, and ADRs over duplicated implementation detail.
+- Update and move the requirements file when approved behavior or status changes.
 - Do not store secrets, credentials, personal data, or temporary debugging output.
-- Agents read only the relevant memory file for the current task.
+- Agents read only the memory file relevant to the current task.
+- Temporary task navigation belongs in `.ai/work/current-task.md`, not durable memory.
