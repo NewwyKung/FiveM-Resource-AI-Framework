@@ -18,9 +18,10 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `client/`: client-only modules and bootstrap.
 - `server/`: server-only modules and bootstrap.
 - `ui/`: Svelte NUI source.
-- `html/`: generated NUI output; do not edit directly.
+- `html/`: ignored generated NUI output; build it, never edit or commit it.
 - `integrations.json`: selected provider metadata; it does not activate runtime code by itself.
 - `examples/resources/`: runnable examples not loaded by the template resource.
+- `examples/capabilities/`: optional i18n, migration, and runtime-test packs loaded only when selected.
 - `.ai/examples/`: concise patterns loaded only when relevant.
 - `.ai/integrations/`: provider profiles and integration templates.
 - `.ai/memory/environment.md`: confirmed framework, database, libraries, and server-wide providers.
@@ -48,6 +49,9 @@ Read only what the task needs:
 - Environment/integrations: `.ai/memory/environment.md`, `integrations.json`, `.ai/rules/integrations.md`, selected provider profile only
 - Database boundary: `.ai/examples/database-port/README.md` only when persistence is required
 - Framework/resource adapter: `.ai/examples/adapter-pattern/README.md` only when a provider is activated
+- Optional i18n: `examples/capabilities/i18n/README.md` only when multiple locales are approved
+- Optional migrations: `examples/capabilities/database-migrations/README.md` only when the resource owns database schema
+- Optional FXServer tests: `examples/capabilities/runtime-tests/README.md` only when selected or runtime behavior cannot be covered otherwise
 - Security/events: `.ai/rules/security.md`, `.ai/rules/fault-handling.md`
 - UI: `.ai/rules/design.md`, `.ai/rules/ui.md`, relevant UI skill/specification
 - Testing/release: `.ai/rules/testing.md`, applicable checklist
@@ -70,7 +74,7 @@ New screen or major redesign:
 ## Core invariants
 - Work on the requested branch; never assume it.
 - Make the smallest complete change and avoid unrelated edits.
-- Do not edit generated files under `html/`.
+- Do not edit or commit generated files under `html/`.
 - Keep client, server, shared, config, UI, and provider responsibilities separate.
 - Treat client input as untrusted; authoritative decisions belong on the server.
 - `main.lua` files are bootstraps, not business-logic containers.
@@ -89,7 +93,7 @@ New screen or major redesign:
 8. Run applicable checklists and CI validations.
 9. Update memory, registries, provider profiles, specifications, and `.ai/index.json`.
 10. Move delivered or superseded requirements to the matching lifecycle folder.
-11. Remove unused adapters, configs, dependencies, manifest entries, copied examples, and dead files.
+11. Remove unused adapters, configs, dependencies, manifest entries, copied examples, generated output, and dead files.
 12. Clear the task packet after durable decisions are stored.
 13. Summarize changes, evidence, checks not run, and remaining risks.
 
