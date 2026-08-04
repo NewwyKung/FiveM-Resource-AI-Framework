@@ -1,6 +1,6 @@
 ---
 name: design-ui
-description: Design a distinctive, production-ready FiveM UI screen or visual system before implementation. Use for new screens, redesigns, visual direction, layout, hierarchy, tokens, states, interactions, and asset planning. Do not use for small CSS fixes or implementing an already approved specification.
+description: Convert an approved wireframe into a distinctive, production-ready FiveM visual design and complete screen specification. Use after wireframe-ui for new screens and major redesigns. Do not use for small CSS fixes or implementation of an already approved specification.
 ---
 
 # Design UI
@@ -10,28 +10,34 @@ description: Design a distinctive, production-ready FiveM UI screen or visual sy
 - `.ai/rules/design.md`
 - `.ai/rules/ui.md`
 - `docs/design/design-system.md`
-- `docs/ui-spec/TEMPLATE.md`
-- Existing relevant components and screen specifications
+- Approved `docs/ui-spec/<screen>.md`
+- Existing relevant components
 - `.ai/rules/assets.md` only when custom artwork is required
 
+## Preconditions
+- The screen specification contains a wireframe.
+- `Wireframe status` is `Approved`.
+- Information hierarchy, layout regions, flows, and state coverage are stable.
+
+If these conditions are missing, return to `wireframe-ui` instead of hiding layout decisions inside visual styling.
+
 ## Workflow
-1. Define purpose, users, gameplay context, data, technical constraints, and success criteria.
+1. Confirm the approved wireframe and implementation constraints.
 2. Inspect the existing design system and reusable components before proposing new patterns.
 3. Commit to one clear aesthetic direction and one memorable visual idea that fits the feature.
-4. Define information hierarchy before visual decoration.
-5. Specify layout regions, screen coverage, grid, spacing, scroll ownership, and responsive behavior.
-6. Define typography, palette roles, shape/depth, motion vocabulary, and anti-patterns.
-7. Map the component tree and identify which components already exist.
-8. Design applicable states: loading, default, empty, sparse, dense, selected, disabled, error, and destructive.
-9. Define mouse, keyboard, focus, Escape, and recovery behavior.
-10. Decide each visual element as CSS, SVG, raster artwork, audio, or streamed asset.
-11. Produce or update `docs/ui-spec/<screen>.md` using the template.
+4. Preserve the approved information hierarchy and region structure.
+5. Define typography, palette roles, shape/depth, iconography, motion vocabulary, and anti-patterns.
+6. Apply visual density, spacing rhythm, optical alignment, game-background readability, and responsive rules.
+7. Map approved components to concrete variants and identify genuinely new components.
+8. Define visual treatment for every applicable state.
+9. Decide each visual element as CSS, SVG, raster artwork, audio, or streamed asset.
+10. Update the screen specification and set `Visual design status: Review` or `Approved`.
 
 ## Quality bar
 - The design must be intentional and context-specific, not a generic dashboard reskin.
-- Creativity may break a grid visually, but usability, implementation feasibility, and game readability remain constraints.
+- Visual creativity must not invalidate the approved wireframe, usability, implementation feasibility, or game readability.
 - Do not use novelty to hide weak hierarchy.
 - Do not write production implementation unless the task explicitly includes implementation.
 
 ## Output
-Return the screen specification path, major design decisions, reused/new components, required assets, and unresolved product decisions.
+Return the specification path, wireframe status, visual-design status, major visual decisions, reused/new components, required assets, and unresolved decisions.
