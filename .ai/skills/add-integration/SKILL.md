@@ -1,54 +1,66 @@
 ---
 name: add-integration
-description: Add or change a framework, database, inventory, notify, logger, progress, target, or custom resource provider without coupling feature code to it.
+description: Register external resource documentation for reuse, or activate a registered provider for a feature. Registration must not create runtime adapters unless activation is explicitly requested.
 ---
 
 # Add Integration
 
-## Read
-- `AGENTS.md`
-- `.ai/rules/integrations.md`
-- `.ai/rules/fivem.md`
-- `.ai/rules/security.md` when server data or player objects are involved
-- `integrations.json`
-- `.ai/integrations/INDEX.md`
-- selected provider document and affected runtime adapter only
+## Two modes
 
-## Discovery inputs
-Resolve before implementation:
-- capability and provider resource name
-- client/server/shared availability
-- source export/event/callback signature
-- operation inputs and return behavior
-- option-by-option runtime support
-- required, optional, default, and conditional options
-- external dependencies per operation or option
-- player/framework objects that must remain server-only
-- failure behavior when the provider or dependency is unavailable
-- whether the provider has been tested and may be marked verified
+### Register mode (default)
+Use when the user says a resource may be used, supplies docs/schema/examples, or asks AI to remember an integration.
 
-## Workflow
-1. Define the capability-level operation used by feature code.
-2. Build an option matrix before writing the adapter.
-3. Update `integrations.json` and `config/config.integrations.lua`.
-4. Split client and server adapters when availability or option rules differ.
-5. Copy only allowed options into the provider payload; do not forward unknown fields blindly.
-6. Validate runtime-only fields, required values, resource state, and conditional dependencies.
-7. Map provider results to stable capability-level success/error contracts.
-8. Create or update `.ai/integrations/providers/<provider>.md`.
-9. Add representative client, server, invalid-option, missing-resource, and missing-dependency tests or documented test cases.
-10. Update feature/event registries only when public behavior changes.
+Do only this:
+1. Identify capability, resource name, versions, and supported runtimes.
+2. Extract exports/events/callbacks into a concise provider profile.
+3. Record option-level type, required/optional/default, runtime, conditions, dependencies, return behavior, and known limitations.
+4. Preserve source terminology and mark unsupported or unclear details as unresolved.
+5. Save `.ai/integrations/providers/<provider>.md` from the provider template.
+6. Add the provider to `.ai/integrations/INDEX.md` as `registered`, not selected.
+7. Do not update `integrations.json`, runtime config, `fxmanifest.lua`, source modules, or tests.
+
+### Activate mode
+Use only when the user explicitly says the current resource/feature must use a registered provider.
+
+Then:
+1. Read only `integrations.json`, the selected provider profile, affected feature requirements, and relevant source.
+2. Confirm capability, operation(s), runtime(s), and fallback behavior.
+3. Update provider selection in `integrations.json` and `config/config.integrations.lua`.
+4. Create the smallest adapter needed by the approved feature; do not implement unused provider operations.
+5. Split client/server adapters only when runtime contracts differ.
+6. Validate required fields, runtime-only options, conditional dependencies, resource state, and stable failure behavior.
+7. Add tests for only the activated operations.
+
+## Intake from user-supplied docs
+Accept any combination of:
+- Markdown/text documentation
+- code examples
+- export/event/callback signatures
+- JSON schema
+- screenshots or attached documents
+- resource/version name
+
+Ask only for missing material facts. Do not ask the user to repeat details already present in the supplied source.
+
+## Provider profile must contain
+- capability and resource name
+- source and version/date
+- operations and call signatures
+- runtime availability per operation
+- option matrix per operation
+- required, optional, default, conditional, forbidden fields
+- option-specific dependencies
+- return/error behavior
+- examples reduced to the minimum useful form
+- verification status: `documented`, `partially-verified`, or `verified`
+- unresolved questions
 
 ## Token discipline
-- Read only the selected provider.
-- Link to adapter source instead of duplicating its implementation in multiple docs.
-- Store concise option matrices, not full external documentation.
-- Do not preload ESX, QBCore, Qbox, oxmysql, or unrelated custom provider docs.
+- Store the compact normalized profile, not the full copied documentation.
+- Link or cite the supplied source location when available.
+- On later tasks, read only the selected provider profile and requested operation.
+- Never preload unrelated providers.
+- Do not duplicate provider details in feature memory; feature files should link to the provider profile.
 
-## Done when
-- feature code has no direct provider calls
-- runtime-specific options are enforced
-- conditional dependencies are represented
-- provider selection and runtime config agree
-- provider documentation and verification status are current
-- failure behavior is explicit
+## Safety rule
+Receiving provider documentation is not approval to integrate it. Default to Register mode. Runtime code changes require an explicit Activate request.
