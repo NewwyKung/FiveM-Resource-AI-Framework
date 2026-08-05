@@ -17,6 +17,7 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 - `resource/ui/src/js/NuiBridge.js`
 - `resource/ui/src/js/createFeatureState.svelte.js` when asynchronous state is required
 - relevant components, contracts, state, and assets
+- `.agents/skills/fivem-ui-workflow/references/motion.md` only when implementing approved motion
 
 ## Workflow
 1. Confirm the approved specification and measurable acceptance criteria.
@@ -30,7 +31,8 @@ description: Implement an approved FiveM UI design or screen specification in Sv
 9. Use `NuiBridge.js`; do not create feature-specific transport helpers.
 10. Set explicit callback timeout and response validation for awaited operations.
 11. Verify Escape, close, focus return, listener disposal, pending-request cleanup, and resource-stop behavior.
-12. Build and validate the UI.
+12. Run `npm run check:ui-practices`, Svelte diagnostics, and a production build.
+13. Exercise required browser scenarios when a browser-control capability is available; otherwise report the manual click path without claiming it was executed.
 
 ## State lifecycle
 
@@ -58,6 +60,8 @@ NUI_NETWORK_ERROR
 NUI_INVALID_RESPONSE
 NUI_CALLBACK_FAILED
 NUI_PENDING_LIMIT
+NUI_DUPLICATE_REQUEST_ID
+NUI_STALE_RESPONSE
 ```
 
 ## Responsive implementation rule
@@ -76,6 +80,7 @@ The value is a unitless pixel measurement from the 1440px-high design. Never app
 - Avoid new dependencies unless necessary.
 - Do not copy external UI/components/Tailwind without explicit approval.
 - Do not add Lua hot reload behavior.
+- Claude frontend-design/live preview can be used only in a Claude environment that actually exposes it. Imported output still must pass this repository's Svelte, NUI, responsive, and lifecycle checks.
 
 ## Completion
 Report changed files, state/error paths, browser scenarios, validation, screenshots, deviations, and checks that could not run.

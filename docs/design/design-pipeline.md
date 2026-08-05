@@ -21,6 +21,8 @@ Wireframes make structural changes inexpensive. They prevent color, artwork, mot
 ## Context-loading rule
 Do not load every UI document for every task.
 
+Native Codex routing starts at `.agents/skills/fivem-ui-workflow/SKILL.md`, then selects exactly one phase skill below. External design tools remain optional and on-demand.
+
 - New screen/layout: `wireframe-ui` skill + `design.md`
 - Approved wireframe needing visual direction: `design-ui` skill
 - Approved visual design implementation: `implement-ui` skill + `ui.md`

@@ -1,0 +1,4 @@
+interface:
+  display_name: "FiveM UI Workflow"
+  short_description: "Route FiveM NUI work through the approved UI phase."
+  default_prompt: "Use the FiveM UI workflow to classify this UI task and load only the required project guidance."

@@ -6,6 +6,7 @@ Apply this rule only to UI design, visual refinement, or visual review tasks.
 - Define purpose, users, context, and one clear aesthetic direction before coding.
 - Choose a memorable visual idea that supports the feature; do not decorate without intent.
 - Avoid generic AI defaults: interchangeable dashboards, predictable card grids, purple-on-white gradients, and arbitrary glassmorphism.
+- Treat gaming as a usage context, not a mandatory dark/neon style. Choose dark surfaces, glow, texture, or high energy only when the approved feature direction supports them.
 - Respect an approved design system or screen specification before inventing new tokens or patterns.
 
 ## Visual system

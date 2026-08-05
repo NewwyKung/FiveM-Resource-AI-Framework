@@ -1,1 +1,1 @@
-local scriptName = GetCurrentResourceName()
+ClientLifecycle.Start()

@@ -1,7 +1,9 @@
-# Claude Adapter
+# Claude Code Adapter
 
-Follow `AGENTS.md`.
+@AGENTS.md
 
-Use `.ai/rules/INDEX.md` to load only relevant domain rules and `.ai/skills/INDEX.md` to select one primary workflow. Approved architecture decisions are under `docs/decisions/`.
+## Claude-Specific Routing
 
-Do not duplicate these instructions here.
+- For FiveM UI work, read `.agents/skills/fivem-ui-workflow/SKILL.md` as the router; do not load every UI phase.
+- If the official `frontend-design` plugin is installed, use it only as an implementation lens after the repository's discovery, wireframe, and design approvals.
+- Keep durable project rules in `AGENTS.md`; do not duplicate or regenerate them here.

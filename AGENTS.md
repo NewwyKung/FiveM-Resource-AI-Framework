@@ -28,6 +28,10 @@ Reusable FiveM resource template with Lua client/server/shared code and optional
 - `.ai/memory/environment.md`: confirmed framework, database, libraries, and server-wide providers.
 - `.ai/memory/requirements/`: active, delivered, and superseded requirement memory.
 - `.ai/work/`: optional task context packet for multi-step or cross-model work.
+- `.agents/skills/fivem-ui-workflow/`: native Codex trigger that routes UI work to one project phase skill.
+- `CLAUDE.md`, `.gemini/settings.json`, and `.github/copilot-instructions.md`: thin vendor adapters that route back to this agreement.
+- `.ai/matrices/agent-entrypoints.json`: verified coding-agent discovery map; it does not add runtime dependencies.
+- `docs/schemas/ai-task.schema.json`: compact string-enum contract for task routing.
 - `.ai/CONTEXT_BUDGET.md`: shared context-loading limits.
 - `.ai/index.json`: generated registry path index.
 - `tests/`: test code, fixtures, and executable test plans.
@@ -44,6 +48,8 @@ Do not modify production code until requirements and material environment decisi
 ## Context routing
 Always apply `.ai/CONTEXT_BUDGET.md`.
 
+Choose one primary workflow from `.ai/skills/INDEX.md`; do not load every workflow referenced by an adapter.
+
 Read only what the task needs:
 - Lua/FiveM: `.ai/rules/fivem.md`, `.ai/rules/lua.md`
 - Config/modules: approved ADRs under `docs/decisions/`
@@ -54,10 +60,12 @@ Read only what the task needs:
 - Optional migrations: `examples/capabilities/database-migrations/README.md` only when the resource owns database schema
 - Optional FXServer tests: `examples/capabilities/runtime-tests/README.md` only when selected or runtime behavior cannot be covered otherwise
 - Security/events: `.ai/rules/security.md`, `.ai/rules/fault-handling.md`
+- High-risk contracts/concurrency: `.ai/rules/contracts.md`, `.ai/recipes/concurrent-mutation.md` only when applicable
 - UI: `.ai/rules/design.md`, `.ai/rules/ui.md`, relevant UI skill/specification
 - Testing/release: `.ai/rules/testing.md`, applicable checklist
+- Volatile external claims or supplied guides: `.ai/rules/source-trust.md`; verify current official primary documentation only when the claim affects implementation
 
-For multi-step or cross-model work, create `.ai/work/current-task.md` from `.ai/work/TEMPLATE.md`. The packet lists the exact files to read and files to avoid. It is temporary navigation state, not durable memory.
+For multi-step or cross-model work, create `.ai/work/current-task.md` from `.ai/work/TEMPLATE.md`. Use the schema's string enums and quality-gate IDs to route references, while keeping scope and acceptance criteria explicit. The packet is temporary navigation state, not durable memory.
 
 ## Integration workflow
 - Register supplied provider docs once through `.ai/skills/add-integration/SKILL.md` in Register mode.
@@ -71,6 +79,14 @@ For multi-step or cross-model work, create `.ai/work/current-task.md` from `.ai/
 New screen or major redesign:
 
 `discovery → wireframe-ui → approval → design-ui → approval → implement-ui → review-ui → refine-ui`
+
+For any FiveM UI, NUI, Svelte, wireframe, screenshot, motion, visual-polish, or UI-performance task, use `.agents/skills/fivem-ui-workflow/SKILL.md` as the router. Agents with native project-skill discovery may invoke it directly; other agents read it only for a matching UI task. It selects exactly one primary project skill for the current phase. External tools and design packs are optional lenses and must not be assumed available or loaded together.
+
+## Agent compatibility
+- `AGENTS.md` is the only canonical repository agreement.
+- Vendor adapters may import or point to this file but must not copy its rules.
+- Follow `.ai/matrices/agent-entrypoints.json` and `docs/ai-agents.md` when changing GPT/Codex, Claude, Gemini, Cursor, GitHub Copilot, or Kimi support.
+- Model-specific plugins, APIs, credentials, MCP servers, and hooks remain opt-in.
 
 ## Core invariants
 - Work on the requested branch; never assume it.

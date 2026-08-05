@@ -14,9 +14,14 @@ Load:
 - selected provider profiles only
 - affected source files only
 
+When `.ai/work/current-task.md` exists, route its `characteristics` IDs through `.ai/matrices/quality-gates.json`. Treat its references as lazy-load pointers, not permission to load every referenced category.
+
 ## Limits by category
 
 - Primary skills: 1 per implementation phase.
+- Native router skills do not permit loading every skill they reference; select one project phase skill.
+- Vendor adapter files route to `AGENTS.md`; do not load duplicate copies of the same canonical rules when the agent already discovered them.
+- External UI/design lenses: maximum 1, only when explicitly selected or a material decision remains unresolved.
 - Example patterns: maximum 1 unless the task genuinely spans separate patterns.
 - Provider profiles: maximum 1 per capability used by the task.
 - UI specifications: only the affected screen(s).
@@ -32,6 +37,9 @@ Load:
 - delivered or superseded requirements unrelated to the current change
 - raw chat transcripts
 - copied source documentation already represented by a concise profile
+- opaque numeric codes whose meaning requires loading a second large document
+- multiple broad UI skill packs with overlapping typography, color, motion, and audit guidance
+- separate vendor copies of the repository agreement
 
 ## Escalation
 

@@ -1,6 +1,6 @@
 # Resource Structure
 
-Status: Approved migration
+Status: Delivered
 
 ## Contract
 
@@ -13,4 +13,4 @@ Status: Approved migration
 
 ## Acceptance source
 
-See `.ai/memory/requirements/active/resource-restructure.md` and `TODO.md`.
+See `.ai/memory/requirements/delivered/resource-restructure.md`.

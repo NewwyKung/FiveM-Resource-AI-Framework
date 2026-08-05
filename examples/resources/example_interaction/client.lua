@@ -1,13 +1,17 @@
 local resourceName = GetCurrentResourceName()
+local requestSequence = 0
 
 RegisterCommand(Config.Command, function()
+    requestSequence = requestSequence + 1
     TriggerServerEvent(('%s:server:requestInteraction'):format(resourceName), {
-        requestedAt = GetGameTimer(),
+        action = Config.Action,
+        requestId = ('interaction:%d:%d'):format(GetGameTimer(), requestSequence),
+        payload = {},
     })
 end, false)
 
 RegisterNetEvent(('%s:client:interactionResult'):format(resourceName), function(result)
-    if type(result) ~= 'table' then
+    if type(result) ~= 'table' or type(result.requestId) ~= 'string' then
         return
     end
 

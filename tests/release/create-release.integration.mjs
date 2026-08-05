@@ -18,21 +18,37 @@ function copyFilter(entry) {
 try {
   fs.cpSync(source, temp, { recursive: true, filter: copyFilter });
   fs.mkdirSync(path.join(temp, 'resource/config'), { recursive: true });
-  fs.mkdirSync(path.join(temp, 'resource/html'), { recursive: true });
+  fs.mkdirSync(path.join(temp, 'resource/config/nested/deep'), { recursive: true });
+  fs.mkdirSync(path.join(temp, 'resource/html/assets/chunks'), { recursive: true });
   fs.writeFileSync(path.join(temp, 'resource/config/release-test.json'), JSON.stringify({ service: { webhook: 'https://discord.com/api/webhooks/test/secret' } }, null, 2));
+  fs.writeFileSync(path.join(temp, 'resource/config/nested/deep/fixture.example.json'), '{}');
+  fs.writeFileSync(path.join(temp, 'resource/config/nested/deep/.gitkeep'), '');
   fs.writeFileSync(path.join(temp, 'resource/html/index.html'), '<!doctype html><title>release test</title>');
+  fs.writeFileSync(path.join(temp, 'resource/html/assets/chunks/app.js.map'), '{}');
 
   const policyPath = path.join(temp, 'release.config.json');
   const policy = JSON.parse(fs.readFileSync(policyPath, 'utf8'));
   policy.jsonSecretPaths = [{ file: 'config/release-test.json', path: 'service.webhook', replacement: null }];
   fs.writeFileSync(policyPath, `${JSON.stringify(policy, null, 2)}\n`);
 
-  const result = spawnSync(process.execPath, ['scripts/create-release.mjs', '--name', 'release_test', '--version', '0.0.1', '--skip-ui-build'], { cwd: temp, encoding: 'utf8' });
+  const gated = spawnSync(process.execPath, ['scripts/create-release.mjs', '--name', 'release_test', '--version', '0.0.1', '--skip-ui-build'], { cwd: temp, encoding: 'utf8' });
+  if (gated.status === 0) throw new Error('release generation bypassed its validation gate');
+  if (fs.existsSync(path.join(temp, 'release/release_test-0.0.1'))) fail('failed validation left release output behind');
+
+  const result = spawnSync(process.execPath, ['scripts/create-release.mjs', '--name', 'release_test', '--version', '0.0.1', '--skip-ui-build', '--skip-validation'], { cwd: temp, encoding: 'utf8' });
   if (result.status !== 0) throw new Error(`${result.stdout}\n${result.stderr}`);
 
   const release = path.join(temp, 'release/release_test-0.0.1');
   const required = ['fxmanifest.lua', 'RELEASE.json', 'config/release-test.json'];
   for (const file of required) if (!fs.existsSync(path.join(release, file))) fail(`missing ${file}`);
+
+  for (const excluded of [
+    'config/nested/deep/fixture.example.json',
+    'config/nested/deep/.gitkeep',
+    'html/assets/chunks/app.js.map',
+  ]) {
+    if (fs.existsSync(path.join(release, excluded))) fail(`nested exclusion was packaged: ${excluded}`);
+  }
 
   for (const forbidden of ['.ai', '.github', 'docs', 'examples', 'tests', 'scripts', 'resource', 'ui']) {
     if (fs.existsSync(path.join(release, forbidden))) fail(`forbidden path included: ${forbidden}`);
@@ -54,6 +70,19 @@ try {
   const sourceMetadata = JSON.parse(fs.readFileSync(path.join(temp, 'resource.json'), 'utf8'));
   if (!sourceManifest.includes("version '0.0.1'")) fail('source manifest version was not synchronized');
   if (sourceMetadata.version !== '0.0.1') fail('resource metadata version was not synchronized');
+
+  const metadataBeforeFailure = fs.readFileSync(path.join(temp, 'resource.json'), 'utf8');
+  const manifestBeforeFailure = fs.readFileSync(path.join(temp, 'resource/fxmanifest.lua'), 'utf8');
+  policy.jsonSecretPaths = [{ file: 'config/release-test.json', path: 'service.missing', replacement: null }];
+  fs.writeFileSync(policyPath, `${JSON.stringify(policy, null, 2)}\n`);
+
+  const failedBuild = spawnSync(process.execPath, ['scripts/create-release.mjs', '--name', 'release_test', '--version', '0.0.2', '--skip-ui-build', '--skip-validation'], { cwd: temp, encoding: 'utf8' });
+  if (failedBuild.status === 0) fail('release generation ignored a failing sanitizer');
+  if (fs.existsSync(path.join(temp, 'release/release_test-0.0.2'))) fail('failed release left a final package behind');
+  const temporaryReleases = fs.readdirSync(path.join(temp, 'release')).filter((entry) => entry.startsWith('.release_test-0.0.2.tmp-'));
+  if (temporaryReleases.length > 0) fail(`failed release left staging output: ${temporaryReleases.join(', ')}`);
+  if (fs.readFileSync(path.join(temp, 'resource.json'), 'utf8') !== metadataBeforeFailure) fail('failed release changed resource metadata');
+  if (fs.readFileSync(path.join(temp, 'resource/fxmanifest.lua'), 'utf8') !== manifestBeforeFailure) fail('failed release changed the source manifest');
 
   if (!process.exitCode) console.log('[release-test] release package validation passed.');
 } catch (error) {

@@ -8,7 +8,7 @@ Provider profiles under `.ai/integrations/providers/` may be registered for futu
 
 | Capability | Provider | Resource | Status | Profile |
 |---|---|---|---|---|
-| — | — | — | — | — |
+| Design generation | v0 | v0 app / Platform API | documented | `providers/v0.md` |
 
 Statuses:
 - `documented`: extracted from supplied docs but not runtime-tested

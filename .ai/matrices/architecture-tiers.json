@@ -1,0 +1,17 @@
+{
+  "simple": {
+    "useWhen": ["single bounded feature", "no persistence", "few public boundaries"],
+    "shape": ["handler", "service when business rules exist"],
+    "avoid": ["repository", "event bus", "DI container", "CQRS", "global state framework"]
+  },
+  "persistent": {
+    "useWhen": ["owned persistence", "economic or multi-step mutation", "provider boundary"],
+    "shape": ["thin handler", "service/use case", "repository/provider adapter"],
+    "required": ["transaction or atomic operation", "idempotency where duplicates matter", "failure and restart policy"]
+  },
+  "domain": {
+    "useWhen": ["multiple interacting invariants", "several transports/providers", "complex state transitions proven by requirements"],
+    "shape": ["transport", "use case", "domain modules", "repository/provider adapters"],
+    "approvalRequired": ["event bus", "DI container", "CQRS split", "plugin system", "global state framework"]
+  }
+}

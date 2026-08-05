@@ -1,0 +1,7 @@
+:root { color-scheme: dark; font-family: sans-serif; }
+body { margin: 0; background: transparent; }
+#shop { width: min(32rem, 80vw); margin: 10vh auto; padding: 1.5rem; background: #17211d; border: 1px solid #7ca68f; border-radius: 0.75rem; }
+header { display: flex; align-items: center; justify-content: space-between; }
+#items { display: grid; gap: 0.75rem; }
+button { padding: 0.75rem 1rem; color: #f4f1e8; background: #294d3d; border: 1px solid #7ca68f; border-radius: 0.4rem; cursor: pointer; }
+button:focus-visible { outline: 3px solid #f0bd66; outline-offset: 2px; }

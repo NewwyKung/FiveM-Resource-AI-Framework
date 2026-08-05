@@ -16,6 +16,7 @@ Load only rules relevant to the current task.
 | Images, audio, models, streaming | `assets.md` |
 | Lua and NUI translations | `localization.md` |
 | Cross-cutting implementation/review gate | `engineering-quality.md` |
+| Supplied guides and volatile external claims | `source-trust.md` |
 
 Do not load all rule files by default.
 

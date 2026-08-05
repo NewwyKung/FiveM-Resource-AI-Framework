@@ -8,6 +8,13 @@ Apply the smallest useful layer:
 - NUI tests for browser state, bridge messages, visibility, and build output
 - regression tests for fixed bugs
 
+Test behavior deterministically:
+- use callbacks, promises, barriers, fakes, or observable state instead of arbitrary `Wait(100)` timing
+- coordinate concurrent mutation tests so requests reach the contested boundary together
+- make failed automated checks return nonzero or another machine-readable failure signal
+- do not simulate a resource restart by manually firing lifecycle events; use a real FXServer restart test or test the cleanup unit directly
+- bound fuzz inputs and assert exact rejection/error contracts rather than checking only that code did not crash
+
 Before release:
 - verify manifest paths and dependencies
 - build NUI from `resource/ui/`

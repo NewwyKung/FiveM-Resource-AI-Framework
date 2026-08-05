@@ -12,6 +12,7 @@ description: Audit a FiveM UI implementation or screenshot for design quality, a
 - `docs/design/review-checklist.md`
 - Approved screen specification and design system
 - `.ai/rules/assets.md` when artwork or asset loading is involved
+- `.agents/skills/fivem-ui-workflow/references/motion.md` only when motion is in scope
 
 ## Evidence
 Use the best available evidence:
@@ -22,6 +23,8 @@ Use the best available evidence:
 
 State explicitly which evidence was unavailable.
 
+When screenshots exist, compare the approved reference and implementation at matching viewport dimensions. Treat overlays or image-difference tools as review aids, not pixel-perfect acceptance tests; intentional browser/font/rendering differences still require human judgment.
+
 ## Workflow
 1. Confirm the intended task, primary user action, viewport, and approved design direction.
 2. Review hierarchy and usefulness before visual polish.
@@ -30,7 +33,11 @@ State explicitly which evidence was unavailable.
 5. Check keyboard operation, semantic elements, accessible names, focus management, recovery paths, and reduced motion.
 6. Check game-context readability, screen coverage, focus return, Escape, and resource-stop behavior.
 7. Check overflow, long Thai text, image dimensions, animation cost, large lists, and cleanup risks.
-8. Rank findings by severity and user impact.
+8. Capture or inspect default, loading, error, empty, dense-content, focus, and open/close states when applicable.
+9. Run `npm run check:ui-practices` and applicable build/static checks.
+10. Rank findings by severity and user impact.
+
+If Impeccable is explicitly selected and installed, use its deterministic detector only on affected UI paths. Do not install hooks silently, load every reference pack, or let its generic recommendations override the approved FiveM specification.
 
 ## Output format
 For each finding include:

@@ -4,7 +4,6 @@ game 'gta5'
 author 'Newwy'
 version '1.0.0'
 description 'Reusable FiveM resource template'
-lua54 'yes'
 
 -- Run Vite separately for browser development; FXServer uses the production build.
 ui_page 'html/index.html'
@@ -17,18 +16,19 @@ shared_scripts {
 
     -- Runtime code belongs to its runtime folder.
     'shared/lib/**/*.lua',
-    'shared/modules/**/*.lua',
+    'shared/modules/errors.lua',
+    'shared/modules/lifecycle.lua',
 }
 
 client_scripts {
     'client/lib/**/*.lua',
-    'client/modules/**/*.lua',
+    'client/modules/lifecycle.lua',
     'client/main.lua',
 }
 
 server_scripts {
     'server/lib/**/*.lua',
-    'server/modules/**/*.lua',
+    'server/modules/lifecycle.lua',
     'server/main.lua',
 }
 

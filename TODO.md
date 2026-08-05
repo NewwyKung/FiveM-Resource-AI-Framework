@@ -1,6 +1,6 @@
 # TODO — FiveM Resource AI Framework
 
-This file contains unresolved work after the `resource/` restructure. Work from the current `main` branch, inspect existing files before creating replacements, and keep the repository provider-neutral and token-efficient.
+This file contains unresolved work after the `resource/` restructure. Work from the current requested branch, inspect existing files before creating replacements, and keep the repository provider-neutral and token-efficient.
 
 ## Current source of truth
 
@@ -52,75 +52,75 @@ release/
 
 > Read existing files first. Do not recreate or overwrite working bootstraps blindly.
 
-- [ ] Inspect and complete `resource/fxmanifest.lua` with Lua 5.4, shared/client/server scripts, and `ui_page 'html/index.html'` when UI is enabled.
-- [ ] Verify every manifest path exists relative to `resource/`.
-- [ ] Inspect `resource/config/config.main.lua`; keep it as the first, minimal configuration bootstrap.
+- [x] Inspect and complete `resource/fxmanifest.lua` with Lua 5.4, shared/client/server scripts, and `ui_page 'html/index.html'` when UI is enabled.
+- [x] Verify every manifest path exists relative to `resource/`.
+- [x] Inspect `resource/config/config.main.lua`; keep it as the first, minimal configuration bootstrap.
 - [ ] Inspect `resource/client/main.lua` and `resource/server/main.lua`; keep them small and prove both runtimes start successfully.
-- [ ] Confirm `resource/shared/lib/`, `resource/shared/modules/`, `resource/client/modules/`, and `resource/server/modules/` contain only intentional placeholders or small generic examples.
-- [ ] Add at most one tiny provider-neutral example module per runtime when it materially improves comprehension.
+- [x] Confirm `resource/shared/lib/`, `resource/shared/modules/`, `resource/client/modules/`, and `resource/server/modules/` contain only intentional placeholders or small generic examples.
+- [x] Add at most one tiny provider-neutral example module per runtime when it materially improves comprehension.
 - [ ] Confirm the built resource can run when only the contents of `resource/` are deployed.
 - [ ] Perform start, restart, stop, and player-drop cleanup verification on a real FXServer.
 
 ### 🚨 Priority 2 — Add executable examples
 
-- [ ] Create `examples/hello-world/` showing client intent → server validation → server response → client result, without NUI or framework dependencies.
-- [ ] Create `examples/shop-system/` showing config, client/server modules, stable contracts, database adapter boundary, optional migration, integrations, and NUI.
-- [ ] Keep the shop example provider-neutral; do not hardcode oxmysql, ESX, QBCore, Qbox, or ox_lib as defaults.
-- [ ] Create `examples/README.md` explaining what each example teaches, required capabilities, setup, and execution.
-- [ ] Ensure AI routing loads only the selected example rather than scanning all examples.
+- [x] Create `examples/hello-world/` showing client intent → server validation → server response → client result, without NUI or framework dependencies.
+- [x] Create `examples/shop-system/` showing config, client/server modules, stable contracts, database adapter boundary, optional migration, integrations, and NUI.
+- [x] Keep the shop example provider-neutral; do not hardcode oxmysql, ESX, QBCore, Qbox, or ox_lib as defaults.
+- [x] Create `examples/README.md` explaining what each example teaches, required capabilities, setup, and execution.
+- [x] Ensure AI routing loads only the selected example rather than scanning all examples.
 
 ### 🚨 Priority 3 — Make runtime testing practical
 
-- [ ] Audit `examples/capabilities/runtime-tests/` before creating another runner.
-- [ ] Decide whether the current runner should remain an opt-in standalone test resource or become a reusable test toolkit.
-- [ ] Add runnable tests for config bootstrap and event/callback contracts.
+- [x] Audit `examples/capabilities/runtime-tests/` before creating another runner.
+- [x] Decide whether the current runner should remain an opt-in standalone test resource or become a reusable test toolkit.
+- [x] Add runnable tests for config bootstrap and event/callback contracts.
 - [ ] Add lifecycle scenarios for resource restart, player disconnect, state cleanup, and provider unavailability.
-- [ ] Add `tests/README.md` with exact FXServer setup and commands.
-- [ ] Keep runtime tests out of production manifests and release packages.
-- [ ] Record tests that still require manual gameplay rather than claiming full automation.
+- [x] Add `tests/README.md` with exact FXServer setup and commands.
+- [x] Keep runtime tests out of production manifests and release packages.
+- [x] Record tests that still require manual gameplay rather than claiming full automation.
 
 ### ⚠️ Priority 4 — Consolidate local validation
 
-- [ ] Audit existing validators before adding new scripts:
+- [x] Audit existing validators before adding new scripts:
   - `scripts/validate-template.mjs`
   - `scripts/validate-integrations.mjs`
   - `scripts/build-ai-index.mjs`
   - `scripts/create-release.mjs`
   - `tests/release/create-release.integration.mjs`
-- [ ] Add a focused manifest validator only if current validation does not already cover all manifest paths and runtime files.
-- [ ] Add a fail-closed secret scanner for API keys, passwords, tokens, webhook URLs, and credentials, with explicit allowlists for fixtures.
-- [ ] Add a pinned local LuaLS diagnostic command; do not claim Lua validation is automated until it runs from a clean clone.
-- [ ] Add `svelte-check` and `npm run check` while retaining JavaScript/JSDoc.
-- [ ] Add a root `package.json` only when it provides a useful aggregator such as `npm run validate`; do not duplicate UI dependencies at root.
-- [ ] Ensure validators only report failures and never delete or rewrite files automatically.
+- [x] Add a focused manifest validator only if current validation does not already cover all manifest paths and runtime files.
+- [x] Add a fail-closed secret scanner for API keys, passwords, tokens, webhook URLs, and credentials, with explicit allowlists for fixtures.
+- [x] Add a pinned local LuaLS diagnostic command; do not claim Lua validation is automated until it runs from a clean clone.
+- [x] Add `svelte-check` and `npm run check` while retaining JavaScript/JSDoc.
+- [x] Add a root `package.json` only when it provides a useful aggregator such as `npm run validate`; do not duplicate UI dependencies at root.
+- [x] Ensure validators only report failures and never delete or rewrite files automatically.
 
 ### ⚠️ Priority 5 — Supply opt-in CI/CD templates
 
-- [ ] Create `examples/github-workflows/ci.yml` to run local validation, Lua diagnostics, Svelte checks, UI build, and secret scanning.
-- [ ] Create `examples/github-workflows/release.yml` to build a release after an explicit tag or manual dispatch.
-- [ ] Create `examples/github-workflows/README.md` describing permissions, secrets, and how to copy templates into `.github/workflows/`.
-- [ ] Add `docs/ci-cd.md` stating that workflows are intentionally disabled by default.
-- [ ] Do not create active workflows in `.github/workflows/` without owner approval.
+- [x] Create `examples/github-workflows/ci.yml` to run local validation, Lua diagnostics, Svelte checks, UI build, and secret scanning.
+- [x] Create `examples/github-workflows/release.yml` to build a release after an explicit tag or manual dispatch.
+- [x] Create `examples/github-workflows/README.md` describing permissions, secrets, and how to copy templates into `.github/workflows/`.
+- [x] Add `docs/ci-cd.md` stating that workflows are intentionally disabled by default.
+- [x] Do not create active workflows in `.github/workflows/` without owner approval.
 
 ### 💡 Priority 6 — Finish optional capabilities
 
-- [ ] Audit and improve `examples/capabilities/i18n/`; do not add i18n to single-language resources automatically.
-- [ ] Add NUI-side locale state, placeholder parity checks, missing-key diagnostics, and Thai long-text tests when i18n is selected.
-- [ ] Audit and improve `examples/capabilities/database-migrations/` with immutable IDs, checksums, transactions, and provider adapters.
-- [ ] Keep migrations forward-only; never perform destructive automatic rollback.
-- [ ] Audit `resource/ui/src/js/NuiBridge.js` for timeout, abort, structured errors, pending-request bounds, response validation, listener disposal, and cleanup.
-- [ ] Add automatic retry only for explicitly safe and idempotent operations; do not retry purchases or mutations by default.
+- [x] Audit and improve `examples/capabilities/i18n/`; do not add i18n to single-language resources automatically.
+- [x] Add NUI-side locale state, placeholder parity checks, missing-key diagnostics, and Thai long-text tests when i18n is selected.
+- [x] Audit and improve `examples/capabilities/database-migrations/` with immutable IDs, checksums, transactions, and provider adapters.
+- [x] Keep migrations forward-only; never perform destructive automatic rollback.
+- [x] Audit `resource/ui/src/js/NuiBridge.js` for timeout, abort, structured errors, pending-request bounds, response validation, listener disposal, and cleanup.
+- [x] Add automatic retry only for explicitly safe and idempotent operations; do not retry purchases or mutations by default.
 
 ### 🔥 Priority 7 — Production-quality patterns
 
-- [ ] Define a small structured error contract shared by Lua, NUI, tests, and localization.
-- [ ] Add lifecycle helpers or examples for `onResourceStart`, `onResourceStop`, and player cleanup.
-- [ ] Add a logging/telemetry capability contract without binding runtime code to one logger provider.
-- [ ] Add callback/request correlation IDs and bounded pending request tracking where asynchronous flows require them.
-- [ ] Add duplicate event/callback registration detection in development tooling when practical.
-- [ ] Add lightweight development-only timing/profiler hooks; exclude them from production unless explicitly enabled.
-- [ ] Add restart-safe cleanup examples.
-- [ ] Require local validation to pass before release generation.
+- [x] Define a small structured error contract shared by Lua, NUI, tests, and localization.
+- [x] Add lifecycle helpers or examples for `onResourceStart`, `onResourceStop`, and player cleanup.
+- [x] Add a logging/telemetry capability contract without binding runtime code to one logger provider.
+- [x] Add callback/request correlation IDs and bounded pending request tracking where asynchronous flows require them.
+- [x] Add duplicate event/callback registration detection in development tooling when practical.
+- [x] Add lightweight development-only timing/profiler hooks; exclude them from production unless explicitly enabled.
+- [x] Add restart-safe cleanup examples.
+- [x] Require local validation to pass before release generation.
 
 ---
 
@@ -128,65 +128,72 @@ release/
 
 ### A. Runtime debugging skill
 
-- [ ] Create `.ai/skills/debug-resource/SKILL.md` or `.ai/skills/debug-runtime/SKILL.md`.
-- [ ] Accept FXServer/client/NUI logs, reproduction steps, runtime side, artifact version, enabled providers, and last known good commit.
-- [ ] Trace errors to likely source files and contracts without loading the entire repository.
-- [ ] Require a minimal reproduction and distinguish confirmed evidence from hypotheses.
-- [ ] Cover missing exports, dependency start order, invalid entity/network IDs, player disconnects, callback timeouts, NUI focus locks, duplicate handlers, and database failures.
-- [ ] Store durable discoveries in `.ai/memory/known-problems.md` only after confirmation.
+- [x] Create `.ai/skills/debug-resource/SKILL.md` or `.ai/skills/debug-runtime/SKILL.md`.
+- [x] Accept FXServer/client/NUI logs, reproduction steps, runtime side, artifact version, enabled providers, and last known good commit.
+- [x] Trace errors to likely source files and contracts without loading the entire repository.
+- [x] Require a minimal reproduction and distinguish confirmed evidence from hypotheses.
+- [x] Cover missing exports, dependency start order, invalid entity/network IDs, player disconnects, callback timeouts, NUI focus locks, duplicate handlers, and database failures.
+- [x] Store durable discoveries in `.ai/memory/known-problems.md` only after confirmation.
 
 ### B. Refactor-specific skill
 
-- [ ] Create `.ai/skills/refactor-feature/SKILL.md`.
-- [ ] Require behavior-preservation criteria, affected public contracts, migration impact, test coverage, and rollback plan before editing.
-- [ ] Prefer incremental patches and avoid whole-file rewrites unless a file is intentionally replaced.
-- [ ] Remove dead paths, dependencies, adapters, docs, and registry entries as part of the same refactor.
-- [ ] Verify release output and resource restart behavior after structural changes.
+- [x] Create `.ai/skills/refactor-feature/SKILL.md`.
+- [x] Require behavior-preservation criteria, affected public contracts, migration impact, test coverage, and rollback plan before editing.
+- [x] Prefer incremental patches and avoid whole-file rewrites unless a file is intentionally replaced.
+- [x] Remove dead paths, dependencies, adapters, docs, and registry entries as part of the same refactor.
+- [x] Verify release output and resource restart behavior after structural changes.
 
 ### C. Schema-first contracts for high-risk boundaries
 
-- [ ] Define compact schemas for network events, NUI requests/responses, public exports, integration options, configs, and database rows.
-- [ ] Decide on one canonical schema representation before generating LuaCATS, JSDoc, or optional derived types.
-- [ ] Do not introduce code generation for small resources unless it measurably reduces duplication.
-- [ ] Add drift validation between schema, generated types, runtime validators, and documentation when generation is enabled.
-- [ ] Preserve server authority and runtime validation; static types alone are insufficient.
+- [x] Define compact schemas for network events, NUI requests/responses, public exports, integration options, configs, and database rows.
+- [x] Decide on one canonical schema representation before generating LuaCATS, JSDoc, or optional derived types.
+- [x] Do not introduce code generation for small resources unless it measurably reduces duplication.
+- [x] Add drift validation between schema, generated types, runtime validators, and documentation when generation is enabled.
+- [x] Preserve server authority and runtime validation; static types alone are insufficient.
 
 ### D. Complex state and race-condition guidance
 
-- [ ] Create a compact rule or recipe for concurrent and multiplayer mutations.
-- [ ] Cover idempotency keys, duplicate requests, stale responses, optimistic UI rollback, server ordering, ownership changes, disconnect during mutation, and transaction failure.
-- [ ] Provide one provider-neutral example rather than introducing a global state framework.
-- [ ] Document when state bags, events, callbacks, persistence, or feature-local state are appropriate.
+- [x] Create a compact rule or recipe for concurrent and multiplayer mutations.
+- [x] Cover idempotency keys, duplicate requests, stale responses, optimistic UI rollback, server ordering, ownership changes, disconnect during mutation, and transaction failure.
+- [x] Provide one provider-neutral example rather than introducing a global state framework.
+- [x] Document when state bags, events, callbacks, persistence, or feature-local state are appropriate.
 
 ### E. Reduce documentation duplication and default context
 
-- [ ] Audit `.ai/rules/`, `.ai/skills/`, `.ai/recipes/`, and docs for repeated requirements.
-- [ ] Move repeated if/then guidance into compact decision matrices.
-- [ ] Add concise YAML frontmatter only where machine routing benefits from it.
-- [ ] Keep long explanations in `docs/reference/` and mandatory constraints in compact rules.
-- [ ] Report concrete file/context reductions instead of unsupported percentage claims.
+- [x] Audit `.ai/rules/`, `.ai/skills/`, `.ai/recipes/`, and docs for repeated requirements.
+- [x] Move repeated if/then guidance into compact decision matrices.
+- [x] Add concise YAML frontmatter only where machine routing benefits from it.
+- [x] Keep long explanations in `docs/reference/` and mandatory constraints in compact rules.
+- [x] Report concrete file/context reductions instead of unsupported percentage claims.
 
 ### F. Normalize provider documentation
 
-- [ ] Extend provider profiles with compact machine-readable operation schemas where helpful.
-- [ ] Represent operation name, runtime, arguments, required/optional fields, side effects, return contract, errors, dependencies, and unsupported combinations.
-- [ ] Keep human notes only for semantics that schemas cannot express clearly.
-- [ ] Continue separating provider registration from runtime activation.
-- [ ] Never store secrets or private credentials in provider profiles.
+- [x] Extend provider profiles with compact machine-readable operation schemas where helpful.
+- [x] Represent operation name, runtime, arguments, required/optional fields, side effects, return contract, errors, dependencies, and unsupported combinations.
+- [x] Keep human notes only for semantics that schemas cannot express clearly.
+- [x] Continue separating provider registration from runtime activation.
+- [x] Never store secrets or private credentials in provider profiles.
 
 ### G. Optional pre-commit hook
 
-- [ ] Provide an opt-in hook template that runs `.ai/index.json` generation/checks and fast local validators.
-- [ ] Do not silently install hooks or modify developer Git configuration.
-- [ ] Keep the hook fast; leave UI production builds and FXServer tests for explicit validation commands.
-- [ ] Reuse `scripts/build-ai-index.mjs`; do not create a second index implementation.
+- [x] Provide an opt-in hook template that runs `.ai/index.json` generation/checks and fast local validators.
+- [x] Do not silently install hooks or modify developer Git configuration.
+- [x] Keep the hook fast; leave UI production builds and FXServer tests for explicit validation commands.
+- [x] Reuse `scripts/build-ai-index.mjs`; do not create a second index implementation.
 
 ### H. Screenshot-based UI review guidance
 
-- [ ] Extend UI review workflow to compare approved wireframes/designs with implementation screenshots.
-- [ ] Check layout, spacing, typography, responsive scaling, overflow, long Thai strings, loading/error/empty states, and focus/interaction behavior.
-- [ ] Treat image comparison as a review aid rather than automated pixel-perfect verification.
-- [ ] Store only approved design references needed by the feature.
+- [x] Extend UI review workflow to compare approved wireframes/designs with implementation screenshots.
+- [x] Check layout, spacing, typography, responsive scaling, overflow, long Thai strings, loading/error/empty states, and focus/interaction behavior.
+- [x] Treat image comparison as a review aid rather than automated pixel-perfect verification.
+- [x] Store only approved design references needed by the feature.
+
+### I. Cross-agent runtime verification
+
+- [x] Route GPT/Codex, Claude, Gemini, Cursor, GitHub Copilot, and Kimi through one canonical `AGENTS.md` agreement with thin vendor adapters.
+- [x] Validate adapter paths, context budgets, required fallback safeguards, and static verification metadata locally.
+- [ ] Smoke test the documented instruction-loading command in current Claude, Gemini, Cursor, Copilot, and Kimi CLI/IDE versions.
+- [ ] Record `testedVersion` and `runtimeVerifiedAt` in `.ai/matrices/agent-entrypoints.json` only after each real smoke test passes.
 
 ---
 
@@ -204,16 +211,16 @@ ARCHITECTURE.md
 FAQ.md
 ```
 
-- [ ] Search README files, AI guidance, issue templates, and docs for links to these files before deletion.
-- [ ] Move still-required durable information into the correct canonical location before deleting:
+- [x] Search README files, AI guidance, issue templates, and docs for links to these files before deletion.
+- [x] Move still-required durable information into the correct canonical location before deleting:
   - contribution constraints → `AGENTS.md` or focused development docs;
   - security/release constraints → security rules and release documentation;
   - current architecture → ADRs, `.ai/features/resource-structure.md`, and README;
   - unresolved roadmap work → this `TODO.md`;
   - recurring questions → concise README sections only when still needed.
-- [ ] Delete the seven files after required content migration.
-- [ ] Do not delete `.github/ISSUE_TEMPLATE/` or `.github/PULL_REQUEST_TEMPLATE.md` as part of this task.
-- [ ] Run stale-link searches and local validation after deletion.
+- [x] Delete the seven files after required content migration.
+- [x] Do not delete `.github/ISSUE_TEMPLATE/` or `.github/PULL_REQUEST_TEMPLATE.md` as part of this task.
+- [x] Run stale-link searches and local validation after deletion.
 
 ---
 
@@ -255,18 +262,18 @@ Manual FXServer verification remains required for runtime behavior involving nat
 ## Definition of done
 
 - [ ] `resource/` starts, restarts, and stops cleanly on a real FXServer.
-- [ ] Bootstrap files and manifest paths are valid and minimal.
-- [ ] At least one minimal executable example exists.
-- [ ] Runtime test capability has runnable documented scenarios.
+- [x] Bootstrap files and manifest paths are valid and minimal.
+- [x] At least one minimal executable example exists.
+- [x] Runtime test capability has runnable documented scenarios.
 - [ ] Existing local validators and release tests pass from a clean clone.
-- [ ] Svelte/JSDoc and LuaLS diagnostics are available as explicit local commands.
-- [ ] Optional capability routing remains outside default AI context.
-- [ ] Debug and refactor skills are implemented and indexed.
-- [ ] High-risk boundaries use stable, validated contracts.
-- [ ] Complex state/race-condition guidance exists without imposing a global state framework.
-- [ ] Provider docs can use compact schemas without activating providers.
-- [ ] Documentation duplication is reduced and measured through concrete repository changes.
-- [ ] The seven selected root documentation files are removed after required content migration.
-- [ ] Generated UI/release output is not tracked.
-- [ ] No legacy root runtime tree or `Development/Svelte` source returns.
-- [ ] Remaining unverified behavior is reported honestly.
+- [x] Svelte/JSDoc and LuaLS diagnostics are available as explicit local commands.
+- [x] Optional capability routing remains outside default AI context.
+- [x] Debug and refactor skills are implemented and indexed.
+- [x] High-risk boundaries use stable, validated contracts.
+- [x] Complex state/race-condition guidance exists without imposing a global state framework.
+- [x] Provider docs can use compact schemas without activating providers.
+- [x] Documentation duplication is reduced and measured through concrete repository changes.
+- [x] The seven selected root documentation files are removed after required content migration.
+- [x] Generated UI/release output is not tracked.
+- [x] No legacy root runtime tree or `Development/Svelte` source returns.
+- [x] Remaining unverified behavior is reported honestly.

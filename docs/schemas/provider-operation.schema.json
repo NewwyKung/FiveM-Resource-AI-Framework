@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/fivem-resource/provider-operation.schema.json",
+  "title": "Provider operation profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "runtime", "arguments", "sideEffects", "returns", "errors", "dependencies", "unsupportedWith"],
+  "properties": {
+    "name": { "type": "string", "minLength": 1 },
+    "runtime": { "enum": ["client", "server", "shared", "build"] },
+    "arguments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "required", "contract"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "required": { "type": "boolean" },
+          "contract": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "sideEffects": { "type": "array", "items": { "type": "string" } },
+    "returns": { "type": "string", "minLength": 1 },
+    "errors": { "type": "array", "items": { "type": "string" } },
+    "dependencies": { "type": "array", "items": { "type": "string" } },
+    "unsupportedWith": { "type": "array", "items": { "type": "string" } },
+    "notes": { "type": "string" }
+  }
+}

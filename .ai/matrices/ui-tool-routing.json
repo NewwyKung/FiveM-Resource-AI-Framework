@@ -1,0 +1,41 @@
+{
+  "v0": {
+    "source": "https://v0.app/docs/api/platform/overview",
+    "role": "optional wireframe renderer",
+    "default": false,
+    "loadWhen": ["user selects v0", "v0 tool or API is available and approved"],
+    "localFallback": ".ai/skills/wireframe-ui/SKILL.md",
+    "handoff": ".ai/prompts/ui-external-handoff.md; approved layout regions, states, measurements, and screenshots only"
+  },
+  "frontendDesignClaude": {
+    "source": "https://github.com/anthropics/claude-code/tree/main/plugins/frontend-design",
+    "role": "Claude-specific visual implementation lens and live preview",
+    "default": false,
+    "loadWhen": ["work is explicitly handed to a Claude environment that exposes it"],
+    "localFallback": ".ai/skills/design-ui/SKILL.md then .ai/skills/implement-ui/SKILL.md",
+    "handoff": ".ai/prompts/ui-external-handoff.md; approved specification, affected files, validation commands, and screenshot states"
+  },
+  "uiUxProMax": {
+    "source": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+    "role": "optional searchable design reference",
+    "default": false,
+    "loadWhen": ["user explicitly requests a reference search", "existing design system lacks a material decision"],
+    "localFallback": "docs/design/design-system.md",
+    "constraints": ["query only the relevant domain", "use Svelte or HTML guidance", "do not introduce Tailwind or a second design-system folder"]
+  },
+  "emilMotion": {
+    "source": "https://github.com/emilkowalski/skills",
+    "role": "purposeful motion lens",
+    "default": false,
+    "loadWhen": ["motion is an acceptance criterion", "animation is explicitly requested", "review identifies a motion defect"],
+    "localFallback": ".agents/skills/fivem-ui-workflow/references/motion.md"
+  },
+  "impeccable": {
+    "source": "https://github.com/pbakaus/impeccable",
+    "role": "optional deterministic audit and polish vocabulary",
+    "default": false,
+    "loadWhen": ["user explicitly selects Impeccable", "its CLI or skill is installed and approved"],
+    "localFallback": ".ai/skills/review-ui/SKILL.md then .ai/skills/refine-ui/SKILL.md",
+    "constraints": ["scan affected UI paths only", "do not install hooks silently", "do not replace the approved design system"]
+  }
+}

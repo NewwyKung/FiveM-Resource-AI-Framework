@@ -86,6 +86,10 @@ npm run build --prefix resource/ui
 
 Run the local validation scripts before release. GitHub validation Actions are intentionally not enabled by default.
 
+```bash
+npm run validate
+```
+
 ## Working with AI
 
 The main AI entrypoint is:
@@ -93,6 +97,8 @@ The main AI entrypoint is:
 ```text
 AGENTS.md
 ```
+
+GPT/OpenAI Codex, Claude Code, Gemini CLI, Cursor, GitHub Copilot, and Kimi Code use thin adapters around this same entrypoint. See [`docs/ai-agents.md`](docs/ai-agents.md) for automatic discovery paths and verification commands.
 
 The intended context flow is deliberately small:
 
@@ -303,8 +309,14 @@ resource/fxmanifest.lua  FiveM manifest and load order
 - [`.ai/skills/INDEX.md`](.ai/skills/INDEX.md) — task workflow index
 - [`.ai/rules/INDEX.md`](.ai/rules/INDEX.md) — domain rule index
 - [`.ai/recipes/README.md`](.ai/recipes/README.md) — deterministic implementation recipes
+- [`docs/ai-agents.md`](docs/ai-agents.md) — GPT, Claude, Gemini, Cursor, Copilot, and Kimi compatibility
 - [`docs/reference/fivem-engineering-reference.md`](docs/reference/fivem-engineering-reference.md) — normalized engineering reference
 - [`docs/releasing.md`](docs/releasing.md) — release workflow and security
+
+Additional project guidance:
+
+- [`docs/development.md`](docs/development.md)
+- [`docs/ci-cd.md`](docs/ci-cd.md)
 
 ## Credits
 

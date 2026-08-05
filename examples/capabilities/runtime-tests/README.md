@@ -14,13 +14,18 @@ Use runtime tests when the feature depends on:
 
 Do not use runtime tests for pure functions that can run in a lightweight unit test.
 
+## Decision
+
+The runner remains a reusable standalone test resource. It never enters a production manifest. Selected suites are listed explicitly in its manifest so adding a test is reviewable and load order is deterministic.
+
 ## Minimal flow
 
 1. Copy `test_runner/` into a separate test resource.
-2. Register resource-specific test modules explicitly.
-3. Start the target resource and test runner on a development server.
-4. Run `runtime-tests` from the server console.
-5. Return non-zero/failing evidence in CI when an FXServer job is configured.
+2. Add resource-specific files under `tests/` and list them explicitly in `fxmanifest.lua`.
+3. Optionally set `runtime_tests_target` and `runtime_tests_provider` convars.
+4. Start the target resource and test runner on a development server.
+5. Run `runtime-tests list`, then `runtime-tests` from the server console.
+6. Read `runtime_tests_last_result` when an external FXServer job needs pass/fail evidence.
 
 ## Token-efficient AI rule
 
@@ -37,3 +42,5 @@ Select only relevant scenarios:
 - database connection/migration failure;
 - NUI callback timeout/focus recovery;
 - entity deletion and ownership changes.
+
+Player disconnect, CEF focus, entity ownership, and actual provider/database failures still need resource-specific fixtures or manual gameplay. The bundled suites cover config bootstrap, request/error contracts, duplicate registration detection, per-test timing, target start state, target runtime status, and optional provider availability.

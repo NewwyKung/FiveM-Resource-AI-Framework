@@ -18,6 +18,8 @@ ensure <resource_name>-<version>
 node scripts/create-release.mjs
 ```
 
+Release generation runs local template, integration, schema, secret, registry, and Svelte diagnostics first. It builds into a same-volume staging directory, completes sanitization and secret scanning, then renames the finished package into place. A failed build removes staging output and restores source version files.
+
 The UI is built by default. Skip the build only when an existing production build under `resource/html/` is intentionally reused:
 
 ```bash
@@ -29,6 +31,8 @@ Preview name/version without creating files:
 ```bash
 node scripts/create-release.mjs --dry-run --skip-ui-build
 ```
+
+Automation that already completed `npm run validate` may pass `--skip-validation` to avoid running the release subset twice. Do not use that flag as a workaround for failing checks.
 
 ## Versioning
 
@@ -112,7 +116,7 @@ The local integration test builds a real temporary release using:
 node tests/release/create-release.integration.mjs
 ```
 
-It verifies allowlisted output, production manifest patching, explicit secret sanitization, metadata evidence, and exclusion of development/AI folders.
+It verifies allowlisted output, root/nested glob exclusions, production manifest patching, explicit secret sanitization, metadata evidence, exclusion of development/AI folders, and rollback after a forced sanitizer failure.
 
 ## Final deployment check
 

@@ -14,10 +14,11 @@ Do only this:
 1. Identify capability, resource name, versions, and supported runtimes.
 2. Extract exports/events/callbacks into a concise provider profile.
 3. Record option-level type, required/optional/default, runtime, conditions, dependencies, return behavior, and known limitations.
-4. Preserve source terminology and mark unsupported or unclear details as unresolved.
-5. Save `.ai/integrations/providers/<provider>.md` from the provider template.
-6. Add the provider to `.ai/integrations/INDEX.md` as `registered`, not selected.
-7. Do not update `integrations.json`, runtime config, `resource/fxmanifest.lua`, source modules, or tests.
+4. Add compact operation objects conforming to `docs/schemas/provider-operation.schema.json` when the provider has callable operations.
+5. Preserve source terminology and mark unsupported or unclear details as unresolved.
+6. Save `.ai/integrations/providers/<provider>.md` from the provider template.
+7. Add the provider to `.ai/integrations/INDEX.md` as `registered`, not selected.
+8. Do not update `integrations.json`, runtime config, `resource/fxmanifest.lua`, source modules, or tests.
 
 ### Activate mode
 Use only when the user explicitly says the current resource/feature must use a registered provider.

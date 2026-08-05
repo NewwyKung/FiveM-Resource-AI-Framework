@@ -5,6 +5,7 @@ Load this rule for implementation, review, debugging, and release work.
 ## Architecture
 
 - Use the smallest approved architecture tier.
+- Select the tier from `.ai/matrices/architecture-tiers.json`; EventBus, DI containers, CQRS, and global state require a concrete need and approval.
 - Keep transport handlers thin; business decisions belong in services/use cases.
 - Add repositories only when persistence exists.
 - Access external resources through the selected provider boundary, never scattered direct calls.

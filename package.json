@@ -1,0 +1,18 @@
+{
+  "name": "fivem-resource-ai-framework",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/run-validation.mjs",
+    "validate:fast": "node scripts/run-validation.mjs --fast",
+    "check:lua": "node scripts/run-luals.mjs",
+    "check:secrets": "node scripts/scan-secrets.mjs",
+    "check:agents": "node scripts/validate-agent-adapters.mjs",
+    "test:agents": "node tests/ai/validate-agent-adapters.integration.mjs",
+    "check:skills": "node scripts/validate-skills.mjs",
+    "check:ui-practices": "node scripts/check-ui-practices.mjs",
+    "check:ui": "npm run check --prefix resource/ui",
+    "test:nui": "node tests/ui/nui-bridge.integration.mjs"
+  }
+}

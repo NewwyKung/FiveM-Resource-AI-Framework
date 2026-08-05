@@ -2,10 +2,13 @@
   "schemaVersion": 1,
   "generatedFrom": "registry filenames",
   "features": {
+    "framework-hardening": ".ai/features/framework-hardening.md",
     "resource-structure": ".ai/features/resource-structure.md"
   },
   "components": {},
   "events": {},
   "database": {},
-  "providers": {}
+  "providers": {
+    "v0": ".ai/integrations/providers/v0.md"
+  }
 }

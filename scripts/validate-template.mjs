@@ -32,6 +32,9 @@ function readTrackedFiles() {
 
 for (const required of [
   'AGENTS.md',
+  'CLAUDE.md',
+  '.gemini/settings.json',
+  '.github/copilot-instructions.md',
   '.ai/CONTEXT_BUDGET.md',
   '.ai/index.json',
   '.ai/work/README.md',
@@ -51,9 +54,23 @@ for (const required of [
   'examples/resources/example_interaction/fxmanifest.lua',
   'tests/examples/example_interaction.md',
   'tests/release/create-release.integration.mjs',
+  'tests/ai/validate-agent-adapters.integration.mjs',
+  'tests/security/scan-secrets.integration.mjs',
+  'tests/ui/check-ui-practices.integration.mjs',
+  'tests/ui/nui-bridge.integration.mjs',
   'scripts/build-ai-index.mjs',
   'scripts/create-release.mjs',
+  'scripts/run-validation.mjs',
+  'scripts/run-luals.mjs',
+  'scripts/scan-secrets.mjs',
+  'scripts/validate-schemas.mjs',
+  'scripts/check-ui-practices.mjs',
+  'scripts/validate-skills.mjs',
+  'scripts/validate-agent-adapters.mjs',
   'scripts/setup-dev-resource.ps1',
+  'package.json',
+  'tooling.config.json',
+  'secret-scan.config.json',
   'release.config.json',
   'resource/fxmanifest.lua',
   'resource/config/config.main.lua',
@@ -61,8 +78,34 @@ for (const required of [
   'resource/server/main.lua',
   'resource/ui/src/app.css',
   'resource/ui/package-lock.json',
+  'resource/ui/src/global.d.ts',
   'resource/html/.gitkeep',
   'release/.gitkeep',
+  'examples/README.md',
+  'examples/hello-world/fxmanifest.lua',
+  'examples/shop-system/fxmanifest.lua',
+  'examples/capabilities/runtime-tests/test_runner/fxmanifest.lua',
+  'examples/github-workflows/ci.yml',
+  'examples/github-workflows/release.yml',
+  'examples/git-hooks/pre-commit',
+  'docs/ci-cd.md',
+  'docs/development.md',
+  'docs/schemas/runtime-contracts.schema.json',
+  'docs/schemas/provider-operation.schema.json',
+  'docs/schemas/ai-task.schema.json',
+  '.ai/matrices/architecture-tiers.json',
+  '.ai/rules/source-trust.md',
+  '.ai/rules/contracts.md',
+  '.ai/recipes/concurrent-mutation.md',
+  '.ai/skills/refactor-feature/SKILL.md',
+  '.agents/skills/fivem-ui-workflow/SKILL.md',
+  '.agents/skills/fivem-ui-workflow/agents/openai.yaml',
+  '.agents/skills/fivem-ui-workflow/references/motion.md',
+  '.ai/matrices/ui-tool-routing.json',
+  '.ai/matrices/agent-entrypoints.json',
+  '.ai/integrations/providers/v0.md',
+  '.ai/prompts/ui-external-handoff.md',
+  'docs/ai-agents.md',
 ]) requirePath(required);
 
 const forbiddenPaths = [
@@ -85,7 +128,16 @@ const forbiddenPaths = [
   'resource/ui/src/provider/Visible.svelte',
   `resource/ui/src/lib/${['Component', 'Showcase'].join('')}.svelte`,
   'resource/ui/src/lib/tokens.css',
-  '.github/workflows/validate.yml',
+  '.github/workflows',
+  'CONTRIBUTING.md',
+  'SECURITY.md',
+  'SUPPORT.md',
+  'CHANGELOG.md',
+  'ROADMAP.md',
+  'ARCHITECTURE.md',
+  'FAQ.md',
+  'GEMINI.md',
+  '.cursor/rules/project.mdc',
 ];
 
 for (const file of forbiddenPaths) {
@@ -119,6 +171,7 @@ if (exists('resource/ui/src/app.css')) {
 
 if (exists('resource/fxmanifest.lua')) {
   const manifest = read('resource/fxmanifest.lua');
+  if (/^\s*lua54\s+/m.test(manifest)) errors.push("resource/fxmanifest.lua must not use deprecated lua54 metadata.");
   if (!/^\s*ui_page\s+['"]html\/index\.html['"]\s*$/m.test(manifest)) {
     errors.push('resource/fxmanifest.lua must use production ui_page html/index.html.');
   }
@@ -135,6 +188,31 @@ if (exists('resource/fxmanifest.lua')) {
     const wildcardIndex = entry.search(/[?*[]/);
     const base = (wildcardIndex === -1 ? entry : entry.slice(0, wildcardIndex)).replace(/\/$/, '');
     if (base && !exists(path.posix.join('resource', base))) errors.push(`Manifest path does not exist: ${entry}`);
+  }
+}
+
+for (const manifestPath of [
+  'examples/hello-world/fxmanifest.lua',
+  'examples/shop-system/fxmanifest.lua',
+  'examples/resources/example_interaction/fxmanifest.lua',
+  'examples/capabilities/runtime-tests/test_runner/fxmanifest.lua',
+]) {
+  if (!exists(manifestPath)) continue;
+  const manifest = read(manifestPath);
+  if (/^\s*lua54\s+/m.test(manifest)) errors.push(`${manifestPath} must not use deprecated lua54 metadata.`);
+  const manifestRoot = path.posix.dirname(manifestPath);
+  const entries = [...manifest.matchAll(/^\s*['"]([^'"]+)['"],?\s*$/gm)].map((match) => normalize(match[1]));
+
+  for (const entry of entries) {
+    if (entry.startsWith('/') || entry.includes('../')) {
+      errors.push(`Example manifest path must stay relative to ${manifestRoot}: ${entry}`);
+      continue;
+    }
+    const wildcardIndex = entry.search(/[?*[]/);
+    const base = (wildcardIndex === -1 ? entry : entry.slice(0, wildcardIndex)).replace(/\/$/, '');
+    if (base && !exists(path.posix.join(manifestRoot, base))) {
+      errors.push(`Example manifest path does not exist: ${manifestPath}:${entry}`);
+    }
   }
 }
 
@@ -186,7 +264,6 @@ const staleTerms = [
 ];
 const historicalFiles = new Set([
   'TODO.md',
-  'CHANGELOG.md',
   'docs/resource-restructure-audit.md',
   '.ai/memory/requirements/active/resource-restructure.md',
 ]);

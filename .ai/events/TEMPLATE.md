@@ -4,6 +4,7 @@
 - Caller:
 - Receiver:
 - Authority:
+- Action enum/allowlist:
 - Payload schema:
 - Response/error schema:
 - Validation:

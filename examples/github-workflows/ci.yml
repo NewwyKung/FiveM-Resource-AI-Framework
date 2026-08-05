@@ -1,0 +1,31 @@
+name: Validate resource
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: resource/ui/package-lock.json
+      - run: npm ci --prefix resource/ui --no-audit --no-fund
+      - run: npm run validate
+      - name: Install pinned LuaLS
+        run: |
+          mkdir -p .tools/luals
+          curl --fail --location --silent --show-error \
+            https://github.com/LuaLS/lua-language-server/releases/download/3.18.2/lua-language-server-3.18.2-linux-x64.tar.gz \
+            | tar -xz -C .tools/luals
+          echo "LUALS_BIN=$PWD/.tools/luals/bin/lua-language-server" >> "$GITHUB_ENV"
+      - run: npm run check:lua

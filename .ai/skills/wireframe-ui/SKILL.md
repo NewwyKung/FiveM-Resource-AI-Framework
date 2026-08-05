@@ -41,6 +41,12 @@ The number `123` represents 123px on the 1440px-high source canvas and remains u
 ## Approval gate
 Do not proceed to final visual design or implementation until the wireframe status is `Approved`, unless the user explicitly combines phases and accepts the risk.
 
+## Optional v0 handoff
+
+Use v0 only when the user selects it and a v0 tool or approved API access is actually available. Then read `.ai/matrices/ui-tool-routing.json` and `.ai/integrations/providers/v0.md`, send only a compact approved brief and approved references, and treat the result as a proposal.
+
+Do not send repository source, provider details, secrets, or unapproved assets. Normalize accepted regions, states, measurements, and screenshots into the screen specification; do not import generated React, Next.js, Tailwind, or transport code.
+
 ## Output
 - Screen-specification path
 - Wireframe status

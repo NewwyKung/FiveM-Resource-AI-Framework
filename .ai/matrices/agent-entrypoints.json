@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 2,
+  "documentedAt": "2026-08-05",
+  "canonicalInstructions": "AGENTS.md",
+  "policy": {
+    "duplicateCanonicalRules": false,
+    "primarySkillLimit": 1,
+    "externalUiLensLimit": 1
+  },
+  "agents": {
+    "openaiCodex": {
+      "entrypoint": "AGENTS.md",
+      "skillRoot": ".agents/skills",
+      "adapter": null,
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Start a new task from the repository root and inspect the loaded project instructions.",
+      "source": "https://developers.openai.com/codex/use-cases"
+    },
+    "claudeCode": {
+      "entrypoint": "CLAUDE.md",
+      "skillRoot": null,
+      "adapter": "CLAUDE.md",
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Run /context and confirm CLAUDE.md and its AGENTS.md import are loaded.",
+      "source": "https://code.claude.com/docs/en/memory"
+    },
+    "geminiCli": {
+      "entrypoint": "AGENTS.md",
+      "skillRoot": null,
+      "adapter": ".gemini/settings.json",
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Run /memory show and confirm repository AGENTS.md is loaded while any user-level GEMINI.md memory remains available.",
+      "source": "https://google-gemini.github.io/gemini-cli/docs/cli/gemini-md.html"
+    },
+    "cursor": {
+      "entrypoint": "AGENTS.md",
+      "skillRoot": null,
+      "adapter": null,
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Open Cursor Agent and confirm AGENTS.md appears in active project rules.",
+      "source": "https://docs.cursor.com/context/rules-for-ai"
+    },
+    "githubCopilot": {
+      "entrypoint": ".github/copilot-instructions.md",
+      "skillRoot": ".agents/skills",
+      "adapter": ".github/copilot-instructions.md",
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Verify the active Copilot surface loads either AGENTS.md or the repository-wide fallback; use /instructions where supported.",
+      "source": "https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions"
+    },
+    "kimiCode": {
+      "entrypoint": "AGENTS.md",
+      "skillRoot": ".agents/skills",
+      "adapter": null,
+      "verificationStatus": "static-only",
+      "testedVersion": null,
+      "runtimeVerifiedAt": null,
+      "verify": "Start Kimi Code at the repository root and ask it to identify the active AGENTS.md contract.",
+      "source": "https://github.com/MoonshotAI/kimi-code"
+    }
+  }
+}

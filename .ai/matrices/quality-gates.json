@@ -19,6 +19,14 @@
     "rules": ["existence check", "network ownership", "deletion/migration handling"],
     "tests": ["missing entity", "invalid network id"]
   },
+  "asyncRequest": {
+    "rules": ["correlation id", "deadline", "bounded pending store", "owner cleanup", "retry only when idempotent"],
+    "tests": ["timeout", "late response", "duplicate response", "pending limit", "owner disposal"]
+  },
+  "stateBag": {
+    "rules": ["direct shallow keys", "write ownership", "client values untrusted", "scope-aware reads"],
+    "tests": ["unauthorized write", "out-of-scope entity", "entity deletion", "resource restart"]
+  },
   "nui": {
     "rules": ["message schema", "callback resolution", "focus ownership", "listener disposal"],
     "tests": ["browser mock", "malformed message", "escape", "resource stop", "production build"]
@@ -32,8 +40,8 @@
     "tests": ["missing key", "long Thai text", "fallback locale"]
   },
   "assets": {
-    "rules": ["runtime allowlist", "size budget", "referenced output only"],
-    "tests": ["missing asset", "oversized asset", "source asset excluded"]
+    "rules": ["runtime allowlist", "size budget", "referenced output only", "acquire/release ownership", "bounded cache", "load deadline"],
+    "tests": ["missing asset", "load timeout", "shared ownership", "owner disposal", "oversized asset", "source asset excluded"]
   },
   "publicApi": {
     "rules": ["documented schema", "stable return shape", "compatibility status"],

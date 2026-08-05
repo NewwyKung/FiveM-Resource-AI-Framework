@@ -9,11 +9,13 @@ Review only applicable sections and report concrete findings by impact.
 - The design has a specific point of view rather than generic component assembly.
 
 ## Layout and visual craft
+- Approved reference and implementation screenshots use the same viewport and UI scale before comparison.
 - Alignment is deliberate; optical corrections are allowed when perception beats geometry.
 - Spacing follows the approved rhythm.
 - Typography roles, line lengths, truncation, and Thai text are correct.
 - Borders, shadows, radii, icons, and surfaces are visually consistent.
 - Bright and dark game-background screenshots remain readable.
+- 3840x2160 is checked when 4K support is an acceptance criterion; scaling is not assumed from a 1080p screenshot.
 - No accidental overflow, dead space, clipped content, or unnecessary scrollbar exists.
 
 ## Interaction
@@ -42,6 +44,13 @@ Review only applicable sections and report concrete findings by impact.
 - Only above-the-fold critical assets are preloaded.
 - Large lists are virtualized or constrained when necessary.
 - No listener, timer, subscription, focus trap, or asset handle leaks.
+- Browser performance evidence covers NUI/CEF work; FXServer resmon evidence covers Lua/resource CPU. Do not claim exact `0.00 ms` without a captured target-runtime measurement.
+
+## Screenshot evidence
+- Compare layout, spacing, typography, scaling, overflow, and long Thai strings against approved references.
+- Capture loading, error, empty, dense-content, focused, and interaction states when they are in scope.
+- Use overlays or image differences to locate drift, then judge the cause and user impact manually.
+- Keep only approved references required by the feature; do not preserve exploratory screenshots as durable source of truth.
 
 ## Review output
 For each finding include:

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/fivem-resource/runtime-contracts.schema.json",
+  "title": "Canonical runtime boundary contracts",
+  "$defs": {
+    "requestId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9:_-]+$"
+    },
+    "structuredError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "messageKey", "details", "retryable"],
+      "properties": {
+        "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]+$" },
+        "messageKey": { "type": "string", "minLength": 1 },
+        "details": { "type": "object" },
+        "requestId": { "$ref": "#/$defs/requestId" },
+        "retryable": { "type": "boolean" }
+      }
+    },
+    "networkEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "requestId", "payload"],
+      "properties": {
+        "action": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Za-z][A-Za-z0-9:_-]*$",
+          "description": "Feature schemas must narrow this to an explicit string enum."
+        },
+        "requestId": { "$ref": "#/$defs/requestId" },
+        "payload": { "type": "object" }
+      }
+    },
+    "nuiRequest": { "$ref": "#/$defs/networkEvent" },
+    "nuiResponse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ok", "requestId"],
+      "properties": {
+        "ok": { "type": "boolean" },
+        "requestId": { "$ref": "#/$defs/requestId" },
+        "data": {},
+        "error": { "oneOf": [{ "$ref": "#/$defs/structuredError" }, { "type": "null" }] }
+      }
+    },
+    "publicExport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "runtime", "arguments", "returns"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "runtime": { "enum": ["client", "server", "shared"] },
+        "arguments": { "type": "array", "items": { "type": "object" } },
+        "returns": { "type": "object" },
+        "errors": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "integrationOptions": { "type": "object", "additionalProperties": true },
+    "resourceConfig": { "type": "object", "additionalProperties": true },
+    "databaseRow": {
+      "type": "object",
+      "description": "Feature schemas must replace this open row with named required columns.",
+      "additionalProperties": true
+    }
+  }
+}

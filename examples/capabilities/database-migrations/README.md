@@ -15,6 +15,7 @@ Use this pack only when the approved resource persists data in a database.
 
 ```text
 resource/server/database/migration.lua
+resource/server/database/adapter.lua
 sql/migrations/001_initial.sql
 sql/migrations/002_add_index.sql
 ```
@@ -27,6 +28,12 @@ Single
 Insert
 Transaction
 ```
+
+Create that boundary with `adapter.lua`, passing only selected provider operations. The capability never imports a database provider directly. `Transaction` must execute all statements and the tracking insert atomically, returning `true` only after commit.
+
+Migration IDs use immutable `NNN_lowercase_name` values and checksums are lowercase SHA-256 hex strings. Editing a migration after it has shipped must fail with `MIGRATION_CHECKSUM_MISMATCH`; add a new forward migration instead.
+
+The runner bounds migration count and statement size, and rejects embedded `BEGIN`, `COMMIT`, or `ROLLBACK`; transaction ownership belongs to the selected adapter so the migration and tracking insert commit atomically.
 
 The migration runner must never call oxmysql directly unless oxmysql is the activated provider.
 

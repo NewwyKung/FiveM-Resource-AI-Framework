@@ -7,7 +7,7 @@ Activate this capability only when approved requirements need more than one loca
 - `locales/en.lua`
 - `locales/th.lua`
 - `resource/shared/modules/i18n.lua`
-- the NUI locale store/translator when the UI displays translated text
+- `ui/locale.js` when the NUI displays translated text
 
 Add only copied runtime files to `resource/fxmanifest.lua`.
 
@@ -40,5 +40,13 @@ Machine-readable error codes remain untranslated. Convert `INSUFFICIENT_FUNDS` i
 - long Thai text and Unicode;
 - placeholder consistency between locales;
 - NUI and Lua key alignment when both are enabled.
+
+Run the provider-independent NUI contract test with:
+
+```bash
+node examples/capabilities/i18n/tests/locale.integration.mjs
+```
+
+The NUI helper validates key and placeholder parity at startup, falls back explicitly, and records each missing locale/key pair once. Keep locale selection feature-local unless approved requirements call for a server-wide language preference.
 
 Do not add this pack to a single-language resource unless the user explicitly wants translation-ready architecture.

@@ -4,6 +4,16 @@ This document is an English, normalized reference derived from the supplied Thai
 
 It is reference material, not an automatic context dependency. AI agents should read the canonical rules, recipes, matrices, and current source files first. Load a section here only when a task needs deeper explanation.
 
+## Current FiveM corrections
+
+- `lua54 'yes'` is deprecated because FiveM resources already use Lua 5.4.
+- OAL means One Argument List, not OneSync; it is opt-in and can change native argument behavior, including vector handling.
+- Save server `source` to a local before yielding or awaiting.
+- Local entity handles are not portable IDs. Network IDs are transient, reusable, and may be outside a client's scope.
+- State bags use shallow serialization and ownership-based writes; client-written state remains untrusted for authoritative decisions.
+
+Verify these claims against current Cfx.re primary documentation before changing runtime policy: [resource manifest](https://docs.fivem.net/docs/scripting-reference/resource-manifest/), [event security](https://docs.fivem.net/docs/developers/server-security/), [event source](https://docs.fivem.net/docs/scripting-manual/working-with-events/listening-for-events/), [network IDs](https://docs.fivem.net/docs/scripting-manual/networking/ids/), and [state bags](https://docs.fivem.net/docs/scripting-manual/networking/state-bags/).
+
 ## 1. Architecture
 
 Choose the smallest architecture that safely supports the feature.

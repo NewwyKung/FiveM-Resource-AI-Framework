@@ -20,8 +20,9 @@ description: Apply targeted corrections from an approved UI review, screenshot c
 4. Fix visual-system issues next: spacing rhythm, typography, alignment, depth, icon balance, states, and motion.
 5. Make the smallest coherent edits; avoid unrelated refactors and new design directions.
 6. Re-run the affected checks and capture the same states/viewports used by the review when possible.
-7. Compare again and repeat only while material discrepancies remain.
-8. Update the screen specification only when an approved design decision changed.
+7. Run `npm run check:ui-practices` when CSS, Svelte, NUI transport, or motion changed.
+8. Compare again and repeat only while material discrepancies remain.
+9. Update the screen specification only when an approved design decision changed.
 
 ## Constraints
 - Do not solve a localized defect by adding a global override without checking other screens.

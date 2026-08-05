@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+set -eu
+
+node scripts/build-ai-index.mjs
+
+if ! git diff --quiet -- .ai/index.json; then
+  echo "[pre-commit] .ai/index.json changed; review and stage it before committing." >&2
+  exit 1
+fi
+
+npm run validate:fast

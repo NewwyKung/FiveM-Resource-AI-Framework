@@ -13,6 +13,7 @@ description: Convert an approved wireframe into a distinctive, production-ready 
 - Approved `docs/ui-spec/<screen>.md`
 - Existing relevant components, if any
 - `.ai/rules/assets.md` only when custom artwork is required
+- `.agents/skills/fivem-ui-workflow/references/motion.md` only when motion is a material design requirement
 
 ## Preconditions
 - The screen specification contains a wireframe.
@@ -33,6 +34,8 @@ If these conditions are missing, return to `wireframe-ui` instead of hiding layo
 9. Define visual treatment for every applicable state.
 10. Decide each visual element as CSS, SVG, raster artwork, audio, or streamed asset.
 11. Update the screen specification and set `Visual design status: Review` or `Approved`.
+
+If a material design decision remains unresolved and the user explicitly selects UI/UX Pro Max or another external reference, read only that entry in `.ai/matrices/ui-tool-routing.json` and query one relevant domain. Normalize the approved result into the existing design system; do not create a second master design system.
 
 ## Responsive design handoff
 All fixed design measurements must be documented as source pixel numbers from the 1440px-high design canvas. Implementation converts them using:

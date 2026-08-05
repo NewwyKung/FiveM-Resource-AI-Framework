@@ -1,3 +1,8 @@
+---
+name: setup-dev-resource
+description: Connect the repository's canonical resource directory to an FXServer development resources folder using the guarded junction script. Use when setting up or repairing a local FiveM development resource link.
+---
+
 # Setup Development Resource
 
 Use this workflow when the user wants to run this repository in an FXServer development environment.

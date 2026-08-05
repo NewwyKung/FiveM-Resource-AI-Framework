@@ -1,0 +1,6 @@
+{
+  "luaLanguageServer": {
+    "version": "3.18.2",
+    "executableEnvironmentVariable": "LUALS_BIN"
+  }
+}

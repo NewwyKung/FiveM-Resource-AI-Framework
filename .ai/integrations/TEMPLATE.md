@@ -12,6 +12,23 @@
 
 `<Capability>.<Operation>(options)`
 
+Use one compact object per operation, conforming to `docs/schemas/provider-operation.schema.json`:
+
+```json
+{
+  "name": "Capability.Operation",
+  "runtime": "server",
+  "arguments": [
+    { "name": "options", "required": true, "contract": "OperationOptions" }
+  ],
+  "sideEffects": ["none"],
+  "returns": "OperationResult",
+  "errors": ["PROVIDER_UNAVAILABLE"],
+  "dependencies": ["provider_resource"],
+  "unsupportedWith": []
+}
+```
+
 ## Option matrix
 
 | Option | Type | Required | Default | Runtime | Conditions / dependencies |
@@ -26,6 +43,8 @@
 ## Provider mapping
 
 Document only the source export/event/callback and the transformation performed by the adapter. Feature code must not call the provider directly.
+
+Never place API keys, tokens, passwords, webhook URLs, or private credentials in a provider profile.
 
 ## Limitations
 

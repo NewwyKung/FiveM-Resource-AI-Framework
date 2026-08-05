@@ -22,6 +22,7 @@ const uiSource = path.join(root, metadata.ui?.source || 'resource/ui');
 const uiOutput = path.join(root, metadata.ui?.output || 'resource/html');
 const skipUiBuild = args.has('--skip-ui-build');
 const dryRun = args.has('--dry-run');
+const skipValidation = args.has('--skip-validation');
 
 function parseVersion(value) {
   const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(String(value || ''));
@@ -56,13 +57,38 @@ function resolveVersion() {
 const version = resolveVersion();
 const releaseName = `${resourceName}-${version}`;
 const destination = path.join(outputRoot, releaseName);
+const stagingDestination = path.join(outputRoot, `.${releaseName}.tmp-${process.pid}-${Date.now()}`);
 
 function run(command, commandArgs) {
   const result = spawnSync(command, commandArgs, { cwd: root, stdio: 'inherit', shell: process.platform === 'win32' });
   if (result.status !== 0) throw new Error(`${command} ${commandArgs.join(' ')} failed.`);
 }
 function wildcard(pattern) {
-  return new RegExp(`^${pattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replaceAll('**', '.*').replaceAll('*', '[^/]*')}$`);
+  const normalized = pattern.replaceAll('\\', '/');
+  let source = '^';
+
+  for (let index = 0; index < normalized.length; index += 1) {
+    const character = normalized[index];
+    if (character === '*') {
+      if (normalized[index + 1] === '*') {
+        index += 1;
+        if (normalized[index + 1] === '/') {
+          index += 1;
+          source += '(?:.*/)?';
+        } else {
+          source += '.*';
+        }
+      } else {
+        source += '[^/]*';
+      }
+    } else if (character === '?') {
+      source += '[^/]';
+    } else {
+      source += character.replace(/[.+^${}()|[\]\\]/g, '\\$&');
+    }
+  }
+
+  return new RegExp(`${source}$`);
 }
 function excluded(relativePath) {
   const normalized = relativePath.replaceAll('\\', '/');
@@ -91,7 +117,7 @@ function patchManifest(file) {
   content = content.replace(/^\s*--\s*ui_page\s+['"]html\/index\.html['"]\s*$/m, "ui_page 'html/index.html'");
   content = content.replace(/^\s*ui_page\s+['"]https?:\/\/localhost:[^'"]+['"]\s*$/gm, '');
   content = content.replace(/^version\s+['"][^'"]+['"]$/m, `version '${version}'`);
-  if (!/^\s*ui_page\s+['"]html\/index\.html['"]\s*$/m.test(content) && fs.existsSync(path.join(destination, 'html/index.html'))) content += "\nui_page 'html/index.html'\n";
+  if (!/^\s*ui_page\s+['"]html\/index\.html['"]\s*$/m.test(content) && fs.existsSync(path.join(stagingDestination, 'html/index.html'))) content += "\nui_page 'html/index.html'\n";
   fs.writeFileSync(file, content.replace(/\n{3,}/g, '\n\n'));
 }
 function setJsonPath(target, jsonPath, replacement) {
@@ -108,7 +134,7 @@ function setJsonPath(target, jsonPath, replacement) {
 }
 function applyExplicitSanitizers(changes) {
   for (const rule of policy.jsonSecretPaths || []) {
-    const file = path.join(destination, rule.file);
+    const file = path.join(stagingDestination, rule.file);
     if (!fs.existsSync(file)) throw new Error(`Configured secret JSON file is missing: ${rule.file}`);
     const parsed = JSON.parse(fs.readFileSync(file, 'utf8'));
     if (!setJsonPath(parsed, rule.path, rule.replacement)) throw new Error(`Configured JSON secret path was not found: ${rule.file}:${rule.path}`);
@@ -116,7 +142,7 @@ function applyExplicitSanitizers(changes) {
     changes.push(`${rule.file}:${rule.path}`);
   }
   for (const rule of policy.textSanitizers || []) {
-    const file = path.join(destination, rule.file);
+    const file = path.join(stagingDestination, rule.file);
     if (!fs.existsSync(file)) throw new Error(`Configured sanitizer file is missing: ${rule.file}`);
     const regex = new RegExp(rule.pattern, rule.flags || 'gm');
     const content = fs.readFileSync(file, 'utf8');
@@ -130,13 +156,13 @@ function scanSecrets() {
   const keyHints = (policy.secretKeyHints || []).map((key) => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
   const suspiciousAssignment = keyHints ? new RegExp(`\\b(?:${keyHints})\\b\\s*[=:]\\s*['\"][^'\"]+['\"]`, 'i') : null;
   const findings = [];
-  walk(destination, (file) => {
+  walk(stagingDestination, (file) => {
     if (fs.statSync(file).size > 5_000_000) return;
     const extension = path.extname(file).toLowerCase();
     if (!['.lua', '.json', '.js', '.mjs', '.cjs', '.ts', '.cfg', '.env', '.txt', '.md'].includes(extension)) return;
     const content = fs.readFileSync(file, 'utf8');
-    for (const pattern of valuePatterns) if (pattern.test(content)) findings.push(`${path.relative(destination, file)} matched secret value pattern`);
-    if (suspiciousAssignment?.test(content)) findings.push(`${path.relative(destination, file)} contains a credential-like assignment; add an explicit sanitizer or remove it`);
+    for (const pattern of valuePatterns) if (pattern.test(content)) findings.push(`${path.relative(stagingDestination, file)} matched secret value pattern`);
+    if (suspiciousAssignment?.test(content)) findings.push(`${path.relative(stagingDestination, file)} contains a credential-like assignment; add an explicit sanitizer or remove it`);
   });
   if (findings.length) throw new Error(`Secret scan failed:\n${findings.join('\n')}`);
 }
@@ -147,24 +173,43 @@ if (dryRun) {
   console.log(JSON.stringify({ releaseName, version, sourceDirectory: path.relative(root, resourceRoot), destination: path.relative(root, destination), skipUiBuild }, null, 2));
   process.exit(0);
 }
+if (!skipValidation) run(process.execPath, ['scripts/run-validation.mjs', '--release']);
 if (!skipUiBuild && metadata.ui?.enabled !== false) run('npm', ['run', 'build', '--prefix', path.relative(root, uiSource)]);
 if (metadata.ui?.enabled !== false && !fs.existsSync(path.join(uiOutput, 'index.html'))) throw new Error(`${path.relative(root, uiOutput)}/index.html is missing. Build the UI or provide an existing production build.`);
 
-fs.mkdirSync(destination, { recursive: true });
-for (const include of policy.include || []) {
-  const source = path.join(resourceRoot, include);
-  if (fs.existsSync(source)) copyEntry(source, path.join(destination, include), include);
-}
-const manifestPath = path.join(destination, 'fxmanifest.lua');
-if (!fs.existsSync(manifestPath)) throw new Error('Release is missing fxmanifest.lua.');
-patchManifest(manifestPath);
-const sanitized = [];
-applyExplicitSanitizers(sanitized);
-scanSecrets();
-fs.writeFileSync(path.join(destination, 'RELEASE.json'), `${JSON.stringify({ resource: resourceName, version, generatedAt: new Date().toISOString(), uiBuildSkipped: skipUiBuild, sanitizedFields: sanitized }, null, 2)}\n`);
-metadata.name = resourceName;
-metadata.version = version;
-fs.writeFileSync(path.join(root, 'resource.json'), `${JSON.stringify(metadata, null, 2)}\n`);
 const sourceManifestPath = path.join(resourceRoot, 'fxmanifest.lua');
-fs.writeFileSync(sourceManifestPath, fs.readFileSync(sourceManifestPath, 'utf8').replace(/^version\s+['"][^'"]+['"]$/m, `version '${version}'`));
+const metadataPath = path.join(root, 'resource.json');
+const originalMetadata = fs.readFileSync(metadataPath, 'utf8');
+const originalManifest = fs.readFileSync(sourceManifestPath, 'utf8');
+let sourceFilesTouched = false;
+
+try {
+  fs.mkdirSync(stagingDestination, { recursive: true });
+  for (const include of policy.include || []) {
+    const source = path.join(resourceRoot, include);
+    if (fs.existsSync(source)) copyEntry(source, path.join(stagingDestination, include), include);
+  }
+
+  const manifestPath = path.join(stagingDestination, 'fxmanifest.lua');
+  if (!fs.existsSync(manifestPath)) throw new Error('Release is missing fxmanifest.lua.');
+  patchManifest(manifestPath);
+
+  const sanitized = [];
+  applyExplicitSanitizers(sanitized);
+  scanSecrets();
+  fs.writeFileSync(path.join(stagingDestination, 'RELEASE.json'), `${JSON.stringify({ resource: resourceName, version, generatedAt: new Date().toISOString(), uiBuildSkipped: skipUiBuild, sanitizedFields: sanitized }, null, 2)}\n`);
+
+  sourceFilesTouched = true;
+  fs.writeFileSync(metadataPath, `${JSON.stringify({ ...metadata, name: resourceName, version }, null, 2)}\n`);
+  fs.writeFileSync(sourceManifestPath, originalManifest.replace(/^version\s+['"][^'"]+['"]$/m, `version '${version}'`));
+  fs.renameSync(stagingDestination, destination);
+} catch (error) {
+  if (sourceFilesTouched) {
+    fs.writeFileSync(metadataPath, originalMetadata);
+    fs.writeFileSync(sourceManifestPath, originalManifest);
+  }
+  fs.rmSync(stagingDestination, { recursive: true, force: true });
+  throw error;
+}
+
 console.log(`Release created: ${path.relative(root, destination)}`);

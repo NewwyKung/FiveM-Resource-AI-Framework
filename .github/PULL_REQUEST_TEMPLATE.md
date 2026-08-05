@@ -16,11 +16,9 @@
 
 ## Validation
 
-- [ ] Template validation
-- [ ] Integration validation
-- [ ] AI index check
-- [ ] UI install/build
-- [ ] Release integration test
+- [ ] `npm run validate`
+- [ ] `npm run check:lua`, when Lua changed
+- [ ] Secret scan and schema validation
 - [ ] Real FiveM server test, when applicable
 
 Commands or evidence:

@@ -2,7 +2,9 @@
 
 ## Unit-level behavior
 
-- payload must be a table;
+- envelope and nested payload must be tables;
+- action must match the configured string enum;
+- request ID must be bounded and returned unchanged;
 - cooldown blocks repeated requests inside `Config.CooldownMs`;
 - request after cooldown succeeds;
 - result objects contain `ok` and either `message` or `error`.
@@ -20,7 +22,8 @@
 ## Security cases
 
 - non-table payload returns `INVALID_PAYLOAD`;
-- client-supplied timestamp does not control the cooldown decision;
+- client cannot supply the server cooldown timestamp;
+- unsupported action enums return `INVALID_ACTION`;
 - client cannot select success, message, or server state.
 
 This file is an executable test plan for a running FiveM server. Pure logic should be extracted into modules and tested with the project's chosen Lua test runner when one is selected.

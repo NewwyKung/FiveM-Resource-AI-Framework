@@ -24,8 +24,8 @@ Template สำหรับสร้าง FiveM Resource ที่ช่วย�
 ```bash
 git clone https://github.com/NewwyKung/FiveM-Resource-AI-Framework.git my_resource
 cd my_resource
-npm ci --prefix ui
-npm run build --prefix ui
+npm ci --prefix resource/ui
+npm run build --prefix resource/ui
 ```
 
 แก้ metadata ใน `resource/fxmanifest.lua` และ `resource.json` จากนั้นเริ่มงานกับ AI:
@@ -36,6 +36,8 @@ Help me define the feature and environment before implementation.
 ```
 
 AI จะถามเฉพาะสิ่งที่ Feature ต้องใช้ เช่น Framework, Database, Inventory, Integration, ภาษา, Migration และ Runtime tests
+
+Repository รองรับ GPT/OpenAI Codex, Claude Code, Gemini CLI, Cursor, GitHub Copilot และ Kimi Code ผ่าน `AGENTS.md` ชุดเดียว โดยมี adapter แบบสั้นเพื่อไม่ทำให้ context ซ้ำ อ่านวิธีตรวจว่าแต่ละ agent โหลดกฎสำเร็จได้ที่ [docs/ai-agents.md](docs/ai-agents.md)
 
 ## Type Safety
 
@@ -110,12 +112,10 @@ release/<resource_name>-<version>/
 
 ## เอกสาร
 
-- [CONTRIBUTING.md](CONTRIBUTING.md)
-- [ARCHITECTURE.md](ARCHITECTURE.md)
-- [FAQ.md](FAQ.md)
-- [SECURITY.md](SECURITY.md)
-- [SUPPORT.md](SUPPORT.md)
-- [ROADMAP.md](ROADMAP.md)
+- [docs/development.md](docs/development.md)
+- [docs/releasing.md](docs/releasing.md)
+- [docs/ci-cd.md](docs/ci-cd.md)
+- [TODO.md](TODO.md)
 
 ## Credits
 

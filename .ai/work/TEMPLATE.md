@@ -1,33 +1,30 @@
 # Current Task
 
-Status: Active | Blocked | Complete
-Phase: Discovery | Design | Implementation | Review | Release
-Task:
-Feature/resource:
-Branch:
+Use string enum values from `docs/schemas/ai-task.schema.json`. IDs route context; they do not replace task-specific acceptance criteria.
 
-## Read
-- `AGENTS.md`
-- `.ai/CONTEXT_BUDGET.md`
--
-
-## Do not read
-- unrelated provider profiles
-- unrelated features and requirements
-- generated `resource/html/` except build/release validation
--
-
-## Confirmed environment
-- Framework:
-- Database:
-- Libraries:
-- Selected integrations:
-
-## Approved decisions
--
-
-## Acceptance criteria
--
+```yaml
+schema: ai-task/v1
+intent: feature.change
+phase: implementation
+characteristics: []
+references:
+  requirement: null
+  feature: null
+  skill: null
+  rules: []
+  decisions: []
+  providers: []
+  specifications: []
+  example: null
+scope:
+  include: []
+  exclude:
+    - resource/html/
+    - release/
+acceptanceCriteria:
+  - Replace with approved, testable behavior.
+validation: []
+```
 
 ## Context added during work
 | File | Reason |

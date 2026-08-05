@@ -1,0 +1,42 @@
+name: Build resource release
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Semantic version without a v prefix
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: resource/ui/package-lock.json
+      - run: npm ci --prefix resource/ui --no-audit --no-fund
+      - name: Resolve version
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF_NAME#v}"
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+      - run: npm run validate
+      - run: node scripts/create-release.mjs --name example_resource --version "$VERSION" --skip-validation
+      - uses: actions/upload-artifact@v4
+        with:
+          name: example_resource-${{ env.VERSION }}
+          path: release/example_resource-${{ env.VERSION }}/
+          if-no-files-found: error

@@ -2,6 +2,8 @@
 
 Apply `.ai/CONTEXT_BUDGET.md`, then read one primary skill per implementation phase. Run discovery first when requirements are not already approved.
 
+Native project-skill routing: `.agents/skills/fivem-ui-workflow/SKILL.md` triggers for supported agents and selects one UI phase below. Other agents read it lazily only for matching UI work. It does not make every UI skill default context.
+
 Use `.ai/work/current-task.md` for multi-step or cross-model work. The packet should list exact files to read and avoid.
 
 | Task | Skill |
@@ -17,8 +19,11 @@ Use `.ai/work/current-task.md` for multi-step or cross-model work. The packet sh
 | Audit a running UI or screenshots | `review-ui/SKILL.md` |
 | Apply approved UI review corrections | `refine-ui/SKILL.md` |
 | Debug a defect or incident | `debug-resource/SKILL.md` |
+| Refactor an existing feature or boundary without changing behavior | `refactor-feature/SKILL.md` |
 | Review security and fault cases | `review-security/SKILL.md` |
 | Prepare production release | `release-resource/SKILL.md` |
+
+External UI tools and design packs are optional. Read `.ai/matrices/ui-tool-routing.json` only when one is explicitly selected or the current phase cannot resolve a material design decision.
 
 ## Discovery sequence
 `discover-requirements → user approval → implementation skill`
