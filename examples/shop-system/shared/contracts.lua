@@ -15,7 +15,7 @@ function ExampleShopContracts.GetRequestId(envelope)
     return envelope.requestId
 end
 
----@param payload unknown
+---@param envelope unknown
 ---@return boolean valid
 ---@return string? errorCode
 function ExampleShopContracts.ValidatePurchase(envelope)
