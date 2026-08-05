@@ -255,6 +255,36 @@ if (exists('release.config.json')) {
   }
 }
 
+function listFiles(directory, extension) {
+  const absolute = path.join(root, directory);
+  if (!fs.existsSync(absolute)) return [];
+  return fs.readdirSync(absolute, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith(extension) && entry.name !== 'INDEX.md')
+    .map((entry) => entry.name);
+}
+
+function listDirs(directory) {
+  const absolute = path.join(root, directory);
+  if (!fs.existsSync(absolute)) return [];
+  return fs.readdirSync(absolute, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+}
+
+if (exists('.ai/rules/INDEX.md')) {
+  const rulesIndex = read('.ai/rules/INDEX.md');
+  for (const file of listFiles('.ai/rules', '.md')) {
+    if (!rulesIndex.includes(`\`${file}\``)) errors.push(`.ai/rules/INDEX.md does not reference ${file}`);
+  }
+}
+
+if (exists('.ai/skills/INDEX.md')) {
+  const skillsIndex = read('.ai/skills/INDEX.md');
+  for (const dir of listDirs('.ai/skills')) {
+    if (!skillsIndex.includes(`\`${dir}/SKILL.md\``)) errors.push(`.ai/skills/INDEX.md does not reference ${dir}/SKILL.md`);
+  }
+}
+
 const staleTerms = [
   ['Development', 'Svelte'].join('/'),
   ['Development', 'Svelte'].join('\\'),

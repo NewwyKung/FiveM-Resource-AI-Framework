@@ -8,6 +8,7 @@ Use `.ai/work/current-task.md` for multi-step or cross-model work. The packet sh
 
 | Task | Skill |
 |---|---|
+| Connect the repo to a local FXServer dev environment | `setup-dev-resource/SKILL.md` |
 | Clarify/design an ambiguous resource or feature request | `discover-requirements/SKILL.md` |
 | Start or scaffold an approved new resource | `create-resource/SKILL.md` |
 | Add an approved feature to an existing resource | `add-feature/SKILL.md` |

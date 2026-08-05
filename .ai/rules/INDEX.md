@@ -12,6 +12,7 @@ Load only rules relevant to the current task.
 | Visual direction, hierarchy, interaction craft | `design.md` |
 | Faults, cleanup, degraded operation | `fault-handling.md` |
 | Exports, events, callbacks, versions | `api.md` |
+| High-risk contract shapes, schemas, error codes | `contracts.md` |
 | Tests and release validation | `testing.md` |
 | Images, audio, models, streaming | `assets.md` |
 | Lua and NUI translations | `localization.md` |

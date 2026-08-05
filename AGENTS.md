@@ -45,6 +45,8 @@ Before implementation, inspect `.ai/memory/environment.md`. If required informat
 
 Do not modify production code until requirements and material environment decisions are approved.
 
+Skip this gate for a small in-domain change with no new decision — a typo, comment, single config value, or bug fix that does not change behavior, scope, or a public contract. Read only the relevant rule(s) and edit directly; record the resolved intent in the nearest feature or memory file. If the blast radius or ambiguity is unclear, run discovery instead of guessing.
+
 ## Context routing
 Always apply `.ai/CONTEXT_BUDGET.md`.
 
