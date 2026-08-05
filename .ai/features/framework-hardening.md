@@ -38,4 +38,4 @@ Status: Delivered
 - Cross-agent runtime loading remains `static-only` until each current CLI/IDE version is smoke-tested and recorded in the matrix.
 - `npm run check:lua` enforces LuaLS `3.18.2`; the local binary was unavailable during delivery and is not claimed as passed.
 - Browser click/animation evidence, v0 or Claude output, third-party hooks, 4K rendering, CEF performance, and FXServer resmon were unavailable and are not claimed as validated. A `0.00 ms` resmon result must come from an actual FXServer capture.
-- Real FXServer start/restart/stop/player-drop and gameplay checks remain unchecked in `TODO.md`.
+- Real FXServer, clean-clone, cross-agent runtime, and gameplay checks remain active in `.ai/memory/requirements/active/runtime-verification.md`.

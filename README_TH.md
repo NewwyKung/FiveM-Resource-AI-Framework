@@ -115,7 +115,6 @@ release/<resource_name>-<version>/
 - [docs/development.md](docs/development.md)
 - [docs/releasing.md](docs/releasing.md)
 - [docs/ci-cd.md](docs/ci-cd.md)
-- [TODO.md](TODO.md)
 
 ## Credits
 

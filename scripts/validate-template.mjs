@@ -264,7 +264,6 @@ const staleTerms = [
   ['v.2', 'Template-FiveM'].join('-'),
 ];
 const historicalFiles = new Set([
-  'TODO.md',
   'docs/resource-restructure-audit.md',
   '.ai/memory/requirements/active/resource-restructure.md',
 ]);

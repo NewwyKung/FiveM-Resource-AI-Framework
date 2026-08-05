@@ -15,7 +15,7 @@ Use `.ai/rules/` for compact mandatory constraints, `.ai/skills/` for task workf
 
 Use GitHub Issues for reproducible defects, documentation problems, or focused feature requests. Include the resource version, FXServer artifact, selected providers, reproduction steps, expected/actual behavior, last known good commit when available, and the smallest relevant log slice with secrets removed.
 
-Use discussions for broad ideas or architecture questions when enabled. Search the READMEs, `docs/`, `TODO.md`, and existing issues first.
+Use discussions for broad ideas or architecture questions when enabled. Search the READMEs, `docs/`, active requirements, and existing issues first.
 
 Report suspected vulnerabilities privately through an available repository-owner contact method rather than publishing exploitable details. Include affected version, minimal reproduction, and impact. Never publish API keys, webhooks, database credentials, private provider documentation, or player-sensitive logs.
 

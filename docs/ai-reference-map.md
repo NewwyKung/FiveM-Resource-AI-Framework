@@ -30,4 +30,4 @@ Agents should read `AGENTS.md`, one relevant rule set, one primary skill, and on
 
 ## Duplication audit
 
-The framework-hardening pass removed seven overlapping root documents and replaced only the still-required contribution/support/security-report guidance with one focused `docs/development.md`. Architecture remains canonical in ADRs, `.ai/features/resource-structure.md`, and the README; unresolved work remains only in `TODO.md`; release/security mechanics remain in `docs/releasing.md` and compact rules. This is a concrete reduction of six documentation files without claiming an estimated context-saving percentage.
+The framework-hardening pass removed overlapping root documents and replaced only the still-required contribution/support/security-report guidance with one focused `docs/development.md`. Architecture remains canonical in ADRs, `.ai/features/resource-structure.md`, and the README; unresolved verification work lives in `.ai/memory/requirements/active/runtime-verification.md`; release/security mechanics remain in `docs/releasing.md` and compact rules. This records a concrete file reduction without claiming an estimated context-saving percentage.
