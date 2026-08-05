@@ -4,6 +4,13 @@
   "runtime.path": ["?.lua", "?/init.lua"],
   "workspace.library": ["types"],
   "workspace.checkThirdParty": false,
+  "workspace.ignoreDir": [
+    ".git",
+    ".tools",
+    "node_modules",
+    "resource/html",
+    "release"
+  ],
   "diagnostics.globals": [
     "Citizen",
     "Config",
