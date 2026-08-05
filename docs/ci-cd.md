@@ -1,15 +1,27 @@
-# CI/CD Templates
+# CI/CD
 
-GitHub Actions are intentionally disabled in this template. Opt-in examples live under `examples/github-workflows/` so cloning the repository never enables hosted automation or consumes runner minutes without owner approval.
+## Upstream validation
 
-The CI example installs UI dependencies, runs the root validation aggregator, installs the repository-pinned LuaLS version, and runs Lua diagnostics. The release example validates first, builds a production release, and uploads only the generated resource folder as an artifact.
+The upstream repository includes `.github/workflows/validate.yml`.
 
-Before enabling either workflow:
+The job is guarded so it runs only when `github.repository` matches the maintainer's current repository name or the planned canonical repository name. Repositories created from this template inherit the workflow file, but the job remains skipped until the owner deliberately reviews and changes the guard.
 
-- review action and runtime versions against your organization policy;
-- keep `contents: read` unless publishing requires a narrowly scoped permission;
-- configure selected provider or deployment secrets in the hosting platform, never in source files;
-- protect release environments when artifacts are deployed automatically;
-- keep FXServer lifecycle, player, native, provider, and NUI-focus checks as explicit runtime verification.
+The workflow installs Node.js 24, installs UI dependencies, runs the root validation aggregator, installs the pinned Lua Language Server version, runs Lua diagnostics, and uses read-only repository permissions.
 
-See `examples/github-workflows/README.md` for activation steps. Local commands remain the source of truth and can run without GitHub Actions.
+This provides visible validation evidence without silently consuming runner minutes in downstream repositories.
+
+## Downstream opt-in examples
+
+Additional CI and release examples live under `examples/github-workflows/`.
+
+Before enabling or adapting a workflow, review action/runtime versions, keep permissions narrow, store secrets only in the hosting platform, protect deployment environments, and retain explicit FXServer runtime verification.
+
+Local commands remain the source of truth:
+
+```bash
+npm ci --prefix resource/ui --no-audit --no-fund
+npm run validate
+npm run check:lua
+```
+
+See `examples/github-workflows/README.md` for downstream activation steps.

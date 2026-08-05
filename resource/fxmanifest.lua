@@ -2,8 +2,8 @@ fx_version 'cerulean'
 game 'gta5'
 
 author 'Newwy'
-version '1.0.0'
-description 'Reusable FiveM resource template'
+version '0.1.0'
+description 'AI-first reusable FiveM resource template'
 
 -- Run Vite separately for browser development; FXServer uses the production build.
 ui_page 'html/index.html'

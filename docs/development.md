@@ -1,6 +1,6 @@
-# Development and Contributions
+# Development
 
-This public hobby project accepts focused fixes and improvements without guaranteeing response or support times. Keep the template small, provider-neutral, and understandable.
+The contribution entrypoint is [`CONTRIBUTING.md`](../CONTRIBUTING.md). This document contains the detailed repository workflow.
 
 ## Before changing code
 
@@ -8,26 +8,58 @@ This public hobby project accepts focused fixes and improvements without guarant
 2. Use or reference an issue for substantial behavior changes.
 3. Do not add provider bridges, UI dependencies, abstractions, or extension points without an approved working need.
 4. Keep runtime boundaries separate and remove unused adapters, dependencies, manifest entries, and placeholders.
+5. Follow [`SECURITY.md`](../SECURITY.md) for vulnerability reports and sensitive material.
 
-Use `.ai/rules/` for compact mandatory constraints, `.ai/skills/` for task workflows, `.ai/recipes/` for deterministic procedures, and `.ai/examples/` for concise patterns. Register provider knowledge without activating runtime code and never store credentials in provider profiles or AI memory.
+Use `.ai/rules/` for mandatory constraints, `.ai/skills/` for task workflows, `.ai/recipes/` for deterministic procedures, and `.ai/examples/` for concise patterns.
+
+## Initialize a new project
+
+```bash
+npm run init
+```
+
+For automation:
+
+```bash
+npm run init -- \
+  --name my_resource \
+  --author "Your Name" \
+  --description "Resource description" \
+  --framework standalone \
+  --database none \
+  --shared-library none
+```
+
+The initializer updates metadata and the confirmed server environment. Review every generated value before implementation.
+
+## Connect to FXServer
+
+```bash
+npm run setup:dev -- \
+  --resources "/path/to/server-data/resources/[local]" \
+  --name my_resource
+```
+
+The script creates a directory link to the canonical `resource/` folder and refuses to replace a real directory. `--force` may replace only an existing symbolic link or junction.
+
+The guarded PowerShell helper remains available for Windows.
 
 ## Reports and support
 
-Use GitHub Issues for reproducible defects, documentation problems, or focused feature requests. Include the resource version, FXServer artifact, selected providers, reproduction steps, expected/actual behavior, last known good commit when available, and the smallest relevant log slice with secrets removed.
+Use GitHub Issues for reproducible defects, documentation problems, or focused feature requests. Include the version, FXServer artifact, selected providers, reproduction steps, expected/actual behavior, last known good commit, and the smallest safe log slice.
 
-Use discussions for broad ideas or architecture questions when enabled. Search the READMEs, `docs/`, active requirements, and existing issues first.
-
-Report suspected vulnerabilities privately through an available repository-owner contact method rather than publishing exploitable details. Include affected version, minimal reproduction, and impact. Never publish API keys, webhooks, database credentials, private provider documentation, or player-sensitive logs.
-
-## Validation and review
-
-Install UI dependencies once, then run the repository aggregator:
+## Validation
 
 ```bash
 npm ci --prefix resource/ui --no-audit --no-fund
 npm run validate
+npm run check:lua
 ```
 
-Run `npm run check:lua` with the pinned LuaLS version when Lua changes. FiveM natives, lifecycle, player disconnects, entities, providers, and NUI focus still require real FXServer verification.
+FiveM natives, lifecycle, player disconnects, entities, providers, and NUI focus still require real FXServer verification.
 
-Prefer focused Conventional Commit-style messages such as `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, or `chore:`. Pull requests should describe the problem/outcome, changed runtime boundaries, validation evidence, compatibility or migration impact, and remaining limitations.
+## Review and commits
+
+Prefer focused Conventional Commit-style messages. Pull requests should describe the problem, runtime boundaries, validation evidence, compatibility impact, and remaining limitations.
+
+Do not commit generated files under `resource/html/` or `release/`.
