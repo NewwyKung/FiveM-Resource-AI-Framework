@@ -35,6 +35,15 @@ for (const required of [
   'CLAUDE.md',
   '.gemini/settings.json',
   '.github/copilot-instructions.md',
+  '.github/workflows/validate.yml',
+  '.github/ISSUE_TEMPLATE/bug_report.yml',
+  '.github/ISSUE_TEMPLATE/feature_request.yml',
+  '.github/ISSUE_TEMPLATE/config.yml',
+  '.github/PULL_REQUEST_TEMPLATE.md',
+  'LICENSE',
+  'SECURITY.md',
+  'CONTRIBUTING.md',
+  'CHANGELOG.md',
   '.ai/CONTEXT_BUDGET.md',
   '.ai/index.json',
   '.ai/work/README.md',
@@ -61,6 +70,8 @@ for (const required of [
   'tests/ui/nui-bridge.integration.mjs',
   'scripts/build-ai-index.mjs',
   'scripts/create-release.mjs',
+  'scripts/init-template.mjs',
+  'scripts/setup-dev-resource.mjs',
   'scripts/run-validation.mjs',
   'scripts/run-luals.mjs',
   'scripts/scan-secrets.mjs',
@@ -90,6 +101,7 @@ for (const required of [
   'examples/github-workflows/release.yml',
   'examples/git-hooks/pre-commit',
   'docs/ci-cd.md',
+  'docs/credits.md',
   'docs/development.md',
   'docs/schemas/runtime-contracts.schema.json',
   'docs/schemas/provider-operation.schema.json',
@@ -129,11 +141,7 @@ const forbiddenPaths = [
   'resource/ui/src/provider/Visible.svelte',
   `resource/ui/src/lib/${['Component', 'Showcase'].join('')}.svelte`,
   'resource/ui/src/lib/tokens.css',
-  '.github/workflows',
-  'CONTRIBUTING.md',
-  'SECURITY.md',
   'SUPPORT.md',
-  'CHANGELOG.md',
   'ROADMAP.md',
   'ARCHITECTURE.md',
   'FAQ.md',
@@ -236,6 +244,20 @@ if (exists('scripts/setup-dev-resource.ps1')) {
   }
 }
 
+if (exists('scripts/setup-dev-resource.mjs')) {
+  const setup = read('scripts/setup-dev-resource.mjs');
+  for (const token of ["path.join(root, 'resource')", "stats.isSymbolicLink()", "Refusing to remove a real directory or file", "fs.symlinkSync"]) {
+    if (!setup.includes(token)) errors.push(`scripts/setup-dev-resource.mjs is missing safety/target logic: ${token}`);
+  }
+}
+
+if (exists('scripts/init-template.mjs')) {
+  const initializer = read('scripts/init-template.mjs');
+  for (const token of ["resource.json", "resource/fxmanifest.lua", "resource/ui/package-lock.json", ".ai/memory/environment.md", "never stores credentials"]) {
+    if (!initializer.includes(token)) errors.push(`scripts/init-template.mjs is missing expected behavior: ${token}`);
+  }
+}
+
 if (exists('release.config.json')) {
   try {
     const policy = JSON.parse(read('release.config.json'));
@@ -297,7 +319,7 @@ const historicalFiles = new Set([
   'docs/resource-restructure-audit.md',
   '.ai/memory/requirements/active/resource-restructure.md',
 ]);
-const allowedExtensions = new Set(['.md', '.json', '.js', '.mjs', '.ts', '.svelte', '.css', '.lua', '.ps1', '.html']);
+const allowedExtensions = new Set(['.md', '.json', '.js', '.mjs', '.ts', '.svelte', '.css', '.lua', '.ps1', '.html', '.yml', '.yaml']);
 
 for (const relativePath of trackedFiles) {
   if (historicalFiles.has(relativePath) || relativePath === 'scripts/validate-template.mjs') continue;
