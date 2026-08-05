@@ -1,6 +1,6 @@
 # FiveM Resource AI Template
 
-[![Validate template](https://github.com/NewwyKung/FiveM-Resource-AI-AGENTS-Template/actions/workflows/validate.yml/badge.svg)](https://github.com/NewwyKung/FiveM-Resource-AI-AGENTS-Template/actions/workflows/validate.yml)
+[![Validate template](https://github.com/NewwyKung/fivem-resource-ai-template/actions/workflows/validate.yml/badge.svg)](https://github.com/NewwyKung/fivem-resource-ai-template/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Status: Public Preview](https://img.shields.io/badge/status-public%20preview-orange.svg)](CHANGELOG.md)
 [![Node.js 24](https://img.shields.io/badge/node-24.x-339933.svg)](package.json)
