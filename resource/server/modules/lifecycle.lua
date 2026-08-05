@@ -1,8 +1,8 @@
 ---@class ServerResourceLifecycleController: ResourceLifecycleController
 ---@field AddPlayerCleanup fun(name: string, callback: fun(playerId: number, reason: string))
 
----@type ServerResourceLifecycleController
 ServerLifecycle = ResourceLifecycle.Create('server')
+---@cast ServerLifecycle ServerResourceLifecycleController
 
 local playerCleanupHandlers = {}
 
