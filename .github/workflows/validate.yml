@@ -38,14 +38,15 @@ jobs:
       - name: Validate repository
         run: npm run validate
 
-      - name: Install pinned LuaLS
+      - name: Install pinned LuaLS outside the workspace
         run: |
           VERSION="$(node -p "JSON.parse(require('fs').readFileSync('tooling.config.json', 'utf8')).luaLanguageServer.version")"
-          mkdir -p .tools/luals
+          INSTALL_DIR="$RUNNER_TEMP/luals"
+          mkdir -p "$INSTALL_DIR"
           curl --fail --location --silent --show-error \
             "https://github.com/LuaLS/lua-language-server/releases/download/${VERSION}/lua-language-server-${VERSION}-linux-x64.tar.gz" \
-            | tar -xz -C .tools/luals
-          echo "LUALS_BIN=$PWD/.tools/luals/bin/lua-language-server" >> "$GITHUB_ENV"
+            | tar -xz -C "$INSTALL_DIR"
+          echo "LUALS_BIN=$INSTALL_DIR/bin/lua-language-server" >> "$GITHUB_ENV"
 
       - name: Run Lua diagnostics
         run: npm run check:lua
