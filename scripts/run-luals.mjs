@@ -43,7 +43,13 @@ if (diagnosis.status !== 0) process.exit(diagnosis.status ?? 1);
 
 const reportPath = path.join(logPath, 'check.json');
 if (!fs.existsSync(reportPath)) {
-  console.error(`[luals] diagnosis completed without ${reportPath}.`);
+  const output = `${diagnosis.stdout}\n${diagnosis.stderr}`;
+  if (/Diagnosis completed?, no problems found/i.test(output)) {
+    console.log(`[luals] LuaLS ${actualVersion} reported no warnings or errors.`);
+    process.exit(0);
+  }
+
+  console.error(`[luals] diagnosis succeeded without a report or an explicit no-problems result: ${reportPath}.`);
   process.exit(1);
 }
 
