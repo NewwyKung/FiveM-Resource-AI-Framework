@@ -15,7 +15,7 @@ function HelloWorldContracts.GetRequestId(envelope)
     return envelope.requestId
 end
 
----@param payload unknown
+---@param envelope unknown
 ---@return boolean valid
 ---@return string? errorCode
 function HelloWorldContracts.ValidateRequest(envelope)

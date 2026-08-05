@@ -1,39 +1,29 @@
-## Problem and outcome
+## Summary
+
+Describe the problem and intended outcome.
 
 ## Changes
 
-## Runtime boundaries affected
+- 
 
-- [ ] Client
-- [ ] Server
-- [ ] Shared
-- [ ] Config
-- [ ] UI/NUI
-- [ ] Database
-- [ ] External integration
-- [ ] AI rules/skills/registries
-- [ ] Release tooling
+## Runtime boundaries
+
+State whether the change affects client, server, shared, config, NUI, providers, database, validation, or release packaging.
 
 ## Validation
 
 - [ ] `npm run validate`
-- [ ] `npm run check:lua`, when Lua changed
-- [ ] Secret scan and schema validation
-- [ ] Real FiveM server test, when applicable
+- [ ] `npm run check:lua` when Lua changed
+- [ ] Real FXServer verification when runtime behavior changed
+- [ ] No generated `resource/html/` or `release/` files committed
+- [ ] No credentials, private provider documentation, or player-sensitive data included
 
-Commands or evidence:
-
-```text
-
-```
+Include relevant command output or explain checks that were not run.
 
 ## Compatibility and migration
 
-## Cleanup
-
-- [ ] Unused bridges and dependencies removed
-- [ ] Manifest references verified
-- [ ] Registries/memory updated
-- [ ] Secrets and private data excluded
+Describe framework, provider, data, configuration, or release impact.
 
 ## Remaining limitations
+
+List known gaps or follow-up work.

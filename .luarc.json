@@ -4,6 +4,13 @@
   "runtime.path": ["?.lua", "?/init.lua"],
   "workspace.library": ["types"],
   "workspace.checkThirdParty": false,
+  "workspace.ignoreDir": [
+    ".git",
+    ".tools",
+    "node_modules",
+    "resource/html",
+    "release"
+  ],
   "diagnostics.globals": [
     "Citizen",
     "Config",
@@ -18,7 +25,25 @@
     "vector2",
     "vector3",
     "vector4",
-    "promise"
+    "promise",
+    "GetGameTimer",
+    "RegisterCommand",
+    "SetConvarReplicated",
+    "GetConvar",
+    "fx_version",
+    "game",
+    "name",
+    "author",
+    "description",
+    "version",
+    "ui_page",
+    "shared_script",
+    "shared_scripts",
+    "client_script",
+    "client_scripts",
+    "server_script",
+    "server_scripts",
+    "files"
   ],
   "diagnostics.disable": ["lowercase-global"],
   "diagnostics.severity": {

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "name": "FiveM-Resource-AI-Framework",
+  "name": "fivem-resource-ai-template",
   "type": "fivem-resource-template",
   "author": "Newwy",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "framework": {
     "mode": "standalone",
     "optionalBridges": ["esx", "qbcore", "qbox"]

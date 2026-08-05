@@ -1,9 +1,14 @@
 {
-  "name": "fivem-resource-ai-framework",
+  "name": "fivem-resource-ai-template",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
+    "init": "node scripts/init-template.mjs",
+    "setup:dev": "node scripts/setup-dev-resource.mjs",
     "validate": "node scripts/run-validation.mjs",
     "validate:fast": "node scripts/run-validation.mjs --fast",
     "check:lua": "node scripts/run-luals.mjs",

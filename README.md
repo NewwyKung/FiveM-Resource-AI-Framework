@@ -1,177 +1,170 @@
-# FiveM Resource AI Framework
+# FiveM Resource AI Template
 
-An AI-first template for building maintainable FiveM resources with modular Lua architecture, optional Svelte 5 NUI, requirements discovery, reusable integration knowledge, automated validation, and production-ready release packaging.
+[![Validate template](https://github.com/NewwyKung/FiveM-Resource-AI-AGENTS-Template/actions/workflows/validate.yml/badge.svg)](https://github.com/NewwyKung/FiveM-Resource-AI-AGENTS-Template/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Status: Public Preview](https://img.shields.io/badge/status-public%20preview-orange.svg)](CHANGELOG.md)
+[![Node.js 24](https://img.shields.io/badge/node-24.x-339933.svg)](package.json)
 
-This repository is designed to help both developers and coding agents produce consistent results without loading the entire project into context.
+An AI-first template for building maintainable FiveM resources with modular Lua architecture, optional Svelte 5 NUI, requirements discovery, reusable integration knowledge, automated validation, and production release packaging.
+
+> **Status:** Public Preview (`0.1.0`). Static repository checks and release tooling are automated. FiveM natives, lifecycle behavior, disconnect handling, integrations, and NUI focus still require verification on a real FXServer.
+
+## What this repository is
+
+This is a repository template and development workflow for creating a FiveM resource. It gives human developers and coding agents one shared project agreement, bounded context loading, explicit requirements, provider-neutral architecture, validation scripts, and a clean release builder.
+
+It is not a drop-in gameplay resource, a replacement for testing on FXServer, or a guarantee that every coding-agent product discovers project instructions identically.
 
 ## Highlights
 
 - Standalone by default; ESX, QBCore, Qbox, oxmysql, ox_lib, and custom resources are opt-in.
-- Clear `client`, `server`, `shared`, and `config` boundaries.
+- Clear `client`, `server`, `shared`, `config`, UI, and provider boundaries.
 - Requirements discovery before substantial implementation.
 - Server-authoritative gameplay and security rules.
 - Wireframe-first UI workflow with Svelte 5 and Vite.
-- Provider documentation can be registered once and reused later.
-- Small, task-specific AI context instead of reading every rule and document.
-- Local validation scripts and deployable release folders.
+- Reusable provider profiles without speculative runtime bridges.
+- Small, task-specific AI context instead of loading the entire repository.
+- Secret scanning, schema validation, integration tests, LuaLS support, and release packaging.
+- Cross-platform development-resource linking through Node.js, with a guarded PowerShell helper retained for Windows.
+
+## Requirements
+
+- Git
+- Node.js 24 and npm
+- An FXServer development environment for runtime verification
+- Lua Language Server for Lua diagnostics; CI installs the pinned version automatically
+- Windows, Linux, or macOS for the Node-based setup script
 
 ## Quick Start
 
-### 1. Create your resource
+### 1. Create a repository
 
-Use this repository as a GitHub template, or clone it:
+Use GitHub's **Use this template** button so the new project starts without this repository's commit history.
+
+Cloning is also supported:
 
 ```bash
-git clone https://github.com/NewwyKung/FiveM-Resource-AI-Framework.git my_resource
+git clone <repository-url> my_resource
 cd my_resource
 ```
 
-Update the resource metadata in:
+### 2. Initialize project metadata
 
-```text
-resource/fxmanifest.lua
-resource.json
+Interactive mode:
+
+```bash
+npm run init
 ```
 
-Remove example files, folders, and capabilities your resource does not need.
+Non-interactive example:
 
-### 2. Ask the AI to define the resource first
+```bash
+npm run init -- \
+  --name my_resource \
+  --author "Your Name" \
+  --description "A concise resource description" \
+  --framework standalone \
+  --database none \
+  --shared-library none
+```
 
-For a new resource or a substantial feature, use a request such as:
+The initializer updates `resource.json`, `resource/fxmanifest.lua`, UI package metadata and lockfile, and `.ai/memory/environment.md`. Run `npm run init -- --help` for all options. It never writes credentials.
+
+### 3. Install UI dependencies and validate
+
+```bash
+npm ci --prefix resource/ui --no-audit --no-fund
+npm run validate
+```
+
+Useful focused checks:
+
+```bash
+npm run validate:fast
+npm run check:lua
+npm run check:secrets
+npm run check:agents
+npm run check:skills
+npm run check:ui
+```
+
+### 4. Connect the resource to FXServer
+
+Cross-platform command:
+
+```bash
+npm run setup:dev -- \
+  --resources "/path/to/server-data/resources/[local]" \
+  --name my_resource
+```
+
+On Windows, the guarded PowerShell helper remains available:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\setup-dev-resource.ps1
+```
+
+Both expose the canonical `resource/` directory directly instead of maintaining a copied development tree. Add the resulting name to `server.cfg`:
+
+```cfg
+ensure my_resource
+```
+
+### 5. Define the resource before implementation
+
+For a new resource or substantial feature, ask the coding agent to start with:
 
 ```text
 Use .ai/skills/discover-requirements/SKILL.md.
 Help me define this resource before implementation.
-Ask about the framework, database, libraries, integrations,
-feature behavior, permissions, failure cases, and UI requirements.
+Ask only about unresolved behavior, authority, framework, database,
+integrations, permissions, failure cases, tests, and UI requirements.
 ```
 
-The AI will check `.ai/memory/environment.md` and ask only about unresolved capabilities required by the task, such as:
-
-- Standalone, ESX, QBCore, Qbox, or a custom framework;
-- ox_lib or another shared library;
-- no database, oxmysql, or another database provider;
-- inventory, money, notify, logger, progress, target, and other integrations;
-- required UI screens and interaction flows.
-
-Confirmed server-wide choices are stored once and reused. Secrets must never be stored in AI memory.
-
-### 3. Approve the requirements
-
-Active requirements and feature ownership are stored in:
+Confirmed server-wide choices belong in `.ai/memory/environment.md`. Active approved requirements and feature ownership belong in:
 
 ```text
 .ai/memory/requirements/active/<feature>.md
 .ai/features/<feature>.md
 ```
 
-Implementation starts after approval, or after you explicitly allow the AI to use its recommended defaults.
+Do not store secrets in AI memory, provider profiles, examples, or source-controlled configuration.
 
-### 4. Develop and validate
+## Coding-agent compatibility
 
-For Lua-only work, follow the approved requirements and relevant task skill.
+`AGENTS.md` is the canonical project agreement. Vendor-specific files remain thin adapters.
 
-For NUI development:
+| Agent surface | Discovery path |
+|---|---|
+| GPT / OpenAI Codex | `AGENTS.md`, project skills under `.agents/skills/` |
+| Claude Code | `CLAUDE.md` imports `AGENTS.md` |
+| Gemini CLI | `.gemini/settings.json` discovers the shared agreement |
+| Cursor | `AGENTS.md` and `.ai/skills/INDEX.md` |
+| GitHub Copilot | `AGENTS.md` where supported, with `.github/copilot-instructions.md` as a compact fallback |
+| Kimi Code | `AGENTS.md` and project skills |
 
-```bash
-npm ci --prefix resource/ui
-npm run dev --prefix resource/ui
-npm run build --prefix resource/ui
-```
+See [`docs/ai-agents.md`](docs/ai-agents.md) for verification commands and limitations. A web chat that has not opened the repository cannot automatically discover local files.
 
-- UI source: `resource/ui/`
-- Generated output: `resource/html/`
-- Development port: `5171`
-- Never edit generated `resource/html/` files directly.
+## Context flow
 
-Run the local validation scripts before release. GitHub validation Actions are intentionally not enabled by default.
-
-```bash
-npm run validate
-```
-
-## Working with AI
-
-The main AI entrypoint is:
-
-```text
-AGENTS.md
-```
-
-GPT/OpenAI Codex, Claude Code, Gemini CLI, Cursor, GitHub Copilot, and Kimi Code use thin adapters around this same entrypoint. See [`docs/ai-agents.md`](docs/ai-agents.md) for automatic discovery paths and verification commands.
-
-The intended context flow is deliberately small:
+Agents should load a bounded route rather than every document:
 
 ```text
 AGENTS.md
 → .ai/CONTEXT_BUDGET.md
 → one primary skill
-→ only relevant rules
+→ relevant rules
 → one active requirement
 → one feature registry
 → selected provider profiles
 → affected source files
 ```
 
-Agents should not load all rules, providers, features, historical requirements, reference documents, or generated UI files by default.
+For long or cross-model work, create `.ai/work/current-task.md` from `.ai/work/TEMPLATE.md`.
 
-For long or cross-model tasks, use:
+## UI workflow
 
-```text
-.ai/work/current-task.md
-```
-
-Create it from `.ai/work/TEMPLATE.md` to record the current phase, exact files to read, files to avoid, confirmed decisions, acceptance criteria, and validation status.
-
-## Common AI Commands
-
-### Create a resource
-
-```text
-Discover and design a new <resource name> resource.
-Do not implement until the requirements are approved.
-```
-
-### Add a feature
-
-```text
-Add <feature> to this resource.
-Read the active requirements and environment first.
-Ask only for missing decisions, then implement after approval.
-```
-
-### Register an integration
-
-```text
-Register <resource name> as a <capability> provider.
-Store the following documentation for reuse.
-Do not integrate it into runtime code yet.
-
-<paste documentation or schema>
-```
-
-### Activate an integration
-
-```text
-Use the registered <provider> integration for <feature>.
-Implement only the operations and runtimes this feature requires.
-```
-
-### Create a release
-
-```text
-Create a production release.
-```
-
-The AI will use the release workflow, choose the next semantic version, build the UI by default, sanitize explicitly configured secrets, and create:
-
-```text
-release/<resource_name>-<version>/
-```
-
-## UI Workflow
-
-New UI work follows this sequence:
+New UI work follows:
 
 ```text
 Requirements
@@ -184,162 +177,100 @@ Requirements
 → FiveM validation
 ```
 
-The responsive sizing system uses a `1440px`-high source canvas:
+UI source lives in `resource/ui/` and builds to `resource/html/`.
 
-```css
-:root {
-    --scale: 1;
-    --base-screen-height: 1440;
-    --px-to-vh: calc(1vh / var(--base-screen-height) * 100 * var(--scale));
-}
-
-.panel {
-    width: calc(720 * var(--px-to-vh));
-    padding: calc(32 * var(--px-to-vh));
-}
+```bash
+npm run dev --prefix resource/ui
+npm run build --prefix resource/ui
 ```
 
-The design-pixel number is unitless. Do not append `px` inside `calc()` and do not multiply `--scale` again.
-
-NUI code should use the shared bridge utilities under `resource/ui/src/js/` instead of creating a new transport abstraction for every feature.
+Never edit generated `resource/html/` files directly.
 
 ## Integrations
 
-External frameworks, databases, libraries, and custom resources use this lifecycle:
+External frameworks, databases, libraries, and custom resources follow this lifecycle:
 
 ```text
 Register documentation once
 → store a concise provider profile
 → activate only when required
-→ generate only the required adapter operations
+→ generate only required adapter operations
 → remove unused runtime bridges
 ```
 
 - Selected providers: `integrations.json`
 - Registered provider knowledge: `.ai/integrations/providers/`
 - Sending documentation does not authorize runtime integration.
-- Feature code should use stable capability boundaries rather than direct provider calls.
+- Feature code should use stable capability boundaries instead of direct provider calls.
 
-## Configuration and Modules
+## Production releases
 
-Configuration starts from:
-
-```text
-resource/config/config.main.lua
-```
-
-Additional domains can use:
-
-```text
-resource/config/config.item.lua
-resource/config/shop/24.7_store.lua
-resource/client/lib/config.lua
-resource/server/lib/config.lua
-```
-
-Runtime code is separated into:
-
-```text
-resource/shared/lib/       reusable cross-runtime utilities
-resource/shared/modules/   contracts, constants, and shared definitions
-resource/client/modules/   client behavior and presentation integration
-resource/server/modules/   authority, validation, persistence, and business logic
-```
-
-`resource/client/main.lua` and `resource/server/main.lua` are bootstraps and should remain small.
-
-## Production Releases
-
-Create a release with:
+Create a deployable resource folder with:
 
 ```bash
 node scripts/create-release.mjs
 ```
 
-Useful options:
+Common options:
 
 ```bash
 node scripts/create-release.mjs --bump minor
 node scripts/create-release.mjs --bump major
-node scripts/create-release.mjs --version 2.0.0
+node scripts/create-release.mjs --version 1.0.0
 node scripts/create-release.mjs --name my_resource
 node scripts/create-release.mjs --skip-ui-build
 ```
 
-The release builder:
+Generated output is written to `release/<resource_name>-<version>/`.
 
-- applies semantic versioning;
-- builds NUI by default;
-- copies only allowlisted runtime files;
-- patches the production manifest;
-- excludes AI files, development source, tests, and internal documentation;
-- sanitizes only explicitly configured secret locations;
-- fails if credential-like values remain;
-- writes `RELEASE.json` as generation evidence.
+The builder validates the repository, builds NUI by default, copies allowlisted runtime files, patches the production manifest, applies explicit sanitizers, scans for credentials, and writes `RELEASE.json`. See [`docs/releasing.md`](docs/releasing.md).
 
-See [`docs/releasing.md`](docs/releasing.md) for the complete release policy.
-
-## Repository Map
+## Repository map
 
 ```text
-resource/               FiveM development resource and junction target
-resource/config/        editable resource configuration
-resource/shared/        shared Lua code
-resource/client/        client Lua modules
-resource/server/        server Lua modules
+resource/               canonical FiveM development resource
+resource/config/        owner-editable resource configuration
+resource/shared/        cross-runtime Lua code
+resource/client/        client behavior and bootstrap
+resource/server/        server authority and bootstrap
 resource/ui/            Svelte 5 NUI source
-resource/html/          generated NUI build
-release/                generated deployable resources
-examples/               concise and runnable examples
-scripts/                validation and release tooling
-tests/                  test plans and executable checks
+resource/html/          ignored generated NUI output
+release/                ignored generated production packages
+examples/               runnable examples and optional capability packs
+scripts/                initialization, validation, setup, and release tooling
+tests/                  executable checks and runtime test plans
 docs/                   decisions, specifications, and references
 .ai/                    AI rules, skills, memory, recipes, and registries
-AGENTS.md                main AI router
+AGENTS.md                canonical AI project agreement
 integrations.json        selected provider metadata
 release.config.json      release allowlist and sanitizer policy
 resource.json            machine-readable resource metadata
-resource/fxmanifest.lua  FiveM manifest and load order
 ```
 
-## Important Documentation
+## Documentation
 
-- [`AGENTS.md`](AGENTS.md) — AI routing and repository invariants
+- [`AGENTS.md`](AGENTS.md) — repository invariants and AI routing
 - [`.ai/CONTEXT_BUDGET.md`](.ai/CONTEXT_BUDGET.md) — token-efficient context policy
 - [`.ai/skills/INDEX.md`](.ai/skills/INDEX.md) — task workflow index
 - [`.ai/rules/INDEX.md`](.ai/rules/INDEX.md) — domain rule index
-- [`.ai/recipes/README.md`](.ai/recipes/README.md) — deterministic implementation recipes
-- [`docs/ai-agents.md`](docs/ai-agents.md) — GPT, Claude, Gemini, Cursor, Copilot, and Kimi compatibility
-- [`docs/reference/fivem-engineering-reference.md`](docs/reference/fivem-engineering-reference.md) — normalized engineering reference
-- [`docs/releasing.md`](docs/releasing.md) — release workflow and security
+- [`docs/development.md`](docs/development.md) — development and validation
+- [`docs/ai-agents.md`](docs/ai-agents.md) — coding-agent compatibility
+- [`docs/ci-cd.md`](docs/ci-cd.md) — guarded origin CI and downstream examples
+- [`docs/releasing.md`](docs/releasing.md) — production release workflow
+- [`docs/credits.md`](docs/credits.md) — acknowledgements and development background
 
-Additional project guidance:
+## Known limitations
 
-- [`docs/development.md`](docs/development.md)
-- [`docs/ci-cd.md`](docs/ci-cd.md)
+- Static checks do not prove correct FiveM runtime behavior.
+- Provider integrations require real-environment verification.
+- Browser clicks, animation playback, CEF profiling, 4K rendering, and NUI focus require runtime evidence.
+- Agent discovery conventions can change; verify active instructions in the selected tool.
+- The PowerShell helper is Windows-specific; `npm run setup:dev` is cross-platform.
 
-## Credits
+## Contributing, security, and license
 
-### Byte Labs Studio
+Focused fixes and improvements are welcome. Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening a pull request.
 
-Special thanks to [Byte Labs Studio](https://github.com/Byte-Labs-Studio) and their [BL Svelte Template](https://github.com/Byte-Labs-Studio/bl_svelte_template).
+Report vulnerabilities according to [`SECURITY.md`](SECURITY.md), without publishing credentials or exploitable details.
 
-This project does **not** reuse their UI design or UI components. Their work inspired several developer-experience ideas around FiveM NUI development, including browser-side debugging, reusable NUI event helpers, disposable listeners, fallback resource names, and more consistent local development workflows.
-
-See [`docs/reference/bl-svelte-template-review.md`](docs/reference/bl-svelte-template-review.md) for the concepts reviewed and the decisions made for this framework.
-
-## How This Template Was Developed
-
-The AI-facing parts of this repository—including the skills, agent instructions, rules, recipes, memory structure, and supporting workflows—were developed through a multi-model process.
-
-I used **Kimi K2.6** to help write and organize broad FiveM engineering knowledge and best-practice material. I then used **ChatGPT** to review, normalize, summarize, and transform that material into the token-efficient AI skills, rules, recipes, matrices, and repository structure you see here.
-
-For my current day-to-day development, I still primarily use **Claude**. In the future, I may move more of my workflow to **Kimi K3**. Based on my own testing, Kimi has shown a particularly strong understanding of FiveM resource development and many of the surrounding FiveM and GTA V systems compared with other models I have tried.
-
-This is only my personal experience and preference—Kimi did not pay me to say that. 😄
-
-If you find this project useful or enjoy what I have built, thank you very much for your support.
-
-## Notes
-
-This framework improves consistency, but no AI model should be trusted without validation. Native APIs, resource lifecycle behavior, player disconnect handling, framework objects, external providers, and gameplay interactions must still be tested on a real FiveM server.
+This project is licensed under the [MIT License](LICENSE).

@@ -1,7 +1,7 @@
 ExampleShopService = {}
 
 ---@param playerId number
----@param payload unknown
+---@param envelope unknown
 ---@return table result
 function ExampleShopService.Purchase(playerId, envelope)
     local valid, errorCode = ExampleShopContracts.ValidatePurchase(envelope)
