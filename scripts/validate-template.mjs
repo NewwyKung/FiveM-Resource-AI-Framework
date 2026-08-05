@@ -54,6 +54,7 @@ for (const required of [
   'examples/resources/example_interaction/fxmanifest.lua',
   'tests/examples/example_interaction.md',
   'tests/release/create-release.integration.mjs',
+  'tests/ai/build-ai-index.integration.mjs',
   'tests/ai/validate-agent-adapters.integration.mjs',
   'tests/security/scan-secrets.integration.mjs',
   'tests/ui/check-ui-practices.integration.mjs',

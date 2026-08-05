@@ -33,7 +33,10 @@ const index = {
 
 const content = `${JSON.stringify(index, null, 2)}\n`;
 if (checkOnly) {
-  if (!fs.existsSync(output) || fs.readFileSync(output, 'utf8') !== content) {
+  const existing = fs.existsSync(output)
+    ? fs.readFileSync(output, 'utf8').replaceAll('\r\n', '\n')
+    : null;
+  if (existing !== content) {
     console.error('[ai-index] .ai/index.json is stale. Run: node scripts/build-ai-index.mjs');
     process.exit(1);
   }

@@ -13,6 +13,7 @@ const checks = [
   ['Template policy', process.execPath, ['scripts/validate-template.mjs']],
   ['Integration profiles', process.execPath, ['scripts/validate-integrations.mjs']],
   ['AI registry', process.execPath, ['scripts/build-ai-index.mjs', '--check']],
+  ['AI registry integration', process.execPath, ['tests/ai/build-ai-index.integration.mjs']],
   ['Canonical schemas', process.execPath, ['scripts/validate-schemas.mjs']],
   ['AI skills', process.execPath, ['scripts/validate-skills.mjs']],
   ['AI agent adapters', process.execPath, ['scripts/validate-agent-adapters.mjs']],
